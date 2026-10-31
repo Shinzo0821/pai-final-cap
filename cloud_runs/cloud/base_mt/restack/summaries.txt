@@ -1,0 +1,10 @@
+Model: claude-cli/claude-fable-5-1@medium
+Config Path: /home/user/pai-final-cap/configs/base_mt/restack.yaml
+Git Commit: 53e9966 (Dirty: True)
+Total number of trials: 10
+Code generation success rate / Average reward / Task completed: 
+1.000/0.203/2
+Average code blocks: 1.400
+Average regenerations: 0.400
+Average finishes: 1.000
+Elapsed time: 199.04 seconds

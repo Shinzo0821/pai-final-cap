@@ -1,0 +1,9 @@
+{
+ "text": "import numpy as np\n\ndef avg_pose(name, n=10):\n    ps = [get_object_pose(name)[0] for _ in range(n)]\n    return np.mean(ps, axis=0)\n\n# Perceive nut center, block, and handle grasp (average to reduce noise)\nnut_center = avg_pose(\"white hollow center of the brown square nut\")\nblock_pos = avg_pose(\"brown square block\")\n\ngrasp_pos, grasp_quat = sample_grasp_pose(\"extruded handle of the brown square nut\")\ngrasp_positions = [grasp_pos]\nfor _ in range(9):\n    p, _ = sample_grasp_pose(\"extruded handle of the brown square nut\")\n    grasp_positions.append(p)\ngrasp_pos = np.mean(grasp_positions, axis=0)\n\n# Rigid offset from gripper (handle) to nut center in world frame (orientation held fixed during transport)\noffset = nut_center - grasp_pos\n\n# Grasp the handle\ngoto_home_joint_position()\nopen_gripper()\ngoto_pose(grasp_pos, grasp_quat, z_approach=0.10)\nclose_gripper()\n\n# Lift\nlift_pos = grasp_pos + np.array([0.0, 0.0, 0.20])\ngoto_pose(lift_pos, grasp_quat)\n\n# Target nut center directly above block, then compute gripper target by removing the offset\nhover_height = 0.12\ntarget_center_high = np.array([block_pos[0], block_pos[1], block_pos[2] + hover_height])\ntarget_center_low = np.array([block_pos[0], block_pos[1], block_pos[2] + 0.01])\n\ngripper_high = target_center_high - offset\ngripper_low = target_center_low - offset\n\ngoto_pose(gripper_high, grasp_quat)\ngoto_pose(gripper_low, grasp_quat, z_approach=0.05)\n\n# Release nut onto the peg\nopen_gripper()\ngoto_pose(gripper_high, grasp_quat)\ngoto_home_joint_position()",
+ "model": "claude-fable-5-1@medium",
+ "latency_s": 14.85,
+ "time": 1793414355.3394585,
+ "claude_cli": "2.1.314 (Claude Code)",
+ "input_tokens": 2557,
+ "output_tokens": 1004
+}

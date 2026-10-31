@@ -1,0 +1,9 @@
+{
+ "text": "import numpy as np\n\ndef avg_pos(fn, name, n=10):\n    ps = []\n    q = None\n    for _ in range(n):\n        p, q = fn(name)\n        ps.append(p)\n    return np.mean(ps, axis=0), q\n\n# Perception is noisy (~1 cm per call), so average multiple queries\nhandle_pos, handle_quat = avg_pos(sample_grasp_pose, \"extruded handle of the brown square nut\")\nnut_center_pos, _ = avg_pos(get_object_pose, \"white hollow center of the brown square nut\")\nblock_pos, _ = avg_pos(get_object_pose, \"brown square block\")\n\n# Rigid offset from nut hollow center to handle grasp pose (assume no rotation of nut during carry)\noffset = handle_pos - nut_center_pos\n\n# Grasp the nut by its handle\ngoto_home_joint_position()\nopen_gripper()\ngoto_pose(handle_pos, handle_quat, z_approach=0.10)\nclose_gripper()\n\n# Lift\nlift_pos = handle_pos.copy()\nlift_pos[2] += 0.15\ngoto_pose(lift_pos, handle_quat)\n\n# Target: nut center aligned above block peg; keep the same gripper orientation\ntarget_center = block_pos.copy()\ntarget_center[2] = block_pos[2] + 0.02\ntarget_handle = target_center + offset\ntarget_handle[2] = target_center[2] + offset[2] if offset[2] > 0 else target_center[2]\n\n# Move above the peg, then insert along Z\ngoto_pose(target_handle, handle_quat, z_approach=0.15)\nopen_gripper()\n\n# Retreat\nretreat = target_handle.copy()\nretreat[2] += 0.15\ngoto_pose(retreat, handle_quat)\ngoto_home_joint_position()",
+ "model": "claude-fable-5-1@medium",
+ "latency_s": 11.61,
+ "time": 1793414419.64685,
+ "claude_cli": "2.1.314 (Claude Code)",
+ "input_tokens": 2555,
+ "output_tokens": 693
+}

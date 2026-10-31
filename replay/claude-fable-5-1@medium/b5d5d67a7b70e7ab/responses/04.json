@@ -1,0 +1,9 @@
+{
+ "text": "import numpy as np\n\n# Get grasp pose for the red cube and grasp it with an approach from above\ngrasp_pos, grasp_quat = sample_grasp_pose(\"red cube\")\nopen_gripper()\ngoto_pose(grasp_pos, grasp_quat, z_approach=0.1)\nclose_gripper()\n\n# Lift the red cube straight up to avoid collisions\nlift_pos = grasp_pos.copy()\nlift_pos[2] += 0.15\ngoto_pose(lift_pos, grasp_quat)\n\n# Get poses and extents of both cubes\nred_pos, _, red_extent = get_object_pose(\"red cube\", return_bbox_extent=True)\ngreen_pos, _, green_extent = get_object_pose(\"green cube\", return_bbox_extent=True)\n\n# Compute placement: red cube center should be at green top + half red height.\n# The gripper was at grasp_pos when red cube center was at red_pos (before lifting),\n# so keep the same gripper-to-cube-center offset in z.\n# Use original grasp_pos relative to the red cube's original position for the offset.\norig_red_pos = grasp_pos  # approximate; refine with the offset below\ngripper_offset_z = grasp_pos[2] - (red_pos[2] - 0.15) if abs(red_pos[2] - (grasp_pos[2] + 0.15)) < 0.1 else 0.0\n\ntarget_center_z = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0\nplace_pos = np.array([green_pos[0], green_pos[1], target_center_z + gripper_offset_z])\n\n# Move above the green cube first, then descend gently to the placement height\ngoto_pose(place_pos, grasp_quat, z_approach=0.1)\n\n# Release the cube gently (it is already resting on the green cube)\nopen_gripper()\n\n# Retreat upward\nretreat_pos = place_pos.copy()\nretreat_pos[2] += 0.1\ngoto_pose(retreat_pos, grasp_quat)",
+ "model": "claude-fable-5-1@medium",
+ "latency_s": 13.65,
+ "time": 1793414640.5605052,
+ "claude_cli": "2.1.314 (Claude Code)",
+ "input_tokens": 2405,
+ "output_tokens": 680
+}

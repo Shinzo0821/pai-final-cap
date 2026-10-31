@@ -1,0 +1,40 @@
+# Code block 0
+import numpy as np
+
+# --- Poses / constants ---
+Q0_DOWN_OPEN_X = np.array([0.0, 0.707, 0.707, 0.0])    # arm0: fingers close across the handle (handle along Y)
+Q1_DOWN_OPEN_X = np.array([0.0, -0.707, 0.707, 0.0])   # arm1: 90deg about Z from [0,0,1,0] -> opening along X
+HANDOVER_X = 0.81          # midpoint between the two initial gripper positions (0.44 and 1.18)
+HANDOVER_Z = 0.175         # required 0.15 < z < 0.20
+GRASP_OFFSET_ARM0 = -0.05  # arm0 grasps handle on the head side of the handle middle
+GRASP_OFFSET_ARM1 = +0.05  # arm1 grasps handle toward the tip -> 10cm separation between gripper centers
+
+# --- Read hammer pose (middle of handle) ---
+hammer_pos, _ = get_hammer_pose()
+hx, hy, hz = float(hammer_pos[0]), float(hammer_pos[1]), float(hammer_pos[2])
+
+# --- Arm0: pick up hammer handle (fingers close across X, handle runs along Y) ---
+open_gripper_arm0()
+grasp0 = np.array([hx, hy + GRASP_OFFSET_ARM0, hz])
+goto_pose_arm0(grasp0, Q0_DOWN_OPEN_X, z_approach=0.12)
+close_gripper_arm0()
+
+# --- Arm0: lift straight up first (pure translation in Z), then translate in X to handover point ---
+lift0 = np.array([hx, hy + GRASP_OFFSET_ARM0, HANDOVER_Z])
+goto_pose_arm0(lift0, Q0_DOWN_OPEN_X)
+hand0 = np.array([HANDOVER_X, hy + GRASP_OFFSET_ARM0, HANDOVER_Z])
+goto_pose_arm0(hand0, Q0_DOWN_OPEN_X)
+
+# --- Arm1: approach handle from above, offset +Y from arm0's gripper (>=8cm buffer) ---
+open_gripper_arm1()
+hand1 = np.array([HANDOVER_X, hy + GRASP_OFFSET_ARM1, HANDOVER_Z])
+# pre-position high above the handover point (pure translation, well clear of arm0)
+goto_pose_arm1(hand1 + np.array([0.0, 0.0, 0.15]), Q1_DOWN_OPEN_X)
+# descend vertically onto the handle
+goto_pose_arm1(hand1, Q1_DOWN_OPEN_X, z_approach=0.08)
+close_gripper_arm1()
+
+# --- Handover: arm0 releases, then retreats upward and back toward its own side ---
+open_gripper_arm0()
+goto_pose_arm0(hand0 + np.array([0.0, 0.0, 0.12]), Q0_DOWN_OPEN_X)
+goto_pose_arm0(np.array([0.5, hy + GRASP_OFFSET_ARM0, HANDOVER_Z + 0.12]), Q0_DOWN_OPEN_X)

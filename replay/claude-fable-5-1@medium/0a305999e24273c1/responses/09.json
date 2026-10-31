@@ -1,0 +1,9 @@
+{
+ "text": "import numpy as np\nfrom scipy.spatial.transform import Rotation as R\n\n# Average several perception calls to reduce ~1cm noise\ndef avg_pose(fn, name, n=10):\n    ps, qs = [], []\n    for _ in range(n):\n        p, q = fn(name)\n        ps.append(p); qs.append(q)\n    p = np.mean(ps, axis=0)\n    q0 = qs[0]\n    qs = [q if np.dot(q, q0) >= 0 else -q for q in qs]\n    q = np.mean(qs, axis=0); q = q / np.linalg.norm(q)\n    return p, q\n\ndef wxyz_to_rot(q):\n    return R.from_quat([q[1], q[2], q[3], q[0]])\n\ngoto_home_joint_position()\nopen_gripper()\n\n# Perceive nut center and handle grasp pose (before moving nut)\nnut_pos, nut_quat = avg_pose(get_object_pose, \"white hollow center of the brown square nut\")\ngrasp_pos, grasp_quat = avg_pose(sample_grasp_pose, \"extruded handle of the brown square nut\")\n\n# Fixed rigid offset from handle grasp to nut center, expressed in the grasp (EE) frame\nR_g = wxyz_to_rot(grasp_quat)\noffset_g = R_g.inv().apply(nut_pos - grasp_pos)\n\n# Grasp the handle\ngoto_pose(grasp_pos, grasp_quat, z_approach=0.10)\nclose_gripper()\n\n# Lift\nlift_pos = grasp_pos + np.array([0.0, 0.0, 0.15])\ngoto_pose(lift_pos, grasp_quat)\n\n# Perceive peg\npeg_pos, peg_quat = avg_pose(get_object_pose, \"brown square block\")\n\n# Target: nut center directly above peg, keeping the grasp orientation.\n# EE position = desired nut center - R_g * offset_g\ntarget_nut_center = peg_pos + np.array([0.0, 0.0, 0.0])\nee_target = target_nut_center - R_g.apply(offset_g)\n\n# Move above peg, then insert with approach from above\ngoto_pose(ee_target, grasp_quat, z_approach=0.15)\n\nopen_gripper()\ngoto_pose(ee_target + np.array([0.0, 0.0, 0.15]), grasp_quat)\ngoto_home_joint_position()",
+ "model": "claude-fable-5-1@medium",
+ "latency_s": 11.59,
+ "time": 1793414419.6486304,
+ "claude_cli": "2.1.314 (Claude Code)",
+ "input_tokens": 2557,
+ "output_tokens": 874
+}

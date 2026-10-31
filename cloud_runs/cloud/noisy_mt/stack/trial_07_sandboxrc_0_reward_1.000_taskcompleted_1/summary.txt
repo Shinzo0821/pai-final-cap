@@ -1,0 +1,46 @@
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Perceive objects
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample grasp on red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Approach and grasp red cube
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift to safe height
+lift_pos = np.array([grasp_pos[0], grasp_pos[1], grasp_pos[2] + 0.2])
+goto_pose(lift_pos, grasp_quat)
+
+# Compute stacking position on top of green cube
+place_z = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0
+place_pos = np.array([green_pos[0], green_pos[1], place_z])
+
+# Move above placement location at safe height, then descend with controlled approach
+above_place = np.array([place_pos[0], place_pos[1], place_z + 0.2])
+goto_pose(above_place, grasp_quat)
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+
+# Release and retreat
+open_gripper()
+goto_pose(above_place, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------

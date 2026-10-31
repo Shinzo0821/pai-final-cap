@@ -1,0 +1,130 @@
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+def avg_pos(fn, name, n=10):
+    # average several noisy perception calls to reduce ~1 cm error
+    ps = []
+    q = None
+    for _ in range(n):
+        p, qq = fn(name)
+        ps.append(np.asarray(p, dtype=float))
+        if q is None:
+            q = np.asarray(qq, dtype=float)
+    return np.mean(ps, axis=0), q
+
+goto_home_joint_position()
+open_gripper()
+
+# perceive nut center, handle grasp and the peg (block)
+nut_center_pos, _ = avg_pos(get_object_pose, "white hollow center of the brown square nut")
+grasp_pos, grasp_quat = avg_pos(sample_grasp_pose, "extruded handle of the brown square nut")
+peg_pos, _ = avg_pos(get_object_pose, "brown square block")
+
+# rigid offset from nut center to handle grasp point (world frame, orientation is kept during transport)
+offset = grasp_pos - nut_center_pos
+
+# grasp the handle: approach from above, descend, close
+goto_pose(grasp_pos, grasp_quat, z_approach=0.10)
+close_gripper()
+
+# lift straight up
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.15
+goto_pose(lift_pos, grasp_quat)
+
+# target: nut center aligned with peg axis, keep same grasp orientation
+target_grasp_pos = peg_pos + offset
+# keep hover height, move horizontally over the peg
+hover_pos = target_grasp_pos.copy()
+hover_pos[2] = lift_pos[2]
+goto_pose(hover_pos, grasp_quat)
+
+# descend onto the peg; final z such that nut sits down at the block/peg base height
+insert_pos = target_grasp_pos.copy()
+insert_pos[2] = peg_pos[2] + offset[2] + 0.005
+goto_pose(insert_pos, grasp_quat, z_approach=0.08)
+
+# release and retreat
+open_gripper()
+retreat_pos = insert_pos.copy()
+retreat_pos[2] += 0.15
+goto_pose(retreat_pos, grasp_quat)
+goto_home_joint_position()
+
+# Code block 1
+import numpy as np
+
+def avg_pos(fn, name, n=10):
+    ps = []
+    q = None
+    for _ in range(n):
+        p, qq = fn(name)
+        ps.append(np.asarray(p, dtype=float))
+        if q is None:
+            q = np.asarray(qq, dtype=float)
+    return np.mean(ps, axis=0), q
+
+# --- check current state: is the nut already on the peg? ---
+nut_center_pos, _ = avg_pos(get_object_pose, "white hollow center of the brown square nut")
+peg_pos, _ = avg_pos(get_object_pose, "brown square block")
+xy_err = np.linalg.norm(nut_center_pos[:2] - peg_pos[:2])
+print("nut center:", nut_center_pos, "peg:", peg_pos, "xy error:", xy_err)
+
+if xy_err > 0.02:
+    # nut not on peg: redo the grasp-and-insert with a better final height
+    goto_home_joint_position()
+    open_gripper()
+
+    nut_center_pos, _ = avg_pos(get_object_pose, "white hollow center of the brown square nut")
+    grasp_pos, grasp_quat = avg_pos(sample_grasp_pose, "extruded handle of the brown square nut")
+    peg_pos, _ = avg_pos(get_object_pose, "brown square block")
+
+    # rigid offset nut-center -> handle grasp (world frame; orientation is held constant)
+    offset = grasp_pos - nut_center_pos
+
+    goto_pose(grasp_pos, grasp_quat, z_approach=0.10)
+    close_gripper()
+
+    lift_pos = grasp_pos.copy()
+    lift_pos[2] += 0.15
+    goto_pose(lift_pos, grasp_quat)
+
+    target_grasp_pos = peg_pos + offset
+    hover_pos = target_grasp_pos.copy()
+    hover_pos[2] = lift_pos[2]
+    goto_pose(hover_pos, grasp_quat)
+
+    # nut rests on the table before and after insertion, so seated grasp height == original grasp height
+    insert_pos = target_grasp_pos.copy()
+    insert_pos[2] = grasp_pos[2] + 0.005
+    goto_pose(insert_pos, grasp_quat, z_approach=0.10)
+
+    open_gripper()
+    retreat_pos = insert_pos.copy()
+    retreat_pos[2] += 0.15
+    goto_pose(retreat_pos, grasp_quat)
+    goto_home_joint_position()
+
+    nut_center_pos, _ = avg_pos(get_object_pose, "white hollow center of the brown square nut")
+    peg_pos, _ = avg_pos(get_object_pose, "brown square block")
+    print("after retry -> nut center:", nut_center_pos, "peg:", peg_pos,
+          "xy error:", np.linalg.norm(nut_center_pos[:2] - peg_pos[:2]))
+else:
+    print("nut appears inserted on the peg")
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: nut center: [ 0.78482088  0.11064092 -0.09059268] peg: [0.78978189 0.10010718 0.0276679 ] xy error: 0.011643517453838891
+nut appears inserted on the peg
+
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 1
+  Num Finishes: 1
+  Num Code Blocks: 2
+----------------------------------------------------------------------------------------------------

@@ -1,0 +1,9 @@
+{
+ "text": "import numpy as np\nfrom scipy.spatial.transform import Rotation as R\n\n# --- Step 1: get nut center pose and handle grasp pose, compute rigid offset ---\nnut_center_pos, nut_center_quat = get_object_pose(\"white hollow center of the brown square nut\")\ngrasp_pos, grasp_quat = sample_grasp_pose(\"extruded handle of the brown square nut\")\n\n# Offset from nut center to grasp pose, expressed in world frame.\n# The nut is a rigid body; since we will keep the same end-effector orientation\n# (no rotation applied during transport), the world-frame offset stays constant.\noffset_world = grasp_pos - nut_center_pos\n\n# --- Step 2: grasp the nut by its handle ---\nopen_gripper()\ngoto_pose(grasp_pos, grasp_quat, z_approach=0.10)\nclose_gripper()\n\n# --- Step 3: lift the nut up ---\nlift_pos = grasp_pos.copy()\nlift_pos[2] += 0.15\ngoto_pose(lift_pos, grasp_quat)\n\n# --- Step 4: get the peg (block) pose and compute insertion target ---\npeg_pos, peg_quat = get_object_pose(\"brown square block\")\n\n# Target for the nut center: directly above the peg in XY, then lowered onto it.\n# Since the end-effector orientation is unchanged, the grasp pose target is\n# nut_center_target + offset_world.\nnut_target_pos = peg_pos.copy()\nee_target_pos = nut_target_pos + offset_world\n\n# Pre-insertion hover above the peg\nhover_pos = ee_target_pos.copy()\nhover_pos[2] += 0.15\ngoto_pose(hover_pos, grasp_quat)\n\n# --- Step 5: insert the nut onto the peg ---\n# Lower straight down with an approach so XY alignment is settled before descent.\ngoto_pose(ee_target_pos, grasp_quat, z_approach=0.08)\n\n# --- Step 6: release and retreat ---\nopen_gripper()\nretreat_pos = ee_target_pos.copy()\nretreat_pos[2] += 0.15\ngoto_pose(retreat_pos, grasp_quat)\ngoto_home_joint_position()",
+ "model": "claude-fable-5-1@medium",
+ "latency_s": 11.07,
+ "time": 1793414615.519576,
+ "claude_cli": "2.1.314 (Claude Code)",
+ "input_tokens": 2471,
+ "output_tokens": 755
+}

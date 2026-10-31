@@ -1,0 +1,9 @@
+{
+ "text": "import numpy as np\n\ndef avg_pose(name, n=5):\n    ps = []\n    q = None\n    for _ in range(n):\n        p, q = get_object_pose(name)\n        ps.append(p)\n    return np.mean(ps, axis=0), q\n\n# Perception: average several queries to reduce ~1 cm noise\nnut_center_pos, _ = avg_pose(\"white hollow center of the brown square nut\")\npeg_pos, _ = avg_pose(\"brown square block\")\n\n# Grasp pose at the handle (use its quaternion as-is)\ngrasp_pos, grasp_quat = sample_grasp_pose(\"extruded handle of the brown square nut\")\n# Refine grasp position by averaging multiple samples (same handle region)\ngps = [grasp_pos]\nfor _ in range(4):\n    gp, _ = sample_grasp_pose(\"extruded handle of the brown square nut\")\n    gps.append(gp)\ngrasp_pos = np.mean(gps, axis=0)\n\n# Rigid transform from nut center to handle grasp, expressed in world frame.\n# Since the end-effector orientation is held fixed during transport, this offset stays constant.\noffset = grasp_pos - nut_center_pos\n\n# Grasp the nut by its handle\nopen_gripper()\ngoto_pose(grasp_pos, grasp_quat, z_approach=0.10)\nclose_gripper()\n\n# Lift\nlift_pos = grasp_pos.copy()\nlift_pos[2] += 0.15\ngoto_pose(lift_pos, grasp_quat)\n\n# Target: nut center aligned over the peg (xy), same table-level height as pickup\ntarget_pos = np.array([peg_pos[0] + offset[0],\n                       peg_pos[1] + offset[1],\n                       grasp_pos[2] + 0.005])\n\n# Move above peg, then descend straight down to insert\ngoto_pose(target_pos, grasp_quat, z_approach=0.15)\n\n# Release and retreat\nopen_gripper()\nretreat = target_pos.copy()\nretreat[2] += 0.15\ngoto_pose(retreat, grasp_quat)\ngoto_home_joint_position()",
+ "model": "claude-fable-5-1@medium",
+ "latency_s": 16.82,
+ "time": 1793414338.5146282,
+ "claude_cli": "2.1.314 (Claude Code)",
+ "input_tokens": 2559,
+ "output_tokens": 1046
+}

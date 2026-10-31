@@ -1,0 +1,9 @@
+{
+ "text": "import numpy as np\nfrom scipy.spatial.transform import Rotation as R\n\n# Get poses of nut center, handle grasp, and target peg block\nnut_center_pos, nut_center_quat = get_object_pose(\"white hollow center of the brown square nut\")\ngrasp_pos, grasp_quat = sample_grasp_pose(\"extruded handle of the brown square nut\")\npeg_pos, peg_quat = get_object_pose(\"brown square block\")\n\n# Fixed rigid transform from handle grasp frame to nut center (in grasp frame coordinates)\nR_grasp = R.from_quat([grasp_quat[1], grasp_quat[2], grasp_quat[3], grasp_quat[0]])\noffset_grasp_frame = R_grasp.inv().apply(nut_center_pos - grasp_pos)\n\n# Grasp the nut by its handle\nopen_gripper()\ngoto_pose(grasp_pos, grasp_quat, z_approach=0.1)\nclose_gripper()\n\n# Lift the nut\nlift_pos = grasp_pos.copy()\nlift_pos[2] += 0.15\ngoto_pose(lift_pos, grasp_quat)\n\n# Compute gripper pose so that the nut center aligns above the peg (keep grasp orientation)\ntarget_center = peg_pos.copy()\ntarget_center[2] = peg_pos[2] + 0.02  # slightly above block base so nut slides onto peg\nee_target_pos = target_center - R_grasp.apply(offset_grasp_frame)\n\n# Move above the peg, then insert with approach from above\ngoto_pose(ee_target_pos, grasp_quat, z_approach=0.12)\n\n# Release the nut and retreat\nopen_gripper()\nretreat_pos = ee_target_pos.copy()\nretreat_pos[2] += 0.12\ngoto_pose(retreat_pos, grasp_quat)\ngoto_home_joint_position()",
+ "model": "claude-fable-5-1@medium",
+ "latency_s": 10.21,
+ "time": 1793414626.5855389,
+ "claude_cli": "2.1.314 (Claude Code)",
+ "input_tokens": 2467,
+ "output_tokens": 638
+}

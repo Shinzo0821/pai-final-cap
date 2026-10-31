@@ -1,0 +1,636 @@
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+API server on 127.0.0.1:8116 already running, skipping
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+Time taken to query model: 8.85 seconds
+Time taken to query model: 8.63 seconds
+Time taken to query model: 9.17 seconds
+Time taken to query model: 4.86 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_01_sandboxrc_0_reward_1.000_taskcompleted_1/video_turn_00.mp4 (54 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_01_sandboxrc_0_reward_1.000_taskcompleted_1/video_combined.mp4 (55 frames)
+Trial 1 took 40.40 seconds
+Time taken to query model: 5.07 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_03_sandboxrc_0_reward_1.000_taskcompleted_1/video_turn_00.mp4 (55 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_03_sandboxrc_0_reward_1.000_taskcompleted_1/video_combined.mp4 (56 frames)
+Trial 3 took 40.78 seconds
+Time taken to query model: 4.96 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_02_sandboxrc_0_reward_1.000_taskcompleted_1/video_turn_00.mp4 (58 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_02_sandboxrc_0_reward_1.000_taskcompleted_1/video_combined.mp4 (59 frames)
+Trial 2 took 42.37 seconds
+Time taken to query model: 7.56 seconds
+Time taken to query model: 8.45 seconds
+Time taken to query model: 8.39 seconds
+Time taken to query model: 4.65 seconds
+Model chose to finish
+Code blocks done
+Time taken to query model: 7.57 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_05_sandboxrc_0_reward_1.000_taskcompleted_1/video_turn_00.mp4 (54 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_04_sandboxrc_0_reward_0.003_taskcompleted_0/video_turn_00.mp4 (56 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_05_sandboxrc_0_reward_1.000_taskcompleted_1/video_combined.mp4 (55 frames)
+Trial 5 took 39.54 seconds
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_04_sandboxrc_0_reward_0.003_taskcompleted_0/video_combined.mp4 (57 frames)
+Trial 4 took 40.92 seconds
+Time taken to query model: 4.90 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_06_sandboxrc_0_reward_1.000_taskcompleted_1/video_turn_00.mp4 (56 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_06_sandboxrc_0_reward_1.000_taskcompleted_1/video_combined.mp4 (57 frames)
+Trial 6 took 40.09 seconds
+Time taken to query model: 8.67 seconds
+Time taken to query model: 9.17 seconds
+Time taken to query model: 8.58 seconds
+Time taken to query model: 4.08 seconds
+Model chose to finish
+Code blocks done
+Time taken to query model: 4.31 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_09_sandboxrc_0_reward_0.001_taskcompleted_0/video_turn_00.mp4 (54 frames)
+Time taken to query model: 4.95 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_08_sandboxrc_0_reward_1.000_taskcompleted_1/video_turn_00.mp4 (55 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_09_sandboxrc_0_reward_0.001_taskcompleted_0/video_combined.mp4 (55 frames)
+Trial 9 took 36.77 seconds
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_07_sandboxrc_0_reward_1.000_taskcompleted_1/video_turn_00.mp4 (55 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_08_sandboxrc_0_reward_1.000_taskcompleted_1/video_combined.mp4 (56 frames)
+Trial 8 took 39.30 seconds
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_07_sandboxrc_0_reward_1.000_taskcompleted_1/video_combined.mp4 (56 frames)
+Trial 7 took 39.88 seconds
+Time taken to query model: 8.44 seconds
+Time taken to query model: 5.39 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_10_sandboxrc_0_reward_0.001_taskcompleted_0/video_turn_00.mp4 (57 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_10_sandboxrc_0_reward_0.001_taskcompleted_0/video_combined.mp4 (58 frames)
+Trial 10 took 31.88 seconds
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Perceive objects
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+
+# Sample grasp on the red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Grasp the red cube
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift to a safe height
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.2
+goto_pose(lift_pos, grasp_quat)
+
+# Compute stacking position above the green cube
+place_z = green_pos[2] + green_extent[2] / 2 + red_extent[2] / 2
+place_pos = np.array([green_pos[0], green_pos[1], place_z])
+
+# Move laterally at safe height, then descend with approach
+above_place = place_pos.copy()
+above_place[2] = lift_pos[2]
+goto_pose(above_place, grasp_quat)
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+
+# Release and retreat
+open_gripper()
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.15
+goto_pose(retreat_pos, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_01_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Get object info
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample grasp pose for red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Grasp the red cube
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift to a safe height
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.2
+goto_pose(lift_pos, grasp_quat)
+
+# Compute placement position on top of green cube
+place_z = green_pos[2] + green_extent[2] / 2 + red_extent[2] / 2
+place_pos = np.array([green_pos[0], green_pos[1], place_z])
+
+# Move above placement location at safe height
+above_place = place_pos.copy()
+above_place[2] = lift_pos[2]
+goto_pose(above_place, grasp_quat)
+
+# Descend with controlled approach and release
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+open_gripper()
+
+# Retreat upward
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.2
+goto_pose(retreat_pos, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_02_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Get object poses and extents
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample grasp pose for the red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Approach and grasp the red cube
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift to a safe height
+lift_pos = np.array(grasp_pos, dtype=float).copy()
+lift_pos[2] += 0.2
+goto_pose(lift_pos, grasp_quat)
+
+# Compute placement position on top of the green cube
+place_z = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0
+place_pos = np.array([green_pos[0], green_pos[1], place_z], dtype=float)
+
+# Move above the placement location at safe height
+above_place = place_pos.copy()
+above_place[2] += 0.2
+goto_pose(above_place, grasp_quat)
+
+# Descend with controlled approach and release
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+open_gripper()
+
+# Retreat upward
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.2
+goto_pose(retreat_pos, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_03_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Get object poses and extents
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample grasp pose for the red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Open gripper and approach/grasp the red cube with controlled descent
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift to a safe height
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.2
+goto_pose(lift_pos, grasp_quat)
+
+# Compute placement position on top of the green cube
+place_z = green_pos[2] + green_extent[2] / 2 + red_extent[2] / 2
+place_pos = np.array([green_pos[0], green_pos[1], place_z])
+
+# Move above the placement location at safe height, then descend with approach
+above_place = place_pos.copy()
+above_place[2] = lift_pos[2]
+goto_pose(above_place, grasp_quat)
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+
+# Release the cube and retreat upward
+open_gripper()
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.15
+goto_pose(retreat_pos, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.0032636667741918896
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_04_sandboxrc_0_reward_0.003_taskcompleted_0/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Perceive objects
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample a grasp on the red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Approach and grasp the red cube
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift to a safe height
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.2
+goto_pose(lift_pos, grasp_quat)
+
+# Compute placement pose on top of the green cube
+place_z = green_pos[2] + green_extent[2] / 2 + red_extent[2] / 2
+place_pos = np.array([green_pos[0], green_pos[1], place_z])
+
+# Move above the placement location at safe height, then descend with approach
+above_place = place_pos.copy()
+above_place[2] = lift_pos[2]
+goto_pose(above_place, grasp_quat)
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+
+# Release and retreat
+open_gripper()
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.2
+goto_pose(retreat_pos, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_05_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Perceive objects
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample grasp on red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Grasp red cube
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift to safe height
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.2
+goto_pose(lift_pos, grasp_quat)
+
+# Compute placement pose on top of green cube
+place_z = green_pos[2] + green_extent[2] / 2 + red_extent[2] / 2
+place_pos = np.array([green_pos[0], green_pos[1], place_z])
+
+# Move above placement location at safe height, then descend with approach
+above_place = place_pos.copy()
+above_place[2] = lift_pos[2]
+goto_pose(above_place, grasp_quat)
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+
+# Release and retreat
+open_gripper()
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.15
+goto_pose(retreat_pos, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_06_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Perceive objects
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample grasp on red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Approach and grasp red cube
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift to safe height
+lift_pos = np.array([grasp_pos[0], grasp_pos[1], grasp_pos[2] + 0.2])
+goto_pose(lift_pos, grasp_quat)
+
+# Compute stacking position on top of green cube
+place_z = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0
+place_pos = np.array([green_pos[0], green_pos[1], place_z])
+
+# Move above placement location at safe height, then descend with controlled approach
+above_place = np.array([place_pos[0], place_pos[1], place_z + 0.2])
+goto_pose(above_place, grasp_quat)
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+
+# Release and retreat
+open_gripper()
+goto_pose(above_place, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_07_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Get grasp pose for the red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Open gripper and approach the red cube from above, then grasp
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift the red cube to a safe height
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.2
+goto_pose(lift_pos, grasp_quat)
+
+# Get poses and extents of both cubes
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+
+# Compute placement position on top of the green cube
+place_z = green_pos[2] + green_extent[2] / 2 + red_extent[2] / 2
+place_pos = np.array([green_pos[0], green_pos[1], place_z])
+
+# Move laterally at safe height above the placement location
+above_place = place_pos.copy()
+above_place[2] = lift_pos[2]
+goto_pose(above_place, grasp_quat)
+
+# Descend with controlled approach and release
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+open_gripper()
+
+# Retreat upward
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.2
+goto_pose(retreat_pos, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_08_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Get object poses and extents
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample grasp pose for the red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Approach and grasp the red cube
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift to a safe height
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.2
+goto_pose(lift_pos, grasp_quat)
+
+# Compute placement position on top of the green cube
+place_z = green_pos[2] + green_extent[2] / 2 + red_extent[2] / 2
+place_pos = np.array([green_pos[0], green_pos[1], place_z])
+
+# Move laterally at safe height above placement location
+above_place = place_pos.copy()
+above_place[2] = lift_pos[2]
+goto_pose(above_place, grasp_quat)
+
+# Descend with controlled approach and release
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+open_gripper()
+
+# Retreat upward
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.1
+goto_pose(retreat_pos, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.0008784902423211033
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_09_sandboxrc_0_reward_0.001_taskcompleted_0/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Perceive objects
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample grasp on red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Approach and grasp
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift to safe height
+lift_pos = np.array(grasp_pos, dtype=float).copy()
+lift_pos[2] += 0.2
+goto_pose(lift_pos, grasp_quat)
+
+# Compute placement pose on top of green cube
+place_z = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0
+place_pos = np.array([green_pos[0], green_pos[1], place_z], dtype=float)
+
+# Move above placement location at safe height, then descend with approach
+above_place = place_pos.copy()
+above_place[2] = lift_pos[2]
+goto_pose(above_place, grasp_quat)
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+
+# Release and retreat
+open_gripper()
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.15
+goto_pose(retreat_pos, grasp_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.00062798559328342
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/noisy_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/stack/trial_10_sandboxrc_0_reward_0.001_taskcompleted_0/code.py
+
+Summary Statistics:
+Model: claude-cli/claude-fable-5-1@medium
+Config Path: /home/user/pai-final-cap/configs/noisy_mt/stack.yaml
+Git Commit: 53e9966 (Dirty: True)
+Total number of trials: 10
+Code generation success rate / Average reward / Task completed: 
+1.000/0.700/7
+Average code blocks: 1.000
+Average regenerations: 0.000
+Average finishes: 1.000
+Elapsed time: 164.20 seconds

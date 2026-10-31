@@ -1,0 +1,100 @@
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Get poses and extents of both cubes
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample a grasp pose for the red cube and grasp it with an approach from above
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.10)
+close_gripper()
+
+# Lift the red cube straight up to clear the scene
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.15
+goto_pose(lift_pos, grasp_quat)
+
+# Compute placement: gripper offset relative to red cube center is (grasp_pos - red_pos).
+# Target red cube center is on top of the green cube: green top + half red height.
+grasp_offset = grasp_pos - red_pos
+target_red_center = green_pos.copy()
+target_red_center[2] = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0
+place_pos = target_red_center + grasp_offset
+
+# Move above the green cube, then descend gently to the exact placement height
+goto_pose(place_pos, grasp_quat, z_approach=0.10)
+
+# Release the cube only once it is resting on the green cube
+open_gripper()
+
+# Retreat upward
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.10
+goto_pose(retreat_pos, grasp_quat)
+
+# Code block 1
+import numpy as np
+
+# Verify the final state without moving the robot: check that the red cube rests on top of the green cube.
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+expected_red_z = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0
+xy_offset = np.linalg.norm(red_pos[:2] - green_pos[:2])
+z_error = red_pos[2] - expected_red_z
+
+print("red cube position:", red_pos, "extent:", red_extent)
+print("green cube position:", green_pos, "extent:", green_extent)
+print("xy offset between cube centers (m):", xy_offset)
+print("red cube z error vs expected stacked height (m):", z_error)
+print("stacked:", xy_offset < 0.02 and abs(z_error) < 0.01)
+
+# Code block 2
+import numpy as np
+
+# Previous attempt left the red cube on the table ~7 cm from the green cube, so the grasp/placement failed.
+# Retry: re-grasp the red cube, carry it above the green cube, descend to the exact stacked height, release.
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.10)
+close_gripper()
+
+# Lift straight up
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.15
+goto_pose(lift_pos, grasp_quat)
+
+# Gripper-to-cube-center offset (keep full offset so the cube center lands on the green cube center)
+grasp_offset = grasp_pos - red_pos
+
+# Target red cube center: directly above green cube, resting on its top face
+target_red_center = green_pos.copy()
+target_red_center[2] = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0
+place_pos = target_red_center + grasp_offset
+
+# Move above the green cube, then descend to the placement height before releasing
+goto_pose(place_pos, grasp_quat, z_approach=0.10)
+open_gripper()
+
+# Retreat upward
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.10
+goto_pose(retreat_pos, grasp_quat)
+
+# Verify
+red_pos2, _, red_extent2 = get_object_pose("red cube", return_bbox_extent=True)
+green_pos2, _, green_extent2 = get_object_pose("green cube", return_bbox_extent=True)
+expected_red_z = green_pos2[2] + green_extent2[2] / 2.0 + red_extent2[2] / 2.0
+xy_offset = np.linalg.norm(red_pos2[:2] - green_pos2[:2])
+z_error = red_pos2[2] - expected_red_z
+print("grasp_pos:", grasp_pos, "red_pos at grasp:", red_pos, "offset:", grasp_offset)
+print("red cube position:", red_pos2, "green cube position:", green_pos2)
+print("xy offset (m):", xy_offset, "z error (m):", z_error)
+print("stacked:", xy_offset < 0.02 and abs(z_error) < 0.01)

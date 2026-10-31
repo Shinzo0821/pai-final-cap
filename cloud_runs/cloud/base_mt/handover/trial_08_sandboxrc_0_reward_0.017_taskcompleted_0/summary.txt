@@ -1,0 +1,65 @@
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# ---------- Setup ----------
+open_gripper_arm0()
+open_gripper_arm1()
+
+hammer_pos, _ = get_hammer_pose()   # middle of the handle; handle runs along +Y, head toward -Y
+hx, hy, hz = float(hammer_pos[0]), float(hammer_pos[1]), float(hammer_pos[2])
+
+# Gripper orientations: facing down, fingers opening along X (perpendicular to handle along Y)
+q0_x = np.array([0.0, 0.707, 0.707, 0.0])     # Arm0, opening along X
+q1_x = np.array([0.0, 0.707, -0.707, 0.0])    # Arm1, opening along X (90deg yaw of [0,0,1,0])
+
+# Grasp points along the handle (keep >= 8cm between the two grippers).
+# Arm0 grasps slightly toward the head side, Arm1 grasps toward the free (+Y) end.
+# Minimum handle half-length is 0.075m, so both offsets remain on the handle.
+arm0_dy = -0.04
+arm1_dy = +0.05
+
+# Handover location: midpoint between initial gripper positions (x ~ 0.81), hammer z ~ 0.175
+x_handover = 0.81
+z_handover = 0.175      # gripper grasped at hammer center height, so gripper z == hammer z
+z_safe = max(hz + 0.25, 0.30)
+
+# ---------- Arm0: pick up hammer ----------
+grasp0 = np.array([hx, hy + arm0_dy, hz])
+goto_pose_arm0(grasp0, q0_x, z_approach=0.12)   # approach from above, then descend
+close_gripper_arm0()
+
+# Lift straight up first (pure translation in Z)
+goto_pose_arm0(np.array([hx, hy + arm0_dy, z_safe]), q0_x)
+
+# Translate horizontally to the handover x at safe height (keep orientation fixed)
+goto_pose_arm0(np.array([x_handover, hy + arm0_dy, z_safe]), q0_x)
+
+# Lower to handover height (hammer z in [0.15, 0.20])
+goto_pose_arm0(np.array([x_handover, hy + arm0_dy, z_handover]), q0_x)
+
+# ---------- Arm1: grasp handle from +Y side of Arm0's gripper ----------
+grasp1 = np.array([x_handover, hy + arm1_dy, z_handover])
+# Move above the grasp point first, then descend vertically (z_approach)
+goto_pose_arm1(np.array([x_handover, hy + arm1_dy, z_handover + 0.18]), q1_x)
+goto_pose_arm1(grasp1, q1_x, z_approach=0.18)
+close_gripper_arm1()
+
+# ---------- Release and retreat Arm0 ----------
+open_gripper_arm0()
+goto_pose_arm0(np.array([x_handover, hy + arm0_dy, z_handover + 0.15]), q0_x)
+goto_pose_arm0(np.array([0.5, hy + arm0_dy, z_handover + 0.15]), q0_x)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.016973714820252936
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------

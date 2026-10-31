@@ -1,0 +1,5 @@
+cond,model,task,success,trials,elapsed_s
+base_mt,claude-cli/claude-fable-5-1@medium,restack,2,10,205
+base_mt,claude-cli/claude-fable-5-1@medium,handover,2,10,3305
+noisy_mt,claude-cli/claude-fable-5-1@medium,stack,7,10,170
+noisy_mt,claude-cli/claude-fable-5-1@medium,nut,1,10,442

@@ -1,0 +1,10 @@
+Model: oracle
+Config Path: /home/user/third_party/cap-x/env_configs/cube_restack/franka_robosuite_cube_restack_privileged.yaml
+Git Commit: 53e9966 (Dirty: True)
+Total number of trials: 3
+Code generation success rate / Average reward / Task completed: 
+1.000/1.000/3
+Average code blocks: 1.000
+Average regenerations: 0.000
+Average finishes: 0.000
+Elapsed time: 22.70 seconds

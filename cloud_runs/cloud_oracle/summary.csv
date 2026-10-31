@@ -1,0 +1,5 @@
+cond,model,task,success,trials,elapsed_s
+base,oracle,stack,3,3,36
+base,oracle,restack,3,3,28
+base,oracle,nut,3,3,40
+base,oracle,handover,3,3,165

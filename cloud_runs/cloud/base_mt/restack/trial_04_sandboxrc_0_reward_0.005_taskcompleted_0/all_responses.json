@@ -1,0 +1,49 @@
+[
+  {
+    "block_idx": [
+      0
+    ],
+    "code_blocks": [
+      "import numpy as np\n\n# Get grasp pose for the red cube and pick it up with an approach from above\ngrasp_pos, grasp_quat = sample_grasp_pose(\"red cube\")\nopen_gripper()\ngoto_pose(grasp_pos, grasp_quat, z_approach=0.10)\nclose_gripper()\n\n# Lift the red cube\nlift_pos = grasp_pos.copy()\nlift_pos[2] += 0.15\ngoto_pose(lift_pos, grasp_quat)\n\n# Get poses and extents of both cubes\nred_pos, _, red_extent = get_object_pose(\"red cube\", return_bbox_extent=True)\ngreen_pos, _, green_extent = get_object_pose(\"green cube\", return_bbox_extent=True)\n\n# Compute placement: red cube center should sit at green top + half red height.\n# The gripper holds the red cube at grasp_pos; offset between grasp and red cube center is preserved.\ngrasp_offset_z = grasp_pos[2] - red_pos[2]\ngreen_top_z = green_pos[2] + green_extent[2] / 2.0\nplace_center_z = green_top_z + red_extent[2] / 2.0\nplace_pos = np.array([green_pos[0], green_pos[1], place_center_z + grasp_offset_z + 0.005])\n\n# Move above the green cube, then descend gently and release\ngoto_pose(place_pos, grasp_quat, z_approach=0.10)\nopen_gripper()\n\n# Retreat upward\nretreat_pos = place_pos.copy()\nretreat_pos[2] += 0.10\ngoto_pose(retreat_pos, grasp_quat)"
+    ],
+    "decision": "initial",
+    "initial_prompt": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant that generates Python code to directly solve the task."
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "\nYou are controlling a Franka Emika robot with API described below.\nGoal: Gently place the red cube on top of the green cube and then open the gripper. Nothing should be dropped from a height.\nUse the extent of the cubes to calculate the exact height for placement.\nYou may write python code comments for reasoning but ONLY write the executable Python code and do not write it in code fences.\nThe functions (APIs) below are already imported to the environment. If you want to use numpy, scipy, torch, etc. you need to import them explicitly.\n\nAPIs:\n\nget_object_pose(object_name: str, return_bbox_extent: bool = False) -> tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray | None]\n  Doc:\n    Get the pose of an object in the environment from a natural language description.\n    The quaternion from get_object_pose may be unreliable, so disregard it and use the grasp pose quaternion OR (0, 0, 1, 0) wxyz as the gripper down orientation if using this for placement position.\n    \n    Args:\n        object_name: The name of the object to get the pose of.\n    \n    Returns:\n        position: (3,) XYZ in meters.\n        quaternion_wxyz: (4,) WXYZ unit quaternion.\n        bbox_extent: (3,) object extent in meters of x, y, z axes respectively in the world frame (full side length, not half-length extent). If return_bbox_extent is False, returns None.\n\nsample_grasp_pose(object_name: str) -> tuple[numpy.ndarray, numpy.ndarray]\n  Doc:\n    Sample a grasp pose for an object in the environment from a natural language description.\n    Do use the grasp sample quaternion from sample_grasp_pose.\n    \n    Args:\n        object_name: The name of the object to sample a grasp pose for.\n    \n    Returns:\n        position: (3,) XYZ in meters.\n        quaternion_wxyz: (4,) WXYZ unit quaternion.\n\ngoto_pose(position: numpy.ndarray, quaternion_wxyz: numpy.ndarray, z_approach: float = 0.0) -> None\n  Doc:\n    Go to pose using Inverse Kinematics.\n    There is no need to call a second goto_pose with the same position and quaternion_wxyz after calling it with z_approach.\n    Args:\n        position: (3,) XYZ in meters.\n        quaternion_wxyz: (4,) WXYZ unit quaternion.\n        z_approach: (float) Z-axis distance offset for goto_pose insertion approach motion. Will first arrive at position + z_approach meters in Z-axis before moving to the requested pose. Useful for more precise grasp approaches. Default is 0.0.\n    Returns:\n        None\n\nopen_gripper() -> None\n  Doc:\n    Open gripper fully.\n    \n    Args:\n        None\n\nclose_gripper() -> None\n  Doc:\n    Close gripper fully.\n    \n    Args:\n        None"
+          }
+        ]
+      }
+    ],
+    "reasoning": ""
+  },
+  {
+    "multi_turn_prompt": null,
+    "block_idx": [
+      1
+    ],
+    "code_blocks": [
+      "import numpy as np\n\n# Verify final state without moving the robot\nred_pos, _, red_extent = get_object_pose(\"red cube\", return_bbox_extent=True)\ngreen_pos, _, green_extent = get_object_pose(\"green cube\", return_bbox_extent=True)\n\nprint(\"red_pos:\", red_pos, \"red_extent:\", red_extent)\nprint(\"green_pos:\", green_pos, \"green_extent:\", green_extent)\n\nxy_err = np.linalg.norm(red_pos[:2] - green_pos[:2])\nexpected_z = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0\nz_err = red_pos[2] - expected_z\nprint(\"xy offset (m):\", xy_err)\nprint(\"z error vs expected stacked height (m):\", z_err)\nprint(\"stacked:\", xy_err < 0.02 and abs(z_err) < 0.01)"
+    ],
+    "decision": "regenerate",
+    "reasoning": ""
+  },
+  {
+    "multi_turn_prompt": null,
+    "block_idx": [
+      2
+    ],
+    "code_blocks": [
+      "import numpy as np\n\ndown_quat = np.array([0.0, 0.0, 1.0, 0.0])\n\ndef stacked_ok():\n    r, _, re = get_object_pose(\"red cube\", return_bbox_extent=True)\n    g, _, ge = get_object_pose(\"green cube\", return_bbox_extent=True)\n    xy = np.linalg.norm(r[:2] - g[:2])\n    z_exp = g[2] + ge[2] / 2.0 + re[2] / 2.0\n    return xy < 0.02 and abs(r[2] - z_exp) < 0.01, xy, r[2] - z_exp\n\nfor attempt in range(3):\n    # Re-sample grasp since cube position may have changed\n    red_pos, _, red_extent = get_object_pose(\"red cube\", return_bbox_extent=True)\n    grasp_pos, grasp_quat = sample_grasp_pose(\"red cube\")\n    open_gripper()\n    goto_pose(grasp_pos, grasp_quat, z_approach=0.10)\n    close_gripper()\n\n    # Lift and verify the cube actually came along\n    lift_pos = grasp_pos.copy()\n    lift_pos[2] += 0.15\n    goto_pose(lift_pos, grasp_quat)\n    red_now, _, _ = get_object_pose(\"red cube\", return_bbox_extent=True)\n    print(\"attempt\", attempt, \"red z after lift:\", red_now[2], \"before:\", red_pos[2])\n    if red_now[2] - red_pos[2] < 0.05:\n        print(\"grasp failed, retrying\")\n        open_gripper()\n        continue\n\n    # Place using the offset between gripper and cube center (held)\n    green_pos, _, green_extent = get_object_pose(\"green cube\", return_bbox_extent=True)\n    grasp_offset_z = lift_pos[2] - red_now[2]\n    place_center_z = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0\n    place_pos = np.array([green_pos[0], green_pos[1], place_center_z + grasp_offset_z + 0.003])\n\n    goto_pose(place_pos, grasp_quat, z_approach=0.10)\n    open_gripper()\n\n    retreat_pos = place_pos.copy()\n    retreat_pos[2] += 0.10\n    goto_pose(retreat_pos, grasp_quat)\n\n    ok, xy, dz = stacked_ok()\n    print(\"stacked:\", ok, \"xy:\", xy, \"dz:\", dz)\n    if ok:\n        break"
+    ],
+    "decision": "regenerate",
+    "reasoning": ""
+  }
+]

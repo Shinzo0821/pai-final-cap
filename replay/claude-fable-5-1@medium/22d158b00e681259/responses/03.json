@@ -1,0 +1,9 @@
+{
+ "text": "import numpy as np\n\n# Get object poses and extents\nred_pos, _, red_extent = get_object_pose(\"red cube\", return_bbox_extent=True)\ngreen_pos, _, green_extent = get_object_pose(\"green cube\", return_bbox_extent=True)\n\n# Sample grasp pose for the red cube\ngrasp_pos, grasp_quat = sample_grasp_pose(\"red cube\")\n\n# Approach and grasp the red cube\nopen_gripper()\ngoto_pose(grasp_pos, grasp_quat, z_approach=0.1)\nclose_gripper()\n\n# Lift to a safe height\nlift_pos = np.array(grasp_pos, dtype=float).copy()\nlift_pos[2] += 0.2\ngoto_pose(lift_pos, grasp_quat)\n\n# Compute placement position on top of the green cube\nplace_z = green_pos[2] + green_extent[2] / 2 + red_extent[2] / 2\nplace_pos = np.array([green_pos[0], green_pos[1], place_z], dtype=float)\n\n# Move laterally at safe height above the placement location\nabove_place = place_pos.copy()\nabove_place[2] = lift_pos[2]\ngoto_pose(above_place, grasp_quat)\n\n# Descend with controlled approach and release\ngoto_pose(place_pos, grasp_quat, z_approach=0.1)\nopen_gripper()\n\n# Retreat upward\nretreat_pos = place_pos.copy()\nretreat_pos[2] += 0.2\ngoto_pose(retreat_pos, grasp_quat)",
+ "model": "claude-fable-5-1@medium",
+ "latency_s": 9.07,
+ "time": 1793414431.2544026,
+ "claude_cli": "2.1.314 (Claude Code)",
+ "input_tokens": 2574,
+ "output_tokens": 515
+}

@@ -1,0 +1,62 @@
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+def avg_position(name, fn, n=10):
+    # Average several perception calls to reduce ~1 cm noise
+    ps = []
+    q0 = None
+    for _ in range(n):
+        p, q = fn(name)
+        ps.append(np.asarray(p, dtype=float))
+        if q0 is None:
+            q0 = np.asarray(q, dtype=float)
+    return np.mean(ps, axis=0), q0
+
+goto_home_joint_position()
+open_gripper()
+
+# Perceive nut center, handle grasp, and block (peg)
+nut_center_pos, _ = avg_position("white hollow center of the brown square nut", get_object_pose)
+handle_pos, handle_quat = avg_position("extruded handle of the brown square nut", sample_grasp_pose)
+block_pos, _ = avg_position("brown square block", get_object_pose)
+
+# Fixed rigid offset from nut center to grasp point (world frame; orientation kept constant during transport)
+offset = handle_pos - nut_center_pos
+
+# Grasp the handle
+goto_pose(handle_pos, handle_quat, z_approach=0.10)
+close_gripper()
+
+# Lift
+lift_pos = handle_pos + np.array([0.0, 0.0, 0.15])
+goto_pose(lift_pos, handle_quat)
+
+# Target: nut center over block, so EE goes to block + offset; keep xy offset, use grasp height relative
+target_xy = block_pos[:2] + offset[:2]
+target_z = block_pos[2] + offset[2] + 0.005
+target_pos = np.array([target_xy[0], target_xy[1], target_z])
+
+# Move above the peg, then descend for insertion
+above_pos = target_pos + np.array([0.0, 0.0, 0.15])
+goto_pose(above_pos, handle_quat)
+goto_pose(target_pos, handle_quat, z_approach=0.12)
+
+# Release
+open_gripper()
+goto_pose(above_pos, handle_quat)
+goto_home_joint_position()
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.16573945132681545
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------

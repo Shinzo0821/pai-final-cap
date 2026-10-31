@@ -1,0 +1,33 @@
+# Code block 0
+import numpy as np
+
+# Get poses and extents of both cubes
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample grasp for the red cube and pick it up
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.10)
+close_gripper()
+
+# Lift straight up
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.15
+goto_pose(lift_pos, grasp_quat)
+
+# Compute placement: red cube center must sit at green top + half red height.
+# The gripper offset relative to the red cube center is preserved from the grasp.
+gripper_offset = grasp_pos - red_pos
+green_top_z = green_pos[2] + green_extent[2] / 2.0
+red_target_center = np.array([green_pos[0], green_pos[1], green_top_z + red_extent[2] / 2.0])
+place_pos = red_target_center + gripper_offset
+
+# Move above green cube, then descend gently and release
+goto_pose(place_pos, grasp_quat, z_approach=0.10)
+open_gripper()
+
+# Retreat upward
+retreat_pos = place_pos.copy()
+retreat_pos[2] += 0.10
+goto_pose(retreat_pos, grasp_quat)

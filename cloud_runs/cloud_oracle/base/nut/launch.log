@@ -1,0 +1,334 @@
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+API server on 127.0.0.1:8116 already running, skipping
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+direction of handle:  0.054000000000000006
+x axis direction is correct
+direction of handle:  0.05400000000000002
+x axis direction is correct
+direction of handle:  0.053999999999999916
+x axis direction is correct
+Code block 1 done
+Number of code blocks: 1
+Code blocks done
+Trial 1 took 8.58 seconds
+Code block 1 done
+Number of code blocks: 1
+Code blocks done
+Trial 2 took 9.14 seconds
+Code block 1 done
+Number of code blocks: 1
+Code blocks done
+Trial 3 took 9.52 seconds
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+from scipy.spatial.transform import Rotation as R
+
+def pose_to_matrix(pos, quat):
+    rot = R.from_quat([quat[1], quat[2], quat[3], quat[0]])  # scipy expects xyzw
+    mat = np.eye(4)
+    mat[:3, :3] = rot.as_matrix()
+    mat[:3, 3] = pos
+    return mat
+
+def matrix_to_pose(mat):
+    pos = mat[:3, 3]
+    rot = R.from_matrix(mat[:3, :3])
+    quat_xyzw = rot.as_quat()
+    quat_wxyz = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
+    return pos, quat_wxyz
+
+def flip_xy_axis(mat: np.ndarray) -> np.ndarray:
+    # mat is a 3x3 rotation matrix
+    flip_mat = np.array(
+        [[-1, 0, 0],
+         [0, -1, 0],
+         [0, 0, 1]]
+    )
+    return mat @ flip_mat
+
+# 1. Sample grasp pose for nut (handle)
+handle_pos, handle_quat = sample_grasp_pose("extruded handle of the brown square nut")
+
+# 2. Get poses of nut (center) and peg
+nut_pos, _ = get_object_pose("white hollow center of the brown square nut")
+peg_pos, peg_quat = get_object_pose("square block")
+
+# 4. Compute transform from handle to nut center
+v_world = nut_pos - handle_pos
+handle_orientation = R.from_quat([handle_quat[1], handle_quat[2], handle_quat[3], handle_quat[0]]).as_matrix()
+print("direction of handle: ", v_world @ handle_orientation[:, 0])
+if v_world @ handle_orientation[:, 0] < 0:
+    print("flipping the xy axis")
+    # flip the xy axis 
+    handle_orientation = flip_xy_axis(handle_orientation)
+    handle_xyzw = R.from_matrix(handle_orientation).as_quat()
+    handle_quat = np.array([handle_xyzw[3], handle_xyzw[0], handle_xyzw[1], handle_xyzw[2]])
+else:
+    print("x axis direction is correct")
+
+# 3. Execute motion: open gripper, go to grasp pose, close, then insert
+goto_pose(handle_pos, handle_quat, z_approach=0.05)  # approach from above
+close_gripper()
+
+# 3.5. Return to home joint position so that it can have a better ik solve
+goto_home_joint_position()
+
+T_handle = pose_to_matrix(handle_pos, handle_quat)
+T_nut = pose_to_matrix(nut_pos, handle_quat)
+T_handle_to_center = np.linalg.inv(T_nut) @ T_handle
+
+# 5. Compute desired handle pose for insertion onto peg
+T_peg = pose_to_matrix(peg_pos, peg_quat)
+T_desired_handle = T_peg @ T_handle_to_center
+desired_handle_pos, desired_handle_quat = matrix_to_pose(T_desired_handle)
+
+# 6. Final insertion: move slightly along z to ensure contact
+goto_pose(desired_handle_pos, desired_handle_quat, z_approach=0.05)  # approach to pe
+final_pos = desired_handle_pos + np.array([0, 0, -0.02])  # lower 2 cm
+goto_pose(final_pos, desired_handle_quat, z_approach=0.0)  # final insertion
+
+# 7. Release nut if needed
+open_gripper()
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: direction of handle:  0.054000000000000006
+x axis direction is correct
+
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 0
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud_oracle/base/oracle/oracle/nut/trial_01_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+from scipy.spatial.transform import Rotation as R
+
+def pose_to_matrix(pos, quat):
+    rot = R.from_quat([quat[1], quat[2], quat[3], quat[0]])  # scipy expects xyzw
+    mat = np.eye(4)
+    mat[:3, :3] = rot.as_matrix()
+    mat[:3, 3] = pos
+    return mat
+
+def matrix_to_pose(mat):
+    pos = mat[:3, 3]
+    rot = R.from_matrix(mat[:3, :3])
+    quat_xyzw = rot.as_quat()
+    quat_wxyz = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
+    return pos, quat_wxyz
+
+def flip_xy_axis(mat: np.ndarray) -> np.ndarray:
+    # mat is a 3x3 rotation matrix
+    flip_mat = np.array(
+        [[-1, 0, 0],
+         [0, -1, 0],
+         [0, 0, 1]]
+    )
+    return mat @ flip_mat
+
+# 1. Sample grasp pose for nut (handle)
+handle_pos, handle_quat = sample_grasp_pose("extruded handle of the brown square nut")
+
+# 2. Get poses of nut (center) and peg
+nut_pos, _ = get_object_pose("white hollow center of the brown square nut")
+peg_pos, peg_quat = get_object_pose("square block")
+
+# 4. Compute transform from handle to nut center
+v_world = nut_pos - handle_pos
+handle_orientation = R.from_quat([handle_quat[1], handle_quat[2], handle_quat[3], handle_quat[0]]).as_matrix()
+print("direction of handle: ", v_world @ handle_orientation[:, 0])
+if v_world @ handle_orientation[:, 0] < 0:
+    print("flipping the xy axis")
+    # flip the xy axis 
+    handle_orientation = flip_xy_axis(handle_orientation)
+    handle_xyzw = R.from_matrix(handle_orientation).as_quat()
+    handle_quat = np.array([handle_xyzw[3], handle_xyzw[0], handle_xyzw[1], handle_xyzw[2]])
+else:
+    print("x axis direction is correct")
+
+# 3. Execute motion: open gripper, go to grasp pose, close, then insert
+goto_pose(handle_pos, handle_quat, z_approach=0.05)  # approach from above
+close_gripper()
+
+# 3.5. Return to home joint position so that it can have a better ik solve
+goto_home_joint_position()
+
+T_handle = pose_to_matrix(handle_pos, handle_quat)
+T_nut = pose_to_matrix(nut_pos, handle_quat)
+T_handle_to_center = np.linalg.inv(T_nut) @ T_handle
+
+# 5. Compute desired handle pose for insertion onto peg
+T_peg = pose_to_matrix(peg_pos, peg_quat)
+T_desired_handle = T_peg @ T_handle_to_center
+desired_handle_pos, desired_handle_quat = matrix_to_pose(T_desired_handle)
+
+# 6. Final insertion: move slightly along z to ensure contact
+goto_pose(desired_handle_pos, desired_handle_quat, z_approach=0.05)  # approach to pe
+final_pos = desired_handle_pos + np.array([0, 0, -0.02])  # lower 2 cm
+goto_pose(final_pos, desired_handle_quat, z_approach=0.0)  # final insertion
+
+# 7. Release nut if needed
+open_gripper()
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: direction of handle:  0.05400000000000002
+x axis direction is correct
+
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 0
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud_oracle/base/oracle/oracle/nut/trial_02_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+from scipy.spatial.transform import Rotation as R
+
+def pose_to_matrix(pos, quat):
+    rot = R.from_quat([quat[1], quat[2], quat[3], quat[0]])  # scipy expects xyzw
+    mat = np.eye(4)
+    mat[:3, :3] = rot.as_matrix()
+    mat[:3, 3] = pos
+    return mat
+
+def matrix_to_pose(mat):
+    pos = mat[:3, 3]
+    rot = R.from_matrix(mat[:3, :3])
+    quat_xyzw = rot.as_quat()
+    quat_wxyz = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
+    return pos, quat_wxyz
+
+def flip_xy_axis(mat: np.ndarray) -> np.ndarray:
+    # mat is a 3x3 rotation matrix
+    flip_mat = np.array(
+        [[-1, 0, 0],
+         [0, -1, 0],
+         [0, 0, 1]]
+    )
+    return mat @ flip_mat
+
+# 1. Sample grasp pose for nut (handle)
+handle_pos, handle_quat = sample_grasp_pose("extruded handle of the brown square nut")
+
+# 2. Get poses of nut (center) and peg
+nut_pos, _ = get_object_pose("white hollow center of the brown square nut")
+peg_pos, peg_quat = get_object_pose("square block")
+
+# 4. Compute transform from handle to nut center
+v_world = nut_pos - handle_pos
+handle_orientation = R.from_quat([handle_quat[1], handle_quat[2], handle_quat[3], handle_quat[0]]).as_matrix()
+print("direction of handle: ", v_world @ handle_orientation[:, 0])
+if v_world @ handle_orientation[:, 0] < 0:
+    print("flipping the xy axis")
+    # flip the xy axis 
+    handle_orientation = flip_xy_axis(handle_orientation)
+    handle_xyzw = R.from_matrix(handle_orientation).as_quat()
+    handle_quat = np.array([handle_xyzw[3], handle_xyzw[0], handle_xyzw[1], handle_xyzw[2]])
+else:
+    print("x axis direction is correct")
+
+# 3. Execute motion: open gripper, go to grasp pose, close, then insert
+goto_pose(handle_pos, handle_quat, z_approach=0.05)  # approach from above
+close_gripper()
+
+# 3.5. Return to home joint position so that it can have a better ik solve
+goto_home_joint_position()
+
+T_handle = pose_to_matrix(handle_pos, handle_quat)
+T_nut = pose_to_matrix(nut_pos, handle_quat)
+T_handle_to_center = np.linalg.inv(T_nut) @ T_handle
+
+# 5. Compute desired handle pose for insertion onto peg
+T_peg = pose_to_matrix(peg_pos, peg_quat)
+T_desired_handle = T_peg @ T_handle_to_center
+desired_handle_pos, desired_handle_quat = matrix_to_pose(T_desired_handle)
+
+# 6. Final insertion: move slightly along z to ensure contact
+goto_pose(desired_handle_pos, desired_handle_quat, z_approach=0.05)  # approach to pe
+final_pos = desired_handle_pos + np.array([0, 0, -0.02])  # lower 2 cm
+goto_pose(final_pos, desired_handle_quat, z_approach=0.0)  # final insertion
+
+# 7. Release nut if needed
+open_gripper()
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: direction of handle:  0.053999999999999916
+x axis direction is correct
+
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 0
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud_oracle/base/oracle/oracle/nut/trial_03_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+
+Summary Statistics:
+Model: oracle
+Config Path: /home/user/third_party/cap-x/env_configs/nut_assembly/franka_robosuite_nut_assembly_privileged.yaml
+Git Commit: 53e9966 (Dirty: True)
+Total number of trials: 3
+Code generation success rate / Average reward / Task completed: 
+1.000/1.000/3
+Average code blocks: 1.000
+Average regenerations: 0.000
+Average finishes: 0.000
+Elapsed time: 34.45 seconds
