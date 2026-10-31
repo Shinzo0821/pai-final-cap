@@ -1,0 +1,229 @@
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+API server on 127.0.0.1:8116 already running, skipping
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+Code block 1 done
+Number of code blocks: 1
+Code blocks done
+Trial 1 took 135.04 seconds
+Code block 1 done
+Number of code blocks: 1
+Code blocks done
+Trial 3 took 142.39 seconds
+Code block 1 done
+Number of code blocks: 1
+Code blocks done
+Trial 2 took 144.13 seconds
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# get poses
+handle_pos, handle_quat = get_hammer_pose() # privileged
+handle_pos[2] -= 0.025  # handle_pos is slightly high sometimes
+handle_pos[1] -= 0.035  # handle pos is in the middle
+
+# pickup quat
+gripper_down_quat = np.array([0, 1, 0, 0]) # handover quat
+gripper_pick_quat = np.array([0, 0.707, 0.707, 0]) # down grip quat
+
+# handover pos
+arm0_pos = np.array([0.44, 0.0, 0.0]) # approx init positions
+arm1_pos = np.array([1.18, 0.0, 0.0])
+handover_pos = (arm0_pos + arm1_pos) / 2
+handover_pos[2] = 0.10
+
+# --- Sequence ---
+# Arm0: pick up hammer at actual handle pose
+open_gripper_arm0()
+goto_pose_arm0(handle_pos, gripper_pick_quat, z_approach=0.15)
+
+close_gripper_arm0()
+goto_pose_arm0(handle_pos + np.array([0, 0, 0.1]), gripper_pick_quat)
+goto_pose_arm0(handle_pos + np.array([0, 0, 0.2]), gripper_pick_quat)
+
+# Arm0: move to handover (shifted toward arm1)
+goto_pose_arm0(handover_pos, gripper_down_quat)
+
+# Arm1 approach
+arm1_quat = np.array([0, 0, 1, 0])
+open_gripper_arm1()
+goto_pose_arm1(handover_pos + np.array([0.1, 0, -0.01]), arm1_quat, z_approach=0.12) # account for hammer length
+close_gripper_arm1()
+
+# Arm0: release and retract
+open_gripper_arm0()
+goto_pose_arm0(handover_pos + np.array([-0.1, 0, 0.06]), gripper_down_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 0
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud_oracle/base/oracle/oracle/handover/trial_01_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# get poses
+handle_pos, handle_quat = get_hammer_pose() # privileged
+handle_pos[2] -= 0.025  # handle_pos is slightly high sometimes
+handle_pos[1] -= 0.035  # handle pos is in the middle
+
+# pickup quat
+gripper_down_quat = np.array([0, 1, 0, 0]) # handover quat
+gripper_pick_quat = np.array([0, 0.707, 0.707, 0]) # down grip quat
+
+# handover pos
+arm0_pos = np.array([0.44, 0.0, 0.0]) # approx init positions
+arm1_pos = np.array([1.18, 0.0, 0.0])
+handover_pos = (arm0_pos + arm1_pos) / 2
+handover_pos[2] = 0.10
+
+# --- Sequence ---
+# Arm0: pick up hammer at actual handle pose
+open_gripper_arm0()
+goto_pose_arm0(handle_pos, gripper_pick_quat, z_approach=0.15)
+
+close_gripper_arm0()
+goto_pose_arm0(handle_pos + np.array([0, 0, 0.1]), gripper_pick_quat)
+goto_pose_arm0(handle_pos + np.array([0, 0, 0.2]), gripper_pick_quat)
+
+# Arm0: move to handover (shifted toward arm1)
+goto_pose_arm0(handover_pos, gripper_down_quat)
+
+# Arm1 approach
+arm1_quat = np.array([0, 0, 1, 0])
+open_gripper_arm1()
+goto_pose_arm1(handover_pos + np.array([0.1, 0, -0.01]), arm1_quat, z_approach=0.12) # account for hammer length
+close_gripper_arm1()
+
+# Arm0: release and retract
+open_gripper_arm0()
+goto_pose_arm0(handover_pos + np.array([-0.1, 0, 0.06]), gripper_down_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 0
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud_oracle/base/oracle/oracle/handover/trial_02_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# get poses
+handle_pos, handle_quat = get_hammer_pose() # privileged
+handle_pos[2] -= 0.025  # handle_pos is slightly high sometimes
+handle_pos[1] -= 0.035  # handle pos is in the middle
+
+# pickup quat
+gripper_down_quat = np.array([0, 1, 0, 0]) # handover quat
+gripper_pick_quat = np.array([0, 0.707, 0.707, 0]) # down grip quat
+
+# handover pos
+arm0_pos = np.array([0.44, 0.0, 0.0]) # approx init positions
+arm1_pos = np.array([1.18, 0.0, 0.0])
+handover_pos = (arm0_pos + arm1_pos) / 2
+handover_pos[2] = 0.10
+
+# --- Sequence ---
+# Arm0: pick up hammer at actual handle pose
+open_gripper_arm0()
+goto_pose_arm0(handle_pos, gripper_pick_quat, z_approach=0.15)
+
+close_gripper_arm0()
+goto_pose_arm0(handle_pos + np.array([0, 0, 0.1]), gripper_pick_quat)
+goto_pose_arm0(handle_pos + np.array([0, 0, 0.2]), gripper_pick_quat)
+
+# Arm0: move to handover (shifted toward arm1)
+goto_pose_arm0(handover_pos, gripper_down_quat)
+
+# Arm1 approach
+arm1_quat = np.array([0, 0, 1, 0])
+open_gripper_arm1()
+goto_pose_arm1(handover_pos + np.array([0.1, 0, -0.01]), arm1_quat, z_approach=0.12) # account for hammer length
+close_gripper_arm1()
+
+# Arm0: release and retract
+open_gripper_arm0()
+goto_pose_arm0(handover_pos + np.array([-0.1, 0, 0.06]), gripper_down_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 0
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud_oracle/base/oracle/oracle/handover/trial_03_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+
+Summary Statistics:
+Model: oracle
+Config Path: /home/user/third_party/cap-x/env_configs/two_arm_handover/two_arm_handover_privileged.yaml
+Git Commit: 53e9966 (Dirty: True)
+Total number of trials: 3
+Code generation success rate / Average reward / Task completed: 
+1.000/1.000/3
+Average code blocks: 1.000
+Average regenerations: 0.000
+Average finishes: 0.000
+Elapsed time: 158.90 seconds

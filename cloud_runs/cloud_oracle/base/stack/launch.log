@@ -1,0 +1,205 @@
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+API server on 127.0.0.1:8116 already running, skipping
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+Code block 1 done
+Number of code blocks: 1
+Code blocks done
+Trial 3 took 9.49 seconds
+Code block 1 done
+Number of code blocks: 1
+Code blocks done
+Trial 1 took 9.67 seconds
+Code block 1 done
+Number of code blocks: 1
+Code blocks done
+Trial 2 took 9.69 seconds
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+_, _, green_ext = get_object_pose("green cube", return_bbox_extent=True)
+_, _, red_ext = get_object_pose("red cube", return_bbox_extent=True)
+
+# Sample a grasp pose for the red cube and pick it up
+pick_pos, pick_quat = sample_grasp_pose("red cube")
+goto_pose(pick_pos, pick_quat, z_approach=0.1)
+close_gripper()
+# Lift the red cube after grasping
+post_pick_pos = pick_pos.copy()
+post_pick_pos[2] += 0.2
+goto_pose(post_pick_pos, pick_quat)
+
+# Compute placement pose on top of the green cube
+green_pos, _, _ = get_object_pose("green cube", return_bbox_extent=False)
+
+place_pos = green_pos.copy()
+place_pos[2] = green_pos[2] + green_ext[2]/2 + red_ext[2]/2
+# Use down orientation for placement
+place_quat = np.array([0.0, 0.0, 1.0, 0.0])
+
+# Approach and place the red cube on the green cube
+goto_pose(place_pos, pick_quat, z_approach=0.1)
+open_gripper()
+
+# Retract after placing
+post_place_pos = place_pos.copy()
+post_place_pos[2] += 0.1
+goto_pose(post_place_pos, place_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 0
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud_oracle/base/oracle/oracle/stack/trial_01_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+_, _, green_ext = get_object_pose("green cube", return_bbox_extent=True)
+_, _, red_ext = get_object_pose("red cube", return_bbox_extent=True)
+
+# Sample a grasp pose for the red cube and pick it up
+pick_pos, pick_quat = sample_grasp_pose("red cube")
+goto_pose(pick_pos, pick_quat, z_approach=0.1)
+close_gripper()
+# Lift the red cube after grasping
+post_pick_pos = pick_pos.copy()
+post_pick_pos[2] += 0.2
+goto_pose(post_pick_pos, pick_quat)
+
+# Compute placement pose on top of the green cube
+green_pos, _, _ = get_object_pose("green cube", return_bbox_extent=False)
+
+place_pos = green_pos.copy()
+place_pos[2] = green_pos[2] + green_ext[2]/2 + red_ext[2]/2
+# Use down orientation for placement
+place_quat = np.array([0.0, 0.0, 1.0, 0.0])
+
+# Approach and place the red cube on the green cube
+goto_pose(place_pos, pick_quat, z_approach=0.1)
+open_gripper()
+
+# Retract after placing
+post_place_pos = place_pos.copy()
+post_place_pos[2] += 0.1
+goto_pose(post_place_pos, place_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 0
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud_oracle/base/oracle/oracle/stack/trial_02_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+_, _, green_ext = get_object_pose("green cube", return_bbox_extent=True)
+_, _, red_ext = get_object_pose("red cube", return_bbox_extent=True)
+
+# Sample a grasp pose for the red cube and pick it up
+pick_pos, pick_quat = sample_grasp_pose("red cube")
+goto_pose(pick_pos, pick_quat, z_approach=0.1)
+close_gripper()
+# Lift the red cube after grasping
+post_pick_pos = pick_pos.copy()
+post_pick_pos[2] += 0.2
+goto_pose(post_pick_pos, pick_quat)
+
+# Compute placement pose on top of the green cube
+green_pos, _, _ = get_object_pose("green cube", return_bbox_extent=False)
+
+place_pos = green_pos.copy()
+place_pos[2] = green_pos[2] + green_ext[2]/2 + red_ext[2]/2
+# Use down orientation for placement
+place_quat = np.array([0.0, 0.0, 1.0, 0.0])
+
+# Approach and place the red cube on the green cube
+goto_pose(place_pos, pick_quat, z_approach=0.1)
+open_gripper()
+
+# Retract after placing
+post_place_pos = place_pos.copy()
+post_place_pos[2] += 0.1
+goto_pose(post_place_pos, place_quat)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 0
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud_oracle/base/oracle/oracle/stack/trial_03_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+
+Summary Statistics:
+Model: oracle
+Config Path: /home/user/third_party/cap-x/env_configs/cube_stack/franka_robosuite_cube_stack_privileged.yaml
+Git Commit: 53e9966 (Dirty: True)
+Total number of trials: 3
+Code generation success rate / Average reward / Task completed: 
+1.000/1.000/3
+Average code blocks: 1.000
+Average regenerations: 0.000
+Average finishes: 0.000
+Elapsed time: 28.30 seconds
