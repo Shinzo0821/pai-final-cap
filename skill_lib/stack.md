@@ -1,0 +1,130 @@
+Reference examples (skill library):
+The programs below are complete solutions that SUCCEEDED on OTHER tasks of this benchmark (written by stronger models).
+They are not solutions for the current task. Reuse their patterns where they fit, for example: computing heights from object extents,
+keeping the grasp offset between the gripper and the object, rigid transforms with scipy, safe approach / lift / step-wise motions,
+and checking the state with prints before finishing.
+They were written for other objects and possibly other APIs: call ONLY the APIs listed for the current task below.
+
+### Example 1: nut assembly (single arm)
+Goal of that task: Grasp the brown square nut by its handle and insert it onto the brown square block (peg).
+APIs of that task: get_object_pose, sample_grasp_pose, goto_pose, goto_home_joint_position, open_gripper, close_gripper
+```python
+import numpy as np
+from scipy.spatial.transform import Rotation
+
+def rotation(q):
+    return Rotation.from_quat(np.asarray(q)[[1, 2, 3, 0]]).as_matrix()
+
+def quaternion(r):
+    return Rotation.from_matrix(r).as_quat()[[3, 0, 1, 2]]
+
+open_gripper()
+nut_p, nut_q = get_object_pose("white hollow center of the brown square nut")
+grasp_p, grasp_q = sample_grasp_pose("extruded handle of the brown square nut")
+block_p, block_q = get_object_pose("brown square block")
+
+nut_p = np.asarray(nut_p)
+grasp_p = np.asarray(grasp_p)
+block_p = np.asarray(block_p)
+nut_r = rotation(nut_q)
+grasp_r = rotation(grasp_q)
+block_r = rotation(block_q)
+
+# Fixed handle grasp transform expressed in the nut-center frame.
+relative_p = nut_r.T @ (grasp_p - nut_p)
+relative_r = nut_r.T @ grasp_r
+
+goto_pose(grasp_p, grasp_q, z_approach=0.10)
+close_gripper()
+goto_pose(grasp_p + np.array([0.0, 0.0, 0.15]), grasp_q)
+
+target_grasp_p = block_p + block_r @ relative_p
+target_grasp_q = quaternion(block_r @ relative_r)
+
+goto_pose(target_grasp_p + np.array([0.0, 0.0, 0.15]), target_grasp_q)
+goto_pose(target_grasp_p + np.array([0.0, 0.0, 0.05]), target_grasp_q)
+goto_pose(target_grasp_p, target_grasp_q)
+open_gripper()
+goto_pose(target_grasp_p + np.array([0.0, 0.0, 0.15]), target_grasp_q)
+goto_home_joint_position()
+```
+
+### Example 2: two-arm hammer handover
+Goal of that task: Arm 0 picks up the hammer, lifts it and hands it over to Arm 1, which grasps the handle; the hammer must stay at z between 0.15 and 0.20 during the handover.
+APIs of that task: get_hammer_pose, goto_pose_arm0, goto_pose_arm1, open_gripper_arm0, open_gripper_arm1, close_gripper_arm0, close_gripper_arm1
+```python
+import numpy as np
+
+def translate(move, start, end, quat, step=0.02):
+    start = np.asarray(start, dtype=float)
+    end = np.asarray(end, dtype=float)
+    count = max(1, int(np.ceil(np.linalg.norm(end - start) / step)))
+    for i in range(1, count + 1):
+        move(start + (end - start) * i / count, quat)
+    return end.copy()
+
+q0 = np.array([0.0, np.sqrt(0.5), np.sqrt(0.5), 0.0])
+q1 = np.array([0.0, 0.0, 1.0, 0.0])
+
+hammer, _ = get_hammer_pose()
+hammer = np.asarray(hammer, dtype=float)
+safe_z = max(0.40, hammer[2] + 0.20)
+
+open_gripper_arm1()
+park1 = np.array([1.18, 0.0, safe_z + 0.10])
+goto_pose_arm1(park1, q1)
+
+# Grasp the head-side portion of the handle, leaving its tip available.
+open_gripper_arm0()
+grasp0 = hammer + np.array([0.0, -0.05, 0.0])
+above0 = grasp0.copy()
+above0[2] = safe_z
+goto_pose_arm0(above0, q0)
+pos0 = translate(goto_pose_arm0, above0, grasp0, q0)
+close_gripper_arm0()
+
+lifted0 = pos0.copy()
+lifted0[2] = safe_z
+pos0 = translate(goto_pose_arm0, pos0, lifted0, q0)
+
+# Rotate in place at clearance height. The handle now points toward Arm 1.
+for angle in np.linspace(0.0, -np.pi / 2.0, 19)[1:]:
+    theta = np.pi / 4.0 + angle / 2.0
+    q0 = np.array([0.0, np.cos(theta), np.sin(theta), 0.0])
+    goto_pose_arm0(pos0, q0)
+
+# Position the handle midpoint at the midpoint between the robots.
+hammer_now, _ = get_hammer_pose()
+hammer_now = np.asarray(hammer_now, dtype=float)
+center_high = np.array([0.81, 0.0, safe_z])
+destination0 = pos0 + center_high - hammer_now
+
+lateral0 = destination0.copy()
+lateral0[2] = pos0[2]
+pos0 = translate(goto_pose_arm0, pos0, lateral0, q0)
+pos0 = translate(goto_pose_arm0, pos0, destination0, q0)
+
+hammer_now, _ = get_hammer_pose()
+handover_center = np.array([0.81, 0.0, 0.175])
+destination0 = pos0 + handover_center - np.asarray(hammer_now)
+pos0 = translate(goto_pose_arm0, pos0, destination0, q0)
+
+# The two handle grasps are approximately 10 cm apart.
+hammer_now, _ = get_hammer_pose()
+hammer_now = np.asarray(hammer_now, dtype=float)
+grasp1 = hammer_now + np.array([0.05, 0.0, 0.0])
+above1 = grasp1.copy()
+above1[2] = park1[2]
+
+pos1 = translate(goto_pose_arm1, park1, above1, q1)
+pos1 = translate(goto_pose_arm1, pos1, grasp1, q1)
+close_gripper_arm1()
+
+# Release only after Arm 1 has closed on the handle.
+open_gripper_arm0()
+retreat0 = pos0 + np.array([0.0, 0.0, 0.18])
+pos0 = translate(goto_pose_arm0, pos0, retreat0, q0)
+translate(goto_pose_arm0, pos0, pos0 + np.array([-0.15, 0.0, 0.0]), q0)
+```
+
+(End of reference examples. Now write the code for the current task described above.)

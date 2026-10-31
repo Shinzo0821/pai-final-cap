@@ -1,0 +1,9 @@
+target,source_task,file,model,cond,trial,part,sha1,lines_used
+stack,nut,nut/base__codex-cli__gpt-6.1-sol@medium__trial_01.py,codex-cli__gpt-6.1-sol@medium,base,01,all,d11b13082df6,38
+stack,handover,handover/base__codex-cli__gpt-6.1-sol@medium__trial_05.py,codex-cli__gpt-6.1-sol@medium,base,05,all,bcb13aa4400d,72
+nut,stack,stack/base__codex-cli__gpt-6.1-sol@medium__trial_05.py,codex-cli__gpt-6.1-sol@medium,base,05,all,754c6d0cae1f,20
+nut,restack,restack/base_mt__claude-cli__claude-opus-5-5@medium__trial_09.py,claude-cli__claude-opus-5-5@medium,base_mt,09,last block (3 blocks),788ff792444d,76
+nut,handover,handover/base__codex-cli__gpt-6.1-sol@medium__trial_05.py,codex-cli__gpt-6.1-sol@medium,base,05,all,bcb13aa4400d,72
+handover,stack,stack/base__codex-cli__gpt-6.1-sol@medium__trial_05.py,codex-cli__gpt-6.1-sol@medium,base,05,all,754c6d0cae1f,20
+handover,restack,restack/base_mt__claude-cli__claude-opus-5-5@medium__trial_09.py,claude-cli__claude-opus-5-5@medium,base_mt,09,last block (3 blocks),788ff792444d,76
+handover,nut,nut/base__codex-cli__gpt-6.1-sol@medium__trial_01.py,codex-cli__gpt-6.1-sol@medium,base,01,all,d11b13082df6,38
