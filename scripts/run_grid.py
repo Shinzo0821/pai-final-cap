@@ -5,8 +5,14 @@
       --tasks stack nut --conds base --trials 3 --workers 3
 
 結果は runs/<tag>/<cond>/<model>/<task>/ に CaP-X の出力がそのまま入り、
-runs/<tag>/summary.csv に1行ずつ追記される。終わっている組み合わせは飛ばす。
-事前に proxy/cli_proxy.py（ポート 8120）と PyRoKi サーバー（8116）を起動しておく。
+runs/<tag>/summary.csv に1行ずつ追記される。終わっている組み合わせ（DONE がある）は飛ばすので、
+途中で止まっても同じコマンドで続きから再開できる。
+事前に LLM の中継（既定 http://127.0.0.1:8120/chat/completions。手元は proxy/cli_proxy.py、
+Colab は proxy/log_proxy.py → vLLM）を起動しておく。PyRoKi サーバー（8116）は無ければ起動する。
+
+描画: MUJOCO_GL が未設定なら macOS は cgl、Linux は osmesa。egl を使うときは MUJOCO_GL=egl を設定する
+（PYOPENGL_PLATFORM も未設定なら同じ値にそろえる）。
+動画: --video で全試行、--video-trials N で最初の N 試行だけ（CaP-X の CAPX_VIDEO_TRIALS、patches/capx.patch）。
 """
 
 from __future__ import annotations
@@ -17,6 +23,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -25,7 +32,11 @@ import requests
 ROOT = Path(__file__).resolve().parent.parent
 # Linux（クラウド）では環境変数で変える。既定は Mac の置き場所。
 CAPX = Path(os.getenv("CAPX_DIR", str(ROOT.parent / "third_party" / "cap-x")))
-PY = Path(os.getenv("CAPX_PYTHON", str(CAPX / ".venv-mac" / "bin" / "python")))
+# 既定は Mac の .venv-mac、無ければ colab/setup_capx.sh が作る .venv
+_DEFAULT_PY = CAPX / ".venv-mac" / "bin" / "python"
+if not _DEFAULT_PY.exists():
+    _DEFAULT_PY = CAPX / ".venv" / "bin" / "python"
+PY = Path(os.getenv("CAPX_PYTHON", str(_DEFAULT_PY)))
 
 # 特権情報ありの CaP-X 公式設定
 TASKS = {
@@ -81,6 +92,7 @@ def restart_ik_server() -> None:
     pids = subprocess.run(["lsof", "-t", "-i", ":8116", "-sTCP:LISTEN"], capture_output=True, text=True).stdout.split()
     for pid in pids:
         subprocess.run(["kill", "-9", pid])
+    (ROOT / "logs").mkdir(exist_ok=True)
     log = (ROOT / "logs" / "pyroki_server.log").open("a")
     subprocess.Popen(
         [str(PY), "-m", "capx.serving.launch_pyroki_server", "--port", "8116", "--host", "127.0.0.1"],
@@ -112,14 +124,23 @@ def main() -> None:
     ap.add_argument("--conds", nargs="+", default=["base"])
     ap.add_argument("--trials", type=int, default=10)
     ap.add_argument("--workers", type=int, default=3)
-    ap.add_argument("--video", action="store_true")
+    ap.add_argument("--video", action="store_true", help="全試行の動画を残す")
+    ap.add_argument("--video-trials", type=int, default=0, help="動画を残すのは最初の N 試行だけ（0 なら --video に従う）")
+    ap.add_argument("--server-url", default="http://127.0.0.1:8120/chat/completions")
     args = ap.parse_args()
+    record_video = args.video or args.video_trials > 0
 
     run_root = ROOT / "runs" / args.tag
     run_root.mkdir(parents=True, exist_ok=True)
     summary = run_root / "summary.csv"
     new_file = not summary.exists()
-    env = dict(os.environ, MUJOCO_GL=os.getenv("MUJOCO_GL", "cgl"), CAPX_LLM_TIMEOUT="600", CAPX_IK_TIMEOUT="60")
+    gl = os.getenv("MUJOCO_GL") or ("cgl" if sys.platform == "darwin" else "osmesa")
+    env = dict(os.environ, MUJOCO_GL=gl, CAPX_LLM_TIMEOUT=os.getenv("CAPX_LLM_TIMEOUT", "600"), CAPX_IK_TIMEOUT="60")
+    if gl in ("egl", "osmesa"):
+        env.setdefault("PYOPENGL_PLATFORM", gl)
+    env["CAPX_VIDEO_TRIALS"] = str(args.video_trials if args.video_trials > 0 else 0)
+    print(f"MUJOCO_GL={gl} PYOPENGL_PLATFORM={env.get('PYOPENGL_PLATFORM', '')} "
+          f"video={'first %d trials' % args.video_trials if args.video_trials > 0 else record_video}", flush=True)
 
     with summary.open("a", newline="") as f:
         writer = csv.writer(f)
@@ -137,10 +158,10 @@ def main() -> None:
                         str(PY), "capx/envs/launch.py",
                         "--config-path", str(config_for(task, cond)),
                         "--model", model,
-                        "--server-url", "http://127.0.0.1:8120/chat/completions",
+                        "--server-url", args.server_url,
                         "--total-trials", str(args.trials),
                         "--num-workers", str(args.workers),
-                        "--record-video", str(args.video),
+                        "--record-video", str(record_video),
                         "--output-dir", str(out_dir),
                     ]
                     if model == "oracle":  # 人が書いた正解コードを流す

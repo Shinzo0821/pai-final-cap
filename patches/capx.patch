@@ -1,3 +1,19 @@
+diff --git a/capx/envs/trial.py b/capx/envs/trial.py
+index e3d342d..ad64d9d 100644
+--- a/capx/envs/trial.py
++++ b/capx/envs/trial.py
+@@ -645,6 +645,11 @@ def _run_single_trial(
+     """
+     trial_start_time = time.time()
+ 
++    # PAI final assignment: record video only for the first N trials (CAPX_VIDEO_TRIALS, 0 = all)
++    _video_trials = int(os.getenv("CAPX_VIDEO_TRIALS", "0"))
++    if config.get("record_video") and _video_trials > 0 and trial > _video_trials:
++        config = {**config, "record_video": False}
++
+     use_video_diff = config.get("use_video_differencing", False)
+     use_wrist = config.get("use_wrist_camera", False)
+ 
 diff --git a/capx/integrations/__init__.py b/capx/integrations/__init__.py
 index 7aff0bf..457b84f 100644
 --- a/capx/integrations/__init__.py
