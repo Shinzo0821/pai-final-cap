@@ -1,0 +1,39 @@
+# Code block 0
+import numpy as np
+
+# Ensure gripper is open before grasping
+open_gripper()
+
+# Retrieve object poses and bounding box extents
+red_pos, _, red_extent = get_object_pose("red cube", return_bbox_extent=True)
+green_pos, _, green_extent = get_object_pose("green cube", return_bbox_extent=True)
+
+# Sample grasp pose for the red cube
+grasp_pos, grasp_quat = sample_grasp_pose("red cube")
+
+# Approach and grasp the red cube
+goto_pose(grasp_pos, grasp_quat, z_approach=0.1)
+close_gripper()
+
+# Lift the red cube to a safe height (at least +0.2m in Z)
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.2
+goto_pose(lift_pos, grasp_quat)
+
+# Calculate placement position using the stacking height formula
+place_z = green_pos[2] + green_extent[2] / 2.0 + red_extent[2] / 2.0
+place_pos = np.array([green_pos[0], green_pos[1], place_z])
+
+# Move laterally at safe height above the green cube
+safe_height = max(lift_pos[2], place_z + 0.2)
+lateral_pos = np.array([green_pos[0], green_pos[1], safe_height])
+goto_pose(lateral_pos, grasp_quat)
+
+# Place the red cube with controlled descent using z_approach and reusing grasp orientation
+goto_pose(place_pos, grasp_quat, z_approach=0.1)
+
+# Release the red cube
+open_gripper()
+
+# Retract to safe height
+goto_pose(lateral_pos, grasp_quat)
