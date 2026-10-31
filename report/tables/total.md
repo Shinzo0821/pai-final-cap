@@ -1,0 +1,13 @@
+| 順位 | モデル | 会社 | 合計/100 | 95% 区間（参考） |
+|---|---|---|---|---|
+| 1 | gpt-6.1-sol | OpenAI | 70 | 60–78% |
+| 2 | gpt-6-astra | OpenAI | 67 | 57–75% |
+| 3 | Gemini 4 Argon | Google | 56 | 46–65% |
+| 4 | Gemini 3.8 Flash | Google | 55 | 45–64% |
+| 5 | Claude Opus 5.5 | Anthropic | 53 | 43–62% |
+| 6 | Claude Haiku 5.5 | Anthropic | 37 | 28–47% |
+| 7 | gpt-6.1-terra | OpenAI | 37 | 28–47% |
+| 8 | Claude Fable 5.1 | Anthropic | 34 | 25–44% |
+| 9 | GPT-OSS 120B | GPT-OSS（オープン） | 30 | 22–40% |
+
+95% 区間は100試行を独立とみなした目安。セルごとに難しさが違うので、厳密な区間ではない。
