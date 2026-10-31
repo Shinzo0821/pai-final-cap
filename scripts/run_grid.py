@@ -23,8 +23,9 @@ from pathlib import Path
 import requests
 
 ROOT = Path(__file__).resolve().parent.parent
-CAPX = ROOT.parent / "third_party" / "cap-x"
-PY = CAPX / ".venv-mac" / "bin" / "python"
+# Linux（クラウド）では環境変数で変える。既定は Mac の置き場所。
+CAPX = Path(os.getenv("CAPX_DIR", str(ROOT.parent / "third_party" / "cap-x")))
+PY = Path(os.getenv("CAPX_PYTHON", str(CAPX / ".venv-mac" / "bin" / "python")))
 
 # 特権情報ありの CaP-X 公式設定
 TASKS = {
@@ -118,7 +119,7 @@ def main() -> None:
     run_root.mkdir(parents=True, exist_ok=True)
     summary = run_root / "summary.csv"
     new_file = not summary.exists()
-    env = dict(os.environ, MUJOCO_GL="cgl", CAPX_LLM_TIMEOUT="600", CAPX_IK_TIMEOUT="60")
+    env = dict(os.environ, MUJOCO_GL=os.getenv("MUJOCO_GL", "cgl"), CAPX_LLM_TIMEOUT="600", CAPX_IK_TIMEOUT="60")
 
     with summary.open("a", newline="") as f:
         writer = csv.writer(f)
