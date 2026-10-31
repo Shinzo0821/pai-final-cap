@@ -85,10 +85,12 @@ open3d。torch・torchvision・sam3・decord・ray は入れていない（特�
   `TRIAL_TIMEOUT_SECONDS = 1000`）に当たり、CaP-X が最初からやり直した（2回目は 541 秒で終了、失敗）。
   1回目も失敗のフォルダが残っており、成功数は変わらない。CPU 描画で Mac より遅いため、
   時間切れは Mac より起こりやすいと考えられる。ほかのセルに時間切れはない。
-- 試行のフォルダが同じ番号で2つあるものがある（例: restack の trial_03・04、handover の trial_10）。
-  複数ターンの途中や時間切れの回にも CaP-X がフォルダを書くため。成功数は launch.log の集計の値を使う。
+- 試行のフォルダが同じ番号で2〜3個あるものがある（restack の trial_03・04、handover の trial_10、
+  nut の trial_04・05・08・09）。CaP-X は複数ターンの途中（と時間切れの回）にもフォルダを書くため。
+  動画（`video_combined.mp4`）があるのが各試行の最終のフォルダで、どのセルも10試行に1つずつある。
+  `taskcompleted_1` のフォルダ数は launch.log の成功数と一致する。
 
 ### 持ち帰ったもの
 - 各セル: `launch.log`、`DONE`、CaP-X のセル単位のファイル（`all_responses.json`、`initial_prompt.txt` など）
-- 各試行: `summary.txt`、`code.py`、`all_responses.json`、`video_combined.mp4`（動画はシミュレーションまで進んだ試行のみ）
+- 各試行: `summary.txt`、`code.py`、`all_responses.json`、`video_combined.mp4`（動画は各試行の最終のフォルダにだけある）
 - `proxy_calls.jsonl`: この実験の中継サーバーの記録（oracle は LLM を呼ばないので、全部が本番の分）
