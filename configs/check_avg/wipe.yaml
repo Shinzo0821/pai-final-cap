@@ -1,0 +1,48 @@
+env:
+  _target_: capx.envs.tasks.franka.franka_spill_wipe.FrankaSpillWipeCodeEnv
+  cfg:
+    _target_: capx.envs.tasks.base.CodeExecEnvConfig
+    low_level: franka_robosuite_spill_wipe_low_level
+    privileged: true
+    apis:
+    - FrankaControlSpillWipePrivilegedApi_Noisy
+    oracle_code: "\nimport numpy as np\n_pai_g = get_object_pose\ndef get_object_pose(name,\
+      \ *a, **k):\n    rs = [_pai_g(name, *a, **k) for _ in range(30)]\n    return\
+      \ (np.mean([r[0] for r in rs], axis=0),) + tuple(rs[0][1:])\nif \"sample_grasp_pose\"\
+      \ in globals():\n    _pai_s = sample_grasp_pose\n    def sample_grasp_pose(name,\
+      \ *a, **k):\n        rs = [_pai_s(name, *a, **k) for _ in range(30)]\n     \
+      \   return (np.mean([r[0] for r in rs], axis=0),) + tuple(rs[0][1:])\n\nimport\
+      \ numpy as np\n\n# Get the pose and bounding box of the brown spill\nspill_pos,\
+      \ _, spill_extent = get_object_pose(\"brown spill\", return_bbox_extent=True)\n\
+      \n# Use downward-facing orientation as specified\ndown_quat = np.array([0.0,\
+      \ 0.0, 1.0, 0.0])\n\n# Extract center and extents\ncenter_x, center_y, _ = spill_pos\n\
+      extent_x, extent_y, _ = spill_extent\n\n# Compute min/max bounds in x and y\
+      \ (axis-aligned approximation)\nmin_x = center_x - extent_x / 2.0\nmax_x = center_x\
+      \ + extent_x / 2.0\nmin_y = center_y - extent_y / 2.0\nmax_y = center_y + extent_y\
+      \ / 2.0\n\n# Limit step to around 0.05 m\nstep = 0.05\n\n# Generate a simple\
+      \ back-and-forth wiping pattern over the spill area\nx_positions = np.arange(min_x,\
+      \ max_x + step, step)\ny_positions = np.arange(min_y, max_y + step, step)\n\n\
+      # Set wiping height exactly at table surface\nz_wipe = 0.0\n\n# Approach height\
+      \ above table to move safely between wipes\nz_approach = 0.10\n\n# Start: move\
+      \ above the first wipe point\nstart_pos = np.array([x_positions[0], y_positions[0],\
+      \ z_approach])\ngoto_pose(start_pos, down_quat)\n\n# Perform wiping passes along\
+      \ x, stepping along y\nfor i, y in enumerate(y_positions):\n    # Determine\
+      \ direction of this pass (back-and-forth)\n    if i % 2 == 0:\n        x_traj\
+      \ = x_positions\n    else:\n        x_traj = x_positions[::-1]\n    # Move above\
+      \ the start of this pass\n    pass_start = np.array([x_traj[0], y, z_approach])\n\
+      \    goto_pose(pass_start, down_quat)\n    # Move down to wiping height at start\
+      \ of pass\n    pass_start_wipe = np.array([x_traj[0], y, z_wipe])\n    goto_pose(pass_start_wipe,\
+      \ down_quat)\n    # Wipe along the x direction at table height\n    for x in\
+      \ x_traj[1:]:\n        wipe_pos = np.array([x, y, z_wipe])\n        goto_pose(wipe_pos,\
+      \ down_quat)\n    # Move back up after each pass\n    pass_end_approach = np.array([x_traj[-1],\
+      \ y, z_approach])\n    goto_pose(pass_end_approach, down_quat)\n"
+api_servers:
+- _target_: capx.serving.launch_pyroki_server.main
+  port: 8116
+  host: 127.0.0.1
+  robot: panda_description
+  target_link: panda_hand
+record_video: true
+output_dir: ./outputs/pai_noisy_wipe
+trials: 100
+num_workers: 12

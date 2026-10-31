@@ -1,0 +1,8 @@
+model,calls,errors,median_latency_s,mean_response_chars,mean_output_tokens
+agy-cli/gemini-3.8-flash-medium,140,0,29.5,1226,8105
+agy-cli/gemini-4-argon-medium,172,1,15.2,2162,1923
+agy-cli/gpt-oss-120b-medium,156,7,11.9,1569,1010
+claude-cli/claude-haiku-5-5@medium,177,0,12.8,1663,2619
+claude-cli/claude-opus-5-5@medium,153,0,12.4,1608,1314
+codex-cli/gpt-6.1-sol@medium,140,0,11.7,1327,
+codex-cli/gpt-6.1-terra@medium,151,0,6.1,815,

@@ -1,0 +1,7 @@
+# 実行ログ（呼び出しの記録や IK サーバーのログ）
+logs/
+# CaP-X の生の出力（試行ごとのコード・動画）。集計は results/ に置く
+runs/
+__pycache__/
+*.pyc
+.DS_Store

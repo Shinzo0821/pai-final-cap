@@ -1,0 +1,15 @@
+cond,model,task,trials,success,code_failed,mean_code_blocks
+check_avg,oracle,nut,5,3,0,1
+check_avg,oracle,restack,5,5,0,1
+check_avg,oracle,stack,5,4,0,1
+check_avg,oracle,wipe,5,5,0,1
+noisy,oracle,handover,5,5,0,1
+noisy,oracle,lift,5,4,0,1
+noisy,oracle,nut,5,0,0,1
+noisy,oracle,restack,5,0,0,1
+noisy,oracle,stack,5,0,0,1
+noisy,oracle,wipe,5,4,0,1
+noisy_avg,oracle,nut,5,0,5,1
+noisy_avg,oracle,restack,5,0,5,1
+noisy_avg,oracle,stack,5,0,5,1
+noisy_avg,oracle,wipe,5,0,5,1

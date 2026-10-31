@@ -1,0 +1,37 @@
+env:
+  _target_: capx.envs.tasks.franka.franka_pick_place.FrankaPickPlaceCodeEnv
+  cfg:
+    _target_: capx.envs.tasks.base.CodeExecEnvConfig
+    low_level: franka_robosuite_cubes_low_level
+    privileged: true
+    apis:
+    - FrankaControlPrivilegedApi_Noisy
+    oracle_code: "\nimport numpy as np\n_pai_g = get_object_pose\ndef get_object_pose(name,\
+      \ *a, **k):\n    rs = [_pai_g(name, *a, **k) for _ in range(30)]\n    return\
+      \ (np.mean([r[0] for r in rs], axis=0),) + tuple(rs[0][1:])\nif \"sample_grasp_pose\"\
+      \ in globals():\n    _pai_s = sample_grasp_pose\n    def sample_grasp_pose(name,\
+      \ *a, **k):\n        rs = [_pai_s(name, *a, **k) for _ in range(30)]\n     \
+      \   return (np.mean([r[0] for r in rs], axis=0),) + tuple(rs[0][1:])\n\nimport\
+      \ numpy as np\n\n_, _, green_ext = get_object_pose(\"green cube\", return_bbox_extent=True)\n\
+      _, _, red_ext = get_object_pose(\"red cube\", return_bbox_extent=True)\n\n#\
+      \ Sample a grasp pose for the red cube and pick it up\npick_pos, pick_quat =\
+      \ sample_grasp_pose(\"red cube\")\ngoto_pose(pick_pos, pick_quat, z_approach=0.1)\n\
+      close_gripper()\n# Lift the red cube after grasping\npost_pick_pos = pick_pos.copy()\n\
+      post_pick_pos[2] += 0.2\ngoto_pose(post_pick_pos, pick_quat)\n\n# Compute placement\
+      \ pose on top of the green cube\ngreen_pos, _, _ = get_object_pose(\"green cube\"\
+      , return_bbox_extent=False)\n\nplace_pos = green_pos.copy()\nplace_pos[2] =\
+      \ green_pos[2] + green_ext[2]/2 + red_ext[2]/2\n# Use down orientation for placement\n\
+      place_quat = np.array([0.0, 0.0, 1.0, 0.0])\n\n# Approach and place the red\
+      \ cube on the green cube\ngoto_pose(place_pos, pick_quat, z_approach=0.1)\n\
+      open_gripper()\n\n# Retract after placing\npost_place_pos = place_pos.copy()\n\
+      post_place_pos[2] += 0.1\ngoto_pose(post_place_pos, place_quat)\n"
+api_servers:
+- _target_: capx.serving.launch_pyroki_server.main
+  port: 8116
+  host: 127.0.0.1
+  robot: panda_description
+  target_link: panda_hand
+record_video: true
+output_dir: ./outputs/pai_noisy_stack
+trials: 100
+num_workers: 12

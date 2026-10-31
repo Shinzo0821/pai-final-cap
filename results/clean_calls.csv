@@ -1,0 +1,3 @@
+model,calls,errors,median_latency_s,mean_response_chars,mean_output_tokens
+codex-cli/gpt-6.1-sol@medium,140,0,8.9,1185,
+codex-cli/gpt-6.1-terra@medium,141,0,4.6,787,
