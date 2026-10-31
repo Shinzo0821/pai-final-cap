@@ -1,0 +1,806 @@
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+API server on 127.0.0.1:8116 already running, skipping
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] No private macro file found! (macros.py:57)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:58)
+[robosuite WARNING] To setup, run: python /home/user/third_party/cap-x/capx/third_party/robosuite/robosuite/scripts/setup_macros.py (macros.py:59)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not import robosuite_models. Some robots may not be available. If you want to use these robots, please install robosuite_models from source (https://github.com/ARISE-Initiative/robosuite_models) or through pip install. (__init__.py:32)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+[robosuite WARNING] Could not load the mink-based whole-body IK. Make sure you install related import properly, otherwise you will not be able to use the default IK controller setting for GR1 robot. (__init__.py:42)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+LIBERO not installed, skipping LIBERO APIs
+R1Pro not installed, skipping R1Pro APIs
+LIBERO not installed!
+R1Pro not installed!
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+[robosuite INFO] Loading controller configuration from: capx/integrations/robosuite/controllers/config/robots/panda_joint_ctrl.json (composite_controller_factory.py:121)
+Time taken to query model: 26.89 seconds
+Time taken to query model: 37.40 seconds
+Time taken to query model: 47.20 seconds
+Time taken to query model: 9.11 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_01_sandboxrc_0_reward_1.000_taskcompleted_1/video_turn_00.mp4 (447 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_01_sandboxrc_0_reward_1.000_taskcompleted_1/video_combined.mp4 (448 frames)
+Trial 1 took 391.06 seconds
+Time taken to query model: 35.65 seconds
+Time taken to query model: 9.01 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_03_sandboxrc_0_reward_0.020_taskcompleted_0/video_turn_00.mp4 (785 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_03_sandboxrc_0_reward_0.020_taskcompleted_0/video_combined.mp4 (786 frames)
+Trial 3 took 706.69 seconds
+Time taken to query model: 10.39 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_02_sandboxrc_0_reward_0.016_taskcompleted_0/video_turn_00.mp4 (805 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_02_sandboxrc_0_reward_0.016_taskcompleted_0/video_combined.mp4 (806 frames)
+Trial 2 took 726.46 seconds
+Time taken to query model: 49.74 seconds
+Time taken to query model: 57.74 seconds
+Time taken to query model: 10.81 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_04_sandboxrc_0_reward_0.019_taskcompleted_0/video_turn_00.mp4 (671 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_04_sandboxrc_0_reward_0.019_taskcompleted_0/video_combined.mp4 (672 frames)
+Trial 4 took 617.39 seconds
+Time taken to query model: 53.93 seconds
+Time taken to query model: 11.33 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_06_sandboxrc_0_reward_1.000_taskcompleted_1/video_turn_00.mp4 (510 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_06_sandboxrc_0_reward_1.000_taskcompleted_1/video_combined.mp4 (511 frames)
+Trial 6 took 482.05 seconds
+Time taken to query model: 6.37 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_05_sandboxrc_0_reward_0.019_taskcompleted_0/video_turn_00.mp4 (595 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_05_sandboxrc_0_reward_0.019_taskcompleted_0/video_combined.mp4 (596 frames)
+Trial 5 took 527.25 seconds
+Time taken to query model: 46.32 seconds
+Time taken to query model: 57.98 seconds
+Time taken to query model: 7.38 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_07_sandboxrc_0_reward_0.018_taskcompleted_0/video_turn_00.mp4 (794 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_07_sandboxrc_0_reward_0.018_taskcompleted_0/video_combined.mp4 (795 frames)
+Trial 7 took 729.66 seconds
+Time taken to query model: 47.63 seconds
+Time taken to query model: 5.45 seconds
+Model chose to finish
+Code blocks done
+Time taken to query model: 14.90 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_08_sandboxrc_0_reward_0.017_taskcompleted_0/video_turn_00.mp4 (798 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_08_sandboxrc_0_reward_0.017_taskcompleted_0/video_combined.mp4 (799 frames)
+Trial 8 took 679.23 seconds
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_09_sandboxrc_0_reward_0.021_taskcompleted_0/video_turn_00.mp4 (732 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_09_sandboxrc_0_reward_0.021_taskcompleted_0/video_combined.mp4 (733 frames)
+Trial 9 took 657.31 seconds
+Time taken to query model: 8.99 seconds
+Model chose to regenerate code
+Code block 1 done
+Number of code blocks: 2
+hammer pos: [ 0.8515281  -0.03239962 -0.90063596]
+hammer quat: [-0.3421662   0.33640397  0.6150487  -0.62567544]
+Time taken to query model: 52.88 seconds
+Model chose to regenerate code
+Code block 2 done
+Number of code blocks: 3
+hammer pos: [ 0.8515281  -0.03239962 -0.90063596]
+hammer quat: [-0.3421662   0.33640397  0.6150487  -0.62567544]
+Trial 10 timed out (attempt 1/3). Retrying...
+Time taken to query model: 42.54 seconds
+Time taken to query model: 10.90 seconds
+Model chose to finish
+Code blocks done
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_10_sandboxrc_0_reward_0.020_taskcompleted_0/video_turn_00.mp4 (836 frames)
+Saved interaction video to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_10_sandboxrc_0_reward_0.020_taskcompleted_0/video_combined.mp4 (837 frames)
+Trial 10 took 540.96 seconds
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# --- Quaternions ---
+Q0_DOWN_X = np.array([0.0, 0.707, 0.707, 0.0])   # arm0 facing down, opening along X (grasps handle across its width)
+Q1_DOWN_X = np.array([0.0, 0.707, -0.707, 0.0])  # arm1 facing down, opening along X (90deg about z from [0,0,1,0])
+
+HANDOVER_Z = 0.17          # hammer z must be in [0.15, 0.20]
+X_MID = (0.44 + 1.18) / 2  # midpoint between initial gripper positions (~0.81)
+GRASP_SEP = 0.10           # separation along handle between the two grasp points (>8cm buffer)
+
+# --- Arm0: pick up hammer at the handle ---
+pos, _ = get_hammer_pose()
+# hammer lies along Y, handle toward +Y: arm0 grasps slightly toward handle end so arm1 has room nearer the middle
+grasp0 = np.array([pos[0], pos[1] + GRASP_SEP / 2, pos[2]])
+open_gripper_arm0()
+goto_pose_arm0(grasp0, Q0_DOWN_X, z_approach=0.12)
+close_gripper_arm0()
+
+# --- Lift straight up (pure translation) ---
+lift0 = np.array([grasp0[0], grasp0[1], HANDOVER_Z])
+goto_pose_arm0(lift0, Q0_DOWN_X)
+
+# --- Translate to handover location near midpoint, keeping orientation (hammer stays along Y) ---
+hand0 = np.array([X_MID, grasp0[1], HANDOVER_Z])
+goto_pose_arm0(hand0, Q0_DOWN_X)
+
+# --- Arm1: approach from above, grasp the handle 10cm away (toward handle middle, still handle) ---
+pos_h, _ = get_hammer_pose()
+grasp1 = np.array([pos_h[0], pos_h[1] - GRASP_SEP / 2 + 0.0, HANDOVER_Z])
+# keep arm1 clearly away from arm0 gripper along Y (grasp points are GRASP_SEP apart)
+grasp1[1] = hand0[1] - GRASP_SEP
+open_gripper_arm1()
+goto_pose_arm1(grasp1, Q1_DOWN_X, z_approach=0.12)
+close_gripper_arm1()
+
+# --- Arm0 releases and retracts upward, then back toward its side ---
+open_gripper_arm0()
+goto_pose_arm0(np.array([hand0[0], hand0[1], HANDOVER_Z + 0.15]), Q0_DOWN_X)
+goto_pose_arm0(np.array([0.44, hand0[1], HANDOVER_Z + 0.15]), Q0_DOWN_X)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_01_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# --- Orientations ---
+# Hammer lies along Y, so grasp with fingers straddling the handle: gripper down, opening along X.
+q0_down_x = np.array([0.0, 0.707, 0.707, 0.0])      # Arm0: facing down, opening along X
+q1_down_x = np.array([0.0, -0.707, 0.707, 0.0])     # Arm1: facing down, opening along X (mirror of arm0's)
+
+# --- Sense hammer ---
+h_pos, _ = get_hammer_pose()
+hx, hy, hz = float(h_pos[0]), float(h_pos[1]), float(h_pos[2])
+
+# Handle extends from middle toward +Y (tip); head is at -Y.
+# Arm0 grasps the handle on the head side of the middle, leaving the +Y part of the handle free for Arm1.
+# Handle min length 0.15 -> half 0.075, so +/-0.055 offsets stay on the handle with ~11cm between grippers (>8cm buffer).
+d_off = 0.055
+grasp0 = np.array([hx, hy - d_off, hz])
+z_lift = hz + 0.25
+
+# Handover location: near midpoint of initial gripper positions (0.44 and 1.18 -> ~0.81).
+handover_x = 0.80
+handover_y = 0.0
+z_handover = 0.175                       # hammer must be within 0.15 - 0.20
+if z_handover < hz + 0.03:
+    z_handover = min(0.195, hz + 0.03)
+
+# --- Arm0: pick up hammer ---
+open_gripper_arm0()
+open_gripper_arm1()
+# Pre-position above the grasp, then descend straight down.
+goto_pose_arm0(np.array([grasp0[0], grasp0[1], hz + 0.15]), q0_down_x)
+goto_pose_arm0(grasp0, q0_down_x, z_approach=0.08)
+close_gripper_arm0()
+
+# Lift straight up (pure translation, keep orientation).
+goto_pose_arm0(np.array([grasp0[0], grasp0[1], z_lift]), q0_down_x)
+
+# Translate toward the handover point at safe height, hammer still aligned along Y.
+# Arm0 holds at y = handover_y - d_off so the free handle end is at +Y for Arm1.
+goto_pose_arm0(np.array([handover_x, handover_y - d_off, z_lift]), q0_down_x)
+# Lower to handover height (hammer z in [0.15, 0.20]).
+goto_pose_arm0(np.array([handover_x, handover_y - d_off, z_handover]), q0_down_x)
+
+# --- Arm1: approach and grasp the free handle end (not the head) ---
+grasp1 = np.array([handover_x, handover_y + d_off, z_handover])
+# Move high above first (clear of Arm0 gripper), then descend vertically onto the handle.
+goto_pose_arm1(np.array([grasp1[0], grasp1[1], z_handover + 0.20]), q1_down_x)
+goto_pose_arm1(grasp1, q1_down_x, z_approach=0.10)
+close_gripper_arm1()
+
+# --- Release from Arm0 and retreat ---
+open_gripper_arm0()
+# Move Arm0 straight up, then back toward its home side (pure translations).
+goto_pose_arm0(np.array([handover_x, handover_y - d_off, z_handover + 0.20]), q0_down_x)
+goto_pose_arm0(np.array([0.45, handover_y - d_off, z_handover + 0.20]), q0_down_x)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.016352367694595263
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_02_sandboxrc_0_reward_0.016_taskcompleted_0/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# --- Poses / constants ---
+Q0_DOWN_OPEN_X = np.array([0.0, 0.707, 0.707, 0.0])    # arm0: fingers close across the handle (handle along Y)
+Q1_DOWN_OPEN_X = np.array([0.0, -0.707, 0.707, 0.0])   # arm1: 90deg about Z from [0,0,1,0] -> opening along X
+HANDOVER_X = 0.81          # midpoint between the two initial gripper positions (0.44 and 1.18)
+HANDOVER_Z = 0.175         # required 0.15 < z < 0.20
+GRASP_OFFSET_ARM0 = -0.05  # arm0 grasps handle on the head side of the handle middle
+GRASP_OFFSET_ARM1 = +0.05  # arm1 grasps handle toward the tip -> 10cm separation between gripper centers
+
+# --- Read hammer pose (middle of handle) ---
+hammer_pos, _ = get_hammer_pose()
+hx, hy, hz = float(hammer_pos[0]), float(hammer_pos[1]), float(hammer_pos[2])
+
+# --- Arm0: pick up hammer handle (fingers close across X, handle runs along Y) ---
+open_gripper_arm0()
+grasp0 = np.array([hx, hy + GRASP_OFFSET_ARM0, hz])
+goto_pose_arm0(grasp0, Q0_DOWN_OPEN_X, z_approach=0.12)
+close_gripper_arm0()
+
+# --- Arm0: lift straight up first (pure translation in Z), then translate in X to handover point ---
+lift0 = np.array([hx, hy + GRASP_OFFSET_ARM0, HANDOVER_Z])
+goto_pose_arm0(lift0, Q0_DOWN_OPEN_X)
+hand0 = np.array([HANDOVER_X, hy + GRASP_OFFSET_ARM0, HANDOVER_Z])
+goto_pose_arm0(hand0, Q0_DOWN_OPEN_X)
+
+# --- Arm1: approach handle from above, offset +Y from arm0's gripper (>=8cm buffer) ---
+open_gripper_arm1()
+hand1 = np.array([HANDOVER_X, hy + GRASP_OFFSET_ARM1, HANDOVER_Z])
+# pre-position high above the handover point (pure translation, well clear of arm0)
+goto_pose_arm1(hand1 + np.array([0.0, 0.0, 0.15]), Q1_DOWN_OPEN_X)
+# descend vertically onto the handle
+goto_pose_arm1(hand1, Q1_DOWN_OPEN_X, z_approach=0.08)
+close_gripper_arm1()
+
+# --- Handover: arm0 releases, then retreats upward and back toward its own side ---
+open_gripper_arm0()
+goto_pose_arm0(hand0 + np.array([0.0, 0.0, 0.12]), Q0_DOWN_OPEN_X)
+goto_pose_arm0(np.array([0.5, hy + GRASP_OFFSET_ARM0, HANDOVER_Z + 0.12]), Q0_DOWN_OPEN_X)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.01995029332505241
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_03_sandboxrc_0_reward_0.020_taskcompleted_0/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Reference orientations: both grippers facing down, opening along X so they can
+# grasp the Y-aligned hammer handle from above.
+q0_down_openX = np.array([0.0, 0.707, 0.707, 0.0])   # arm0
+q1_down_openX = np.array([0.0, 0.707, -0.707, 0.0])  # arm1 (arm1 "open along Y" rotated 90deg about Z)
+
+# Handover location: midpoint between the two arms' initial gripper x positions
+x_mid = 0.5 * (0.44 + 1.18)
+z_handover = 0.175   # hammer must be between 0.15 and 0.20 during handover
+
+# --- Arm0: grasp hammer handle (slightly toward the head, leaving +Y handle free for arm1)
+hammer_pos, _ = get_hammer_pose()
+grasp0 = hammer_pos.copy()
+grasp0[1] -= 0.03           # arm0 grasp point on handle, toward head (-Y)
+arm1_dy = 0.05              # arm1 grasps +Y side of the handle (8cm away from arm0 gripper)
+
+open_gripper_arm0()
+goto_pose_arm0(grasp0, q0_down_openX, z_approach=0.12)
+close_gripper_arm0()
+
+# --- Arm0: lift straight up first, then translate over the gap, then descend to handover height
+lift0 = grasp0.copy()
+lift0[2] = max(hammer_pos[2] + 0.20, 0.25)
+goto_pose_arm0(lift0, q0_down_openX)
+
+carry0 = lift0.copy()
+carry0[0] = x_mid
+goto_pose_arm0(carry0, q0_down_openX)
+
+handover0 = carry0.copy()
+handover0[2] = z_handover
+goto_pose_arm0(handover0, q0_down_openX)
+
+# --- Arm1: approach from above, offset +Y along the handle, keeping >=8cm from arm0's gripper
+handover1 = handover0.copy()
+handover1[1] += arm1_dy
+
+pre1 = handover1.copy()
+pre1[2] = handover1[2] + 0.15
+open_gripper_arm1()
+goto_pose_arm1(pre1, q1_down_openX)
+
+# Descend and grasp the handle (z_approach gives a vertical insertion motion)
+goto_pose_arm1(handover1, q1_down_openX, z_approach=0.08)
+close_gripper_arm1()
+
+# --- Arm0 releases and retreats (up, then back toward its own side)
+open_gripper_arm0()
+retreat0 = handover0.copy()
+retreat0[2] += 0.15
+goto_pose_arm0(retreat0, q0_down_openX)
+retreat0[0] = 0.44
+goto_pose_arm0(retreat0, q0_down_openX)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.01916362866851709
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_04_sandboxrc_0_reward_0.019_taskcompleted_0/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# ---------------- Reasoning / plan ----------------
+# Hammer lies along Y: handle toward +Y, head toward -Y. get_hammer_pose() gives the handle middle.
+# Arm0 grasps the handle slightly toward the head side (y - 0.03) with fingers closing across the
+# handle along X (quat [0, 0.707, 0.707, 0]). Arm1 later grasps the handle on the +Y side
+# (y + 0.05), ~8 cm away from Arm0's fingers, also closing along X (Arm1 quat [0, -0.707, 0.707, 0]).
+# Keeping the hammer aligned with Y means the two grippers sit side by side along Y, both coming
+# from above, so no wrist re-orientation is needed and nothing ends up between the two hands.
+# The hammer is carried at a constant z = 0.175 (within the 0.15-0.20 success band) and the
+# handover happens at x ~= 0.80, near the midpoint of the initial gripper x positions (0.44, 1.18).
+# All moves are decomposed into pure vertical or pure horizontal translations.
+
+hammer_pos, _ = get_hammer_pose()
+hx, hy, hz = float(hammer_pos[0]), float(hammer_pos[1]), float(hammer_pos[2])
+
+q_arm0_grasp = np.array([0.0, 0.707, 0.707, 0.0])    # Arm0 down, opening along X
+q_arm1_grasp = np.array([0.0, -0.707, 0.707, 0.0])   # Arm1 down, opening along X
+
+handover_x = 0.80
+handover_z = 0.175
+arm0_grasp_dy = -0.03   # toward the head, still on the handle
+arm1_grasp_dy = 0.05    # toward the handle tip, keeps >= 8 cm between grippers
+
+# ---------------- Step 0: park Arm1 high and out of the way ----------------
+open_gripper_arm1()
+goto_pose_arm1(np.array([1.05, hy + arm1_grasp_dy, 0.40]), q_arm1_grasp)
+
+# ---------------- Step 1: Arm0 picks up the hammer ----------------
+open_gripper_arm0()
+# Hover above the grasp point, then descend straight down onto the handle
+goto_pose_arm0(np.array([hx, hy + arm0_grasp_dy, hz + 0.15]), q_arm0_grasp)
+goto_pose_arm0(np.array([hx, hy + arm0_grasp_dy, hz]), q_arm0_grasp, z_approach=0.08)
+close_gripper_arm0()
+
+# ---------------- Step 2: lift vertically to handover height ----------------
+goto_pose_arm0(np.array([hx, hy + arm0_grasp_dy, handover_z]), q_arm0_grasp)
+
+# ---------------- Step 3: translate horizontally to the handover point ----------------
+goto_pose_arm0(np.array([handover_x, hy + arm0_grasp_dy, handover_z]), q_arm0_grasp)
+
+# ---------------- Step 4: Arm1 comes in from above and grasps the handle ----------------
+# First hover directly above its grasp point (pure horizontal move at high z), then descend.
+goto_pose_arm1(np.array([handover_x, hy + arm1_grasp_dy, 0.40]), q_arm1_grasp)
+goto_pose_arm1(np.array([handover_x, hy + arm1_grasp_dy, handover_z]), q_arm1_grasp, z_approach=0.12)
+close_gripper_arm1()
+
+# ---------------- Step 5: Arm0 releases and retreats straight up, then back ----------------
+open_gripper_arm0()
+goto_pose_arm0(np.array([handover_x, hy + arm0_grasp_dy, handover_z + 0.15]), q_arm0_grasp)
+goto_pose_arm0(np.array([0.45, hy + arm0_grasp_dy, handover_z + 0.15]), q_arm0_grasp)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.018827201313978956
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_05_sandboxrc_0_reward_0.019_taskcompleted_0/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# ---------- Perception ----------
+hammer_pos, _ = get_hammer_pose()
+hx, hy, hz = hammer_pos
+
+# Hammer lies along Y: handle toward +Y, head toward -Y (hammer_pos = middle of handle).
+# Arm0 grasps the handle slightly toward the head (-Y) so that a long free stretch of handle
+# remains on the +Y side for Arm1 to grasp later.
+grasp0 = np.array([hx, hy - 0.04, hz])
+q0_down_openX = np.array([0.0, 0.707, 0.707, 0.0])   # fingers close across the Y-aligned handle
+
+# ---------- Arm0: pick up hammer ----------
+open_gripper_arm0()
+goto_pose_arm0(grasp0, q0_down_openX, z_approach=0.12)
+close_gripper_arm0()
+
+# Lift straight up (stay on Arm0's side of the table, above the table surface)
+lift_z = 0.175                      # handover height must be in [0.15, 0.20]
+lift0 = np.array([hx, hy - 0.04, lift_z])
+goto_pose_arm0(lift0, q0_down_openX)
+
+# Move to a rotation spot well on Arm0's side so the hammer stays over the table while rotating
+rot_spot = np.array([0.55, 0.0, lift_z])
+goto_pose_arm0(rot_spot, q0_down_openX)
+
+# Rotate hammer about Z in two 45-degree steps so the handle end swings toward +X (toward Arm1).
+# [0,0.707,0.707,0] -> -45deg -> [0,0.924,0.383,0] -> -45deg -> [0,1,0,0]
+q0_mid = np.array([0.0, 0.924, 0.383, 0.0])
+q0_down_openY = np.array([0.0, 1.0, 0.0, 0.0])
+goto_pose_arm0(rot_spot, q0_mid)
+goto_pose_arm0(rot_spot, q0_down_openY)
+
+# Now the handle is aligned along X: head toward -X (Arm0 side), free handle toward +X (Arm1 side).
+# Translate to the handover location near the midpoint (~0.81) of the two gripper start positions.
+# Arm0 hand at x=0.73, Arm1 will grasp at x=0.83 (10 cm separation along X, hand bodies are thin
+# in this direction, keeping clearance between the grippers).
+handover0 = np.array([0.73, 0.0, lift_z])
+goto_pose_arm0(handover0, q0_down_openY)
+
+# ---------- Arm1: grasp the handle ----------
+# Arm1 gripper facing down, opening along Y, so fingers close across the X-aligned handle.
+q1_down_openY = np.array([0.0, 0.0, 1.0, 0.0])
+handover1 = np.array([0.83, 0.0, lift_z])
+
+open_gripper_arm1()
+# Pre-position high above the grasp point, then descend vertically onto the handle
+goto_pose_arm1(np.array([0.83, 0.0, lift_z + 0.15]), q1_down_openY)
+goto_pose_arm1(handover1, q1_down_openY, z_approach=0.10)
+close_gripper_arm1()
+
+# ---------- Arm0: release and retreat ----------
+open_gripper_arm0()
+# Retreat straight up first, then back toward Arm0's side to avoid any contact with Arm1 / hammer
+goto_pose_arm0(np.array([0.73, 0.0, lift_z + 0.15]), q0_down_openY)
+goto_pose_arm0(np.array([0.50, 0.0, lift_z + 0.15]), q0_down_openY)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_06_sandboxrc_0_reward_1.000_taskcompleted_1/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# ---------------- Reasoning ----------------
+# Hammer lies along Y: handle toward +Y, head toward -Y. get_hammer_pose gives middle of handle.
+# Arm0 grasps the handle slightly toward the head side (fingers along X, perpendicular to handle),
+# lifts, carries the hammer (still aligned along Y) to the midpoint between the arms at z = 0.175.
+# Arm1 then grasps the free +Y portion of the handle, also with fingers along X, offset ~8.5cm in Y
+# from Arm0's grasp so the two grippers never overlap. Hammer stays along Y so both grippers come
+# straight down and have no need to cross each other.
+
+Q0_DOWN_X = np.array([0.0, 0.707, 0.707, 0.0])    # arm0 facing down, opening along X
+Q1_DOWN_X = np.array([0.0, 0.707, -0.707, 0.0])   # arm1 facing down, opening along X (90deg about z from [0,0,1,0])
+
+GRASP0_Y_OFF = -0.03    # arm0 grasp toward hammer head side of handle middle
+GRASP1_Y_OFF = 0.055    # arm1 grasp on the free +Y part of handle (>= 8cm from arm0 grasp)
+HANDOVER_X = 0.81       # midpoint between initial gripper positions
+HANDOVER_Z = 0.175      # required 0.15 - 0.20
+CARRY_Z = 0.30
+RETREAT_Z = 0.35
+
+# ---------------- Arm0: pick up hammer ----------------
+hammer_pos, _ = get_hammer_pose()
+hx, hy, hz = float(hammer_pos[0]), float(hammer_pos[1]), float(hammer_pos[2])
+
+open_gripper_arm0()
+grasp0 = np.array([hx, hy + GRASP0_Y_OFF, hz])
+goto_pose_arm0(grasp0, Q0_DOWN_X, z_approach=0.12)
+close_gripper_arm0()
+
+# lift straight up first (pure translation in Z)
+goto_pose_arm0(np.array([hx, hy + GRASP0_Y_OFF, CARRY_Z]), Q0_DOWN_X)
+
+# translate at carry height to the handover point (above the center region)
+handover_y0 = hy + GRASP0_Y_OFF
+goto_pose_arm0(np.array([HANDOVER_X, handover_y0, CARRY_Z]), Q0_DOWN_X)
+
+# lower to handover height (hammer z in [0.15, 0.20])
+goto_pose_arm0(np.array([HANDOVER_X, handover_y0, HANDOVER_Z]), Q0_DOWN_X)
+
+# ---------------- Arm1: grasp handle ----------------
+handover_y1 = hy + GRASP1_Y_OFF   # same world Y offset relative to hammer; hammer kept along Y
+open_gripper_arm1()
+
+# first rise/stay high above the handover area, aligned over the handle grasp point
+goto_pose_arm1(np.array([HANDOVER_X, handover_y1, RETREAT_Z]), Q1_DOWN_X)
+
+# descend vertically onto the handle (fingers along X straddle the Y-aligned handle)
+goto_pose_arm1(np.array([HANDOVER_X, handover_y1, HANDOVER_Z]), Q1_DOWN_X, z_approach=0.10)
+close_gripper_arm1()
+
+# ---------------- Arm0: release and retreat ----------------
+open_gripper_arm0()
+goto_pose_arm0(np.array([HANDOVER_X, handover_y0, RETREAT_Z]), Q0_DOWN_X)
+goto_pose_arm0(np.array([0.5, handover_y0, RETREAT_Z]), Q0_DOWN_X)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.01829036452253399
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_07_sandboxrc_0_reward_0.018_taskcompleted_0/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# ---------- Setup ----------
+open_gripper_arm0()
+open_gripper_arm1()
+
+hammer_pos, _ = get_hammer_pose()   # middle of the handle; handle runs along +Y, head toward -Y
+hx, hy, hz = float(hammer_pos[0]), float(hammer_pos[1]), float(hammer_pos[2])
+
+# Gripper orientations: facing down, fingers opening along X (perpendicular to handle along Y)
+q0_x = np.array([0.0, 0.707, 0.707, 0.0])     # Arm0, opening along X
+q1_x = np.array([0.0, 0.707, -0.707, 0.0])    # Arm1, opening along X (90deg yaw of [0,0,1,0])
+
+# Grasp points along the handle (keep >= 8cm between the two grippers).
+# Arm0 grasps slightly toward the head side, Arm1 grasps toward the free (+Y) end.
+# Minimum handle half-length is 0.075m, so both offsets remain on the handle.
+arm0_dy = -0.04
+arm1_dy = +0.05
+
+# Handover location: midpoint between initial gripper positions (x ~ 0.81), hammer z ~ 0.175
+x_handover = 0.81
+z_handover = 0.175      # gripper grasped at hammer center height, so gripper z == hammer z
+z_safe = max(hz + 0.25, 0.30)
+
+# ---------- Arm0: pick up hammer ----------
+grasp0 = np.array([hx, hy + arm0_dy, hz])
+goto_pose_arm0(grasp0, q0_x, z_approach=0.12)   # approach from above, then descend
+close_gripper_arm0()
+
+# Lift straight up first (pure translation in Z)
+goto_pose_arm0(np.array([hx, hy + arm0_dy, z_safe]), q0_x)
+
+# Translate horizontally to the handover x at safe height (keep orientation fixed)
+goto_pose_arm0(np.array([x_handover, hy + arm0_dy, z_safe]), q0_x)
+
+# Lower to handover height (hammer z in [0.15, 0.20])
+goto_pose_arm0(np.array([x_handover, hy + arm0_dy, z_handover]), q0_x)
+
+# ---------- Arm1: grasp handle from +Y side of Arm0's gripper ----------
+grasp1 = np.array([x_handover, hy + arm1_dy, z_handover])
+# Move above the grasp point first, then descend vertically (z_approach)
+goto_pose_arm1(np.array([x_handover, hy + arm1_dy, z_handover + 0.18]), q1_x)
+goto_pose_arm1(grasp1, q1_x, z_approach=0.18)
+close_gripper_arm1()
+
+# ---------- Release and retreat Arm0 ----------
+open_gripper_arm0()
+goto_pose_arm0(np.array([x_handover, hy + arm0_dy, z_handover + 0.15]), q0_x)
+goto_pose_arm0(np.array([0.5, hy + arm0_dy, z_handover + 0.15]), q0_x)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.016973714820252936
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_08_sandboxrc_0_reward_0.017_taskcompleted_0/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# --- Setup: open both grippers and get hammer pose ---
+open_gripper_arm0()
+open_gripper_arm1()
+
+hammer_pos, _ = get_hammer_pose()
+hx, hy, hz = float(hammer_pos[0]), float(hammer_pos[1]), float(hammer_pos[2])
+
+# Hammer lies along Y (handle toward +Y, head toward -Y).
+# Both arms grasp with gripper facing down and fingers closing along X (across the handle).
+q_arm0_x_open = np.array([0.0, 0.707, 0.707, 0.0])
+q_arm1_x_open = np.array([0.0, -0.707, 0.707, 0.0])  # arm1 is rotated 180 deg about Z w.r.t. arm0
+
+# Grasp offsets along the handle (Y): arm0 slightly toward the head side of the handle middle,
+# arm1 toward the free (+Y) end of the handle -> 10cm center-to-center spacing between the hands.
+arm0_dy = -0.04
+arm1_dy = 0.06
+
+# Handover location: midpoint between initial gripper x positions (~0.81), hammer z in [0.15, 0.20]
+handover_x = 0.81
+handover_z = 0.175
+transport_z = 0.30
+
+# --- Stage arm1 out of the way (up and toward its own side, pre-aligned in Y) ---
+goto_pose_arm1(np.array([1.05, hy + arm1_dy, 0.32]), q_arm1_x_open)
+
+# --- Arm0: grasp the hammer handle from above ---
+grasp_pos = np.array([hx, hy + arm0_dy, hz])
+goto_pose_arm0(grasp_pos, q_arm0_x_open, z_approach=0.12)
+close_gripper_arm0()
+
+# --- Arm0: lift straight up (pure translation) ---
+goto_pose_arm0(np.array([hx, hy + arm0_dy, transport_z]), q_arm0_x_open)
+
+# --- Arm0: translate horizontally to the handover point (keep orientation and y fixed) ---
+goto_pose_arm0(np.array([handover_x, hy + arm0_dy, transport_z]), q_arm0_x_open)
+
+# --- Arm0: lower to handover height so hammer z is within [0.15, 0.20] ---
+goto_pose_arm0(np.array([handover_x, hy + arm0_dy, handover_z]), q_arm0_x_open)
+
+# --- Arm1: approach from above and grasp the free part of the handle ---
+goto_pose_arm1(np.array([handover_x, hy + arm1_dy, handover_z]), q_arm1_x_open, z_approach=0.15)
+close_gripper_arm1()
+
+# --- Arm0: release and retreat upward, leaving arm1 holding the hammer ---
+open_gripper_arm0()
+goto_pose_arm0(np.array([handover_x, hy + arm0_dy, transport_z]), q_arm0_x_open)
+goto_pose_arm0(np.array([0.55, hy + arm0_dy, transport_z]), q_arm0_x_open)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.020664275748621244
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_09_sandboxrc_0_reward_0.021_taskcompleted_0/code.py
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# Reasoning:
+# - Hammer lies along Y (handle +Y, head -Y). To grasp a rod along Y, the gripper must open along X.
+# - Both arms grasp the handle from above with X-opening. Hands are thin along Y, so we separate
+#   the two grasp points along Y: Arm0 grasps the handle on the head side of the handle midpoint,
+#   Arm1 grasps toward the +Y (free) end of the handle. Handle half-length >= 0.075m, so both grasp
+#   points stay on the handle (not the head).
+# - Handover happens at the midpoint between initial gripper positions (x ~ 0.81) with the hammer
+#   held at z = 0.175 (within 0.15-0.20). Motions are decomposed: lift -> translate -> lower.
+# - Arm1 is parked out of the way (offset in +Y, high z) while Arm0 moves, then descends from above.
+
+Q0_DOWN_OPEN_X = np.array([0.0, 0.707, 0.707, 0.0])   # Arm0 facing down, opening along X
+Q1_DOWN_OPEN_X = np.array([0.0, -0.707, 0.707, 0.0])  # Arm1 facing down, opening along X
+
+HANDOVER_X = 0.81
+HANDOVER_Z = 0.175
+SAFE_Z = 0.32
+
+open_gripper_arm0()
+open_gripper_arm1()
+
+# Park Arm1 away from the workspace Arm0 will use
+goto_pose_arm1(np.array([1.05, 0.20, SAFE_Z]), Q1_DOWN_OPEN_X)
+
+# Locate hammer handle middle
+hammer_pos, _ = get_hammer_pose()
+hx, hy, hz = float(hammer_pos[0]), float(hammer_pos[1]), float(hammer_pos[2])
+
+# Arm0 grasp point: slightly toward head side of handle midpoint (still on handle)
+grasp0_y = hy - 0.04
+goto_pose_arm0(np.array([hx, grasp0_y, hz]), Q0_DOWN_OPEN_X, z_approach=0.12)
+close_gripper_arm0()
+
+# Lift straight up
+goto_pose_arm0(np.array([hx, grasp0_y, SAFE_Z]), Q0_DOWN_OPEN_X)
+
+# Translate to handover x at safe height
+goto_pose_arm0(np.array([HANDOVER_X, grasp0_y, SAFE_Z]), Q0_DOWN_OPEN_X)
+
+# Lower to handover height (hammer z in [0.15, 0.20])
+goto_pose_arm0(np.array([HANDOVER_X, grasp0_y, HANDOVER_Z]), Q0_DOWN_OPEN_X)
+
+# Arm1 grasp point: toward the +Y end of the handle, >= 9cm from Arm0's grasp along Y
+grasp1_y = hy + 0.05
+
+# Arm1 approaches from above directly over its grasp point
+goto_pose_arm1(np.array([HANDOVER_X, grasp1_y, SAFE_Z]), Q1_DOWN_OPEN_X)
+goto_pose_arm1(np.array([HANDOVER_X, grasp1_y, HANDOVER_Z]), Q1_DOWN_OPEN_X, z_approach=0.10)
+close_gripper_arm1()
+
+# Arm0 releases and retreats upward and back toward its side
+open_gripper_arm0()
+goto_pose_arm0(np.array([HANDOVER_X, grasp0_y, SAFE_Z]), Q0_DOWN_OPEN_X)
+goto_pose_arm0(np.array([0.50, grasp0_y, SAFE_Z]), Q0_DOWN_OPEN_X)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.019550395222106123
+  Task Completed: False
+  Terminated: False, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------
+Code saved to /home/user/pai-final-cap/runs/cloud/base_mt/claude-cli__claude-fable-5-1@medium/claude-cli_claude-fable-5-1@medium/handover/trial_10_sandboxrc_0_reward_0.020_taskcompleted_0/code.py
+
+Summary Statistics:
+Model: claude-cli/claude-fable-5-1@medium
+Config Path: /home/user/pai-final-cap/configs/base_mt/handover.yaml
+Git Commit: 53e9966 (Dirty: True)
+Total number of trials: 10
+Code generation success rate / Average reward / Task completed: 
+1.000/0.215/2
+Average code blocks: 1.000
+Average regenerations: 0.000
+Average finishes: 1.000
+Elapsed time: 3298.96 seconds

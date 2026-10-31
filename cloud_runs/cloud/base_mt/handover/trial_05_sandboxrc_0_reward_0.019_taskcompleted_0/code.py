@@ -1,0 +1,52 @@
+# Code block 0
+import numpy as np
+
+# ---------------- Reasoning / plan ----------------
+# Hammer lies along Y: handle toward +Y, head toward -Y. get_hammer_pose() gives the handle middle.
+# Arm0 grasps the handle slightly toward the head side (y - 0.03) with fingers closing across the
+# handle along X (quat [0, 0.707, 0.707, 0]). Arm1 later grasps the handle on the +Y side
+# (y + 0.05), ~8 cm away from Arm0's fingers, also closing along X (Arm1 quat [0, -0.707, 0.707, 0]).
+# Keeping the hammer aligned with Y means the two grippers sit side by side along Y, both coming
+# from above, so no wrist re-orientation is needed and nothing ends up between the two hands.
+# The hammer is carried at a constant z = 0.175 (within the 0.15-0.20 success band) and the
+# handover happens at x ~= 0.80, near the midpoint of the initial gripper x positions (0.44, 1.18).
+# All moves are decomposed into pure vertical or pure horizontal translations.
+
+hammer_pos, _ = get_hammer_pose()
+hx, hy, hz = float(hammer_pos[0]), float(hammer_pos[1]), float(hammer_pos[2])
+
+q_arm0_grasp = np.array([0.0, 0.707, 0.707, 0.0])    # Arm0 down, opening along X
+q_arm1_grasp = np.array([0.0, -0.707, 0.707, 0.0])   # Arm1 down, opening along X
+
+handover_x = 0.80
+handover_z = 0.175
+arm0_grasp_dy = -0.03   # toward the head, still on the handle
+arm1_grasp_dy = 0.05    # toward the handle tip, keeps >= 8 cm between grippers
+
+# ---------------- Step 0: park Arm1 high and out of the way ----------------
+open_gripper_arm1()
+goto_pose_arm1(np.array([1.05, hy + arm1_grasp_dy, 0.40]), q_arm1_grasp)
+
+# ---------------- Step 1: Arm0 picks up the hammer ----------------
+open_gripper_arm0()
+# Hover above the grasp point, then descend straight down onto the handle
+goto_pose_arm0(np.array([hx, hy + arm0_grasp_dy, hz + 0.15]), q_arm0_grasp)
+goto_pose_arm0(np.array([hx, hy + arm0_grasp_dy, hz]), q_arm0_grasp, z_approach=0.08)
+close_gripper_arm0()
+
+# ---------------- Step 2: lift vertically to handover height ----------------
+goto_pose_arm0(np.array([hx, hy + arm0_grasp_dy, handover_z]), q_arm0_grasp)
+
+# ---------------- Step 3: translate horizontally to the handover point ----------------
+goto_pose_arm0(np.array([handover_x, hy + arm0_grasp_dy, handover_z]), q_arm0_grasp)
+
+# ---------------- Step 4: Arm1 comes in from above and grasps the handle ----------------
+# First hover directly above its grasp point (pure horizontal move at high z), then descend.
+goto_pose_arm1(np.array([handover_x, hy + arm1_grasp_dy, 0.40]), q_arm1_grasp)
+goto_pose_arm1(np.array([handover_x, hy + arm1_grasp_dy, handover_z]), q_arm1_grasp, z_approach=0.12)
+close_gripper_arm1()
+
+# ---------------- Step 5: Arm0 releases and retreats straight up, then back ----------------
+open_gripper_arm0()
+goto_pose_arm0(np.array([handover_x, hy + arm0_grasp_dy, handover_z + 0.15]), q_arm0_grasp)
+goto_pose_arm0(np.array([0.45, hy + arm0_grasp_dy, handover_z + 0.15]), q_arm0_grasp)

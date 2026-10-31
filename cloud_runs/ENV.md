@@ -63,4 +63,32 @@ open3d。torch・torchvision・sam3・decord・ray は入れていない（特�
 - apt で libosmesa6・libegl1・libgl1 などを追加。
 
 ## 確認と結果
-（本番は実行中。終わったら追記する）
+### 1回で答える条件の回答（replay）
+`python scripts/gen_replay.py --name claude-fable-5-1@medium --n 10` で 60 個（6プロンプト×10）。
+失敗・再試行は 0 回、空の回答なし。1回 8〜66 秒、全体で約 4 分。
+
+### シミュレータの確認（oracle、各3回）
+`cloud_oracle/` に保存。stack 3/3、restack 3/3、nut 3/3、handover 3/3（Mac と同じ）。
+
+### 複数ターンの本番（各10回、`--workers 3 --video`）
+`cloud/` に保存（`cloud/summary.csv` が集計）。
+
+| 条件 | タスク | 成功 | 所要 |
+|---|---|---|---|
+| base_mt | restack | 2/10 | 205 秒 |
+| base_mt | handover | 2/10 | 3305 秒 |
+| noisy_mt | stack | 7/10 | 170 秒 |
+| noisy_mt | nut | 1/10 | 442 秒 |
+
+- Fable の呼び出しは 96 回、すべて成功（`proxy_calls.jsonl`）。IK サーバーの失敗は 0 回。
+- handover の試行 10 は、1回目が CaP-X 自身の試行時間の上限（`capx/envs/runner.py` の
+  `TRIAL_TIMEOUT_SECONDS = 1000`）に当たり、CaP-X が最初からやり直した（2回目は 541 秒で終了、失敗）。
+  1回目も失敗のフォルダが残っており、成功数は変わらない。CPU 描画で Mac より遅いため、
+  時間切れは Mac より起こりやすいと考えられる。ほかのセルに時間切れはない。
+- 試行のフォルダが同じ番号で2つあるものがある（例: restack の trial_03・04、handover の trial_10）。
+  複数ターンの途中や時間切れの回にも CaP-X がフォルダを書くため。成功数は launch.log の集計の値を使う。
+
+### 持ち帰ったもの
+- 各セル: `launch.log`、`DONE`、CaP-X のセル単位のファイル（`all_responses.json`、`initial_prompt.txt` など）
+- 各試行: `summary.txt`、`code.py`、`all_responses.json`、`video_combined.mp4`（動画はシミュレーションまで進んだ試行のみ）
+- `proxy_calls.jsonl`: この実験の中継サーバーの記録（oracle は LLM を呼ばないので、全部が本番の分）

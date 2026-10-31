@@ -1,0 +1,84 @@
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+def avg_pose(fn, name, n=5):
+    # average multiple noisy perception calls to reduce ~1 cm error
+    ps, qs = [], []
+    for _ in range(n):
+        p, q = fn(name)
+        ps.append(p); qs.append(q)
+    p = np.mean(ps, axis=0)
+    q = np.mean(qs, axis=0)
+    q = q / np.linalg.norm(q)
+    return p, q
+
+goto_home_joint_position()
+open_gripper()
+
+# Perceive handle grasp pose and nut center pose (same rigid body)
+grasp_pos, grasp_quat = avg_pose(sample_grasp_pose, "extruded handle of the brown square nut")
+nut_pos, _ = avg_pose(get_object_pose, "white hollow center of the brown square nut")
+peg_pos, _ = avg_pose(get_object_pose, "brown square block")
+
+# Fixed rigid offset from nut center to handle grasp point (world frame).
+# We keep the gripper orientation unchanged throughout, so this offset stays valid.
+offset = grasp_pos - nut_pos
+
+# Grasp the handle from above
+goto_pose(grasp_pos, grasp_quat, z_approach=0.10)
+close_gripper()
+
+# Lift
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.20
+goto_pose(lift_pos, grasp_quat)
+
+# Target: nut center over the peg -> end-effector = peg + offset (keep xy offset, set height)
+target = peg_pos + offset
+hover = target.copy()
+hover[2] = max(target[2], lift_pos[2])
+goto_pose(hover, grasp_quat)
+
+# Insert: descend onto the peg; final height uses handle z at original grasp (table level)
+insert = target.copy()
+insert[2] = grasp_pos[2]
+goto_pose(insert, grasp_quat, z_approach=0.12)
+
+open_gripper()
+retreat = insert.copy()
+retreat[2] += 0.15
+goto_pose(retreat, grasp_quat)
+goto_home_joint_position()
+
+# Code block 1
+import numpy as np
+
+# Verify final state without moving the robot: check nut center vs. peg position.
+nut_ps = [get_object_pose("white hollow center of the brown square nut")[0] for _ in range(5)]
+peg_ps = [get_object_pose("brown square block")[0] for _ in range(5)]
+nut_p = np.mean(nut_ps, axis=0)
+peg_p = np.mean(peg_ps, axis=0)
+xy_err = np.linalg.norm(nut_p[:2] - peg_p[:2])
+print("nut center:", nut_p)
+print("peg center:", peg_p)
+print("xy distance nut->peg (m):", xy_err)
+print("nut z - peg z (m):", nut_p[2] - peg_p[2])
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: nut center: [ 0.78907655  0.10034714 -0.02930261]
+peg center: [0.78981576 0.09684443 0.02099524]
+xy distance nut->peg (m): 0.0035798634082708216
+nut z - peg z (m): -0.050297854627700464
+
+  Stderr: 
+  Reward: 0.19836342151972347
+  Task Completed: False
+  Terminated: False, Truncated: True
+  Num Regenerations: 1
+  Num Finishes: 1
+  Num Code Blocks: 2
+----------------------------------------------------------------------------------------------------

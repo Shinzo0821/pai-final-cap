@@ -1,0 +1,49 @@
+[
+  {
+    "block_idx": [
+      0
+    ],
+    "code_blocks": [
+      "import numpy as np\n\ndef avg_pose(name, n=5):\n    ps, qs = [], []\n    for _ in range(n):\n        p, q = get_object_pose(name)\n        ps.append(p); qs.append(q)\n    return np.mean(ps, axis=0), qs[0]\n\ndef avg_grasp(name, n=5):\n    ps, qs = [], []\n    for _ in range(n):\n        p, q = sample_grasp_pose(name)\n        ps.append(p); qs.append(q)\n    return np.mean(ps, axis=0), qs[0]\n\ngoto_home_joint_position()\nopen_gripper()\n\n# Perceive (average several noisy calls)\nnut_center_pos, _ = avg_pose('white hollow center of the brown square nut')\nblock_pos, _ = avg_pose('brown square block')\ngrasp_pos, grasp_quat = avg_grasp('extruded handle of the brown square nut')\n\n# Rigid offset from nut center to handle grasp (world frame; gripper orientation is kept fixed during transport)\noffset = grasp_pos - nut_center_pos\n\n# Grasp the handle\ngoto_pose(grasp_pos, grasp_quat, z_approach=0.10)\nclose_gripper()\n\n# Lift\nlift_pos = grasp_pos.copy()\nlift_pos[2] += 0.20\ngoto_pose(lift_pos, grasp_quat)\n\n# Target: nut center over the block/peg, keeping the same handle offset\ntarget_center = block_pos.copy()\ntarget_center[2] = block_pos[2] + 0.02\ntarget_grasp = target_center + offset\n\n# Move above the peg, then insert by descending\ngoto_pose(target_grasp, grasp_quat, z_approach=0.20)\n\n# Release nut onto the peg\nopen_gripper()\n\n# Retreat\nretreat = target_grasp.copy()\nretreat[2] += 0.15\ngoto_pose(retreat, grasp_quat)\ngoto_home_joint_position()"
+    ],
+    "decision": "initial",
+    "initial_prompt": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant that generates Python code to directly solve the task."
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "\nYou are controlling a Franka Emika robot with API described below.\nGoal: grasp and insert the `brown square nut` onto the `brown square block`.\nNote that you would grasp the nut by its handle. You can try language query `extruded handle of the brown square nut` to get a good grasp at the handle.\nThe brown square nut and the extruded handle of the brown square nut are part of the same rigid body.\nThe grasp pose query for 'extruded handle of the brown square nut' returns an end-effector pose expressed in world frame, located on the handle region.\nThe nut's object center pose obtained via 'white hollow center of the brown square nut' and the handle grasp pose obtained via 'extruded handle of the brown square nut' have a fixed rigid transform, which must be applied correctly when inserting the nut onto the peg.\nYou may write python code comments for reasoning but ONLY write the executable Python code and do not write it in code fences.\nThe functions (APIs) below are already imported to the environment.\nIf you want to use numpy, or scipy for spatial transformations, you need to import it explicitly.\n\nAPIs:\n\nget_object_pose(object_name: str) -> tuple[numpy.ndarray, numpy.ndarray]\n  Doc:\n    Get the pose of an object in the environment from a natural language description.\n    \n    Args:\n        object_name: The name of the object to get the pose of.\n    \n    Returns:\n        position: (3,) XYZ in meters.\n        quaternion_wxyz: (4,) WXYZ unit quaternion.\n    Note: positions returned here come from a perception system and contain random errors (roughly 1 cm standard deviation, independent on every call).\n\nsample_grasp_pose(object_name: str) -> tuple[numpy.ndarray, numpy.ndarray]\n  Doc:\n    Sample a grasp pose for an object in the environment from a natural language description.\n    Do use the grasp sample quaternion from sample_grasp_pose.\n    \n    Args:\n        object_name: The name of the object to sample a grasp pose for.\n    \n    Returns:\n        position: (3,) XYZ in meters.\n        quaternion_wxyz: (4,) WXYZ unit quaternion.\n    Note: positions returned here come from a perception system and contain random errors (roughly 1 cm standard deviation, independent on every call).\n\ngoto_pose(position: numpy.ndarray, quaternion_wxyz: numpy.ndarray, z_approach: float = 0.0) -> None\n  Doc:\n    Go to pose using Inverse Kinematics.\n    There is no need to call a second goto_pose with the same position and quaternion_wxyz after calling it with z_approach.\n    Args:\n        position: (3,) XYZ in meters.\n        quaternion_wxyz: (4,) WXYZ unit quaternion.\n        z_approach: (float) Z-axis distance offset for goto_pose insertion approach motion. Will first arrive at position + z_approach meters in Z-axis before moving to the requested pose. Useful for more precise grasp approaches. Default is 0.0.\n    Returns:\n        None\n\ngoto_home_joint_position() -> None\n  Doc:\n    Return the arm to its reset joint configuration with high manipulability\n\nopen_gripper() -> None\n  Doc:\n    Open gripper fully.\n    \n    Args:\n        None\n\nclose_gripper() -> None\n  Doc:\n    Close gripper fully.\n    \n    Args:\n        None"
+          }
+        ]
+      }
+    ],
+    "reasoning": ""
+  },
+  {
+    "multi_turn_prompt": null,
+    "block_idx": [
+      1
+    ],
+    "code_blocks": [
+      "import numpy as np\n\ndef avg_pose(name, n=8):\n    ps = [get_object_pose(name)[0] for _ in range(n)]\n    return np.mean(ps, axis=0)\n\nnut_c = avg_pose('white hollow center of the brown square nut')\nblk = avg_pose('brown square block')\nxy_err = np.linalg.norm(nut_c[:2] - blk[:2])\nprint('nut center:', nut_c)\nprint('block:', blk)\nprint('xy error (m):', xy_err, 'z diff (m):', nut_c[2] - blk[2])\n\nif xy_err > 0.015:\n    # Not inserted well: re-grasp the handle and retry with the nut lowered fully onto the peg\n    goto_home_joint_position()\n    open_gripper()\n    gps, gqs = [], []\n    for _ in range(6):\n        p, q = sample_grasp_pose('extruded handle of the brown square nut')\n        gps.append(p); gqs.append(q)\n    grasp_pos, grasp_quat = np.mean(gps, axis=0), gqs[0]\n    nut_c = avg_pose('white hollow center of the brown square nut')\n    offset = grasp_pos - nut_c\n\n    goto_pose(grasp_pos, grasp_quat, z_approach=0.10)\n    close_gripper()\n    lift = grasp_pos.copy(); lift[2] += 0.20\n    goto_pose(lift, grasp_quat)\n\n    blk = avg_pose('brown square block')\n    target_center = blk.copy()\n    target_center[2] = blk[2] + 0.01\n    target_grasp = target_center + offset\n    goto_pose(target_grasp, grasp_quat, z_approach=0.20)\n    open_gripper()\n    retreat = target_grasp.copy(); retreat[2] += 0.15\n    goto_pose(retreat, grasp_quat)\n    goto_home_joint_position()\n\n    nut_c = avg_pose('white hollow center of the brown square nut')\n    blk = avg_pose('brown square block')\n    print('after retry xy error (m):', np.linalg.norm(nut_c[:2] - blk[:2]), 'z diff:', nut_c[2] - blk[2])"
+    ],
+    "decision": "regenerate",
+    "reasoning": ""
+  },
+  {
+    "multi_turn_prompt": null,
+    "block_idx": [
+      2
+    ],
+    "code_blocks": [
+      "import numpy as np\n\ndef avg_pose(name, n=15):\n    ps = [get_object_pose(name)[0] for _ in range(n)]\n    return np.mean(ps, axis=0)\n\ngoto_home_joint_position()\nopen_gripper()\n\n# Re-grasp the handle\ngps, gqs = [], []\nfor _ in range(10):\n    p, q = sample_grasp_pose('extruded handle of the brown square nut')\n    gps.append(p); gqs.append(q)\ngrasp_pos, grasp_quat = np.mean(gps, axis=0), gqs[0]\n\ngoto_pose(grasp_pos, grasp_quat, z_approach=0.10)\nclose_gripper()\n\n# Lift to a known commanded pose and measure the nut center while held.\n# This gives the actual rigid offset between the gripper (commanded pose) and the nut center,\n# which cancels any bias between the grasp sampler and the object-center perception.\nlift = grasp_pos.copy(); lift[2] += 0.20\ngoto_pose(lift, grasp_quat)\nnut_c_held = avg_pose('white hollow center of the brown square nut', n=20)\noffset = lift - nut_c_held\nprint('measured gripper->nut-center offset:', offset)\n\n# Target: nut center directly over the block/peg, descend to insert\nblk = avg_pose('brown square block', n=20)\ntarget_center = blk.copy()\ntarget_center[2] = blk[2] + 0.005\ntarget_grasp = target_center + offset\ngoto_pose(target_grasp, grasp_quat, z_approach=0.20)\nopen_gripper()\n\nretreat = target_grasp.copy(); retreat[2] += 0.15\ngoto_pose(retreat, grasp_quat)\ngoto_home_joint_position()\n\nnut_c = avg_pose('white hollow center of the brown square nut', n=20)\nblk = avg_pose('brown square block', n=20)\nprint('nut center:', nut_c)\nprint('block:', blk)\nprint('xy error (m):', np.linalg.norm(nut_c[:2] - blk[:2]), 'z diff:', nut_c[2] - blk[2])"
+    ],
+    "decision": "regenerate",
+    "reasoning": ""
+  }
+]

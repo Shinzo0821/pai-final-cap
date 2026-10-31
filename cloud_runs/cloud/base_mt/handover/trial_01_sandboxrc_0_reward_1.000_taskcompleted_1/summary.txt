@@ -1,0 +1,55 @@
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+# --- Quaternions ---
+Q0_DOWN_X = np.array([0.0, 0.707, 0.707, 0.0])   # arm0 facing down, opening along X (grasps handle across its width)
+Q1_DOWN_X = np.array([0.0, 0.707, -0.707, 0.0])  # arm1 facing down, opening along X (90deg about z from [0,0,1,0])
+
+HANDOVER_Z = 0.17          # hammer z must be in [0.15, 0.20]
+X_MID = (0.44 + 1.18) / 2  # midpoint between initial gripper positions (~0.81)
+GRASP_SEP = 0.10           # separation along handle between the two grasp points (>8cm buffer)
+
+# --- Arm0: pick up hammer at the handle ---
+pos, _ = get_hammer_pose()
+# hammer lies along Y, handle toward +Y: arm0 grasps slightly toward handle end so arm1 has room nearer the middle
+grasp0 = np.array([pos[0], pos[1] + GRASP_SEP / 2, pos[2]])
+open_gripper_arm0()
+goto_pose_arm0(grasp0, Q0_DOWN_X, z_approach=0.12)
+close_gripper_arm0()
+
+# --- Lift straight up (pure translation) ---
+lift0 = np.array([grasp0[0], grasp0[1], HANDOVER_Z])
+goto_pose_arm0(lift0, Q0_DOWN_X)
+
+# --- Translate to handover location near midpoint, keeping orientation (hammer stays along Y) ---
+hand0 = np.array([X_MID, grasp0[1], HANDOVER_Z])
+goto_pose_arm0(hand0, Q0_DOWN_X)
+
+# --- Arm1: approach from above, grasp the handle 10cm away (toward handle middle, still handle) ---
+pos_h, _ = get_hammer_pose()
+grasp1 = np.array([pos_h[0], pos_h[1] - GRASP_SEP / 2 + 0.0, HANDOVER_Z])
+# keep arm1 clearly away from arm0 gripper along Y (grasp points are GRASP_SEP apart)
+grasp1[1] = hand0[1] - GRASP_SEP
+open_gripper_arm1()
+goto_pose_arm1(grasp1, Q1_DOWN_X, z_approach=0.12)
+close_gripper_arm1()
+
+# --- Arm0 releases and retracts upward, then back toward its side ---
+open_gripper_arm0()
+goto_pose_arm0(np.array([hand0[0], hand0[1], HANDOVER_Z + 0.15]), Q0_DOWN_X)
+goto_pose_arm0(np.array([0.44, hand0[1], HANDOVER_Z + 0.15]), Q0_DOWN_X)
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 1.0
+  Task Completed: True
+  Terminated: True, Truncated: False
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------

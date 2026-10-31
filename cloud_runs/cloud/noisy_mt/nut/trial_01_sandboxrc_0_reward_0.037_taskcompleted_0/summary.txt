@@ -1,0 +1,62 @@
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+def avg_pose(fn, name, n=10):
+    ps, q = [], None
+    for _ in range(n):
+        p, q = fn(name)
+        ps.append(p)
+    return np.mean(ps, axis=0), q
+
+# Perceive the nut (center and handle); average to reduce ~1cm noise.
+nut_center_pos, _ = avg_pose(get_object_pose, "white hollow center of the brown square nut")
+handle_pos, handle_quat = avg_pose(sample_grasp_pose, "extruded handle of the brown square nut")
+
+# Rigid offset from nut center to handle grasp point (world frame; orientation is kept fixed).
+offset = handle_pos - nut_center_pos
+
+# Perceive the peg/block.
+block_pos, _ = avg_pose(get_object_pose, "brown square block")
+
+# Grasp the handle.
+goto_home_joint_position()
+open_gripper()
+goto_pose(handle_pos, handle_quat, z_approach=0.10)
+close_gripper()
+
+# Lift straight up.
+lift_pos = handle_pos.copy()
+lift_pos[2] += 0.20
+goto_pose(lift_pos, handle_quat)
+
+# Target handle position so that nut center aligns with the peg in XY.
+target = block_pos + offset
+# Final height: same handle height as when the nut rested on the table, plus a small margin,
+# so the nut slides down over the peg and seats on the block.
+target[2] = handle_pos[2] + 0.02
+
+# Move above the peg, then descend to insert.
+above = target.copy()
+above[2] += 0.20
+goto_pose(above, handle_quat)
+goto_pose(target, handle_quat, z_approach=0.15)
+
+# Release and retreat.
+open_gripper()
+goto_pose(above, handle_quat)
+goto_home_joint_position()
+
+
+Environment response:
+  Sandbox failed: 0
+  Stdout: 
+  Stderr: 
+  Reward: 0.0367817375883816
+  Task Completed: False
+  Terminated: False, Truncated: True
+  Num Regenerations: 0
+  Num Finishes: 1
+  Num Code Blocks: 1
+----------------------------------------------------------------------------------------------------

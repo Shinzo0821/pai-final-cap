@@ -1,0 +1,10 @@
+Model: claude-cli/claude-fable-5-1@medium
+Config Path: /home/user/pai-final-cap/configs/noisy_mt/stack.yaml
+Git Commit: 53e9966 (Dirty: True)
+Total number of trials: 10
+Code generation success rate / Average reward / Task completed: 
+1.000/0.700/7
+Average code blocks: 1.000
+Average regenerations: 0.000
+Average finishes: 1.000
+Elapsed time: 164.20 seconds

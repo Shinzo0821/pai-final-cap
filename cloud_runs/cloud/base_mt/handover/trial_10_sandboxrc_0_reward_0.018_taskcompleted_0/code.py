@@ -1,0 +1,121 @@
+# Code block 0
+import numpy as np
+
+# Reference orientations
+Q0_DOWN_X = np.array([0.0, 0.707, 0.707, 0.0])   # arm0 fingers open along X (closes across the Y-aligned handle)
+Q0_DOWN_Y = np.array([0.0, 1.0, 0.0, 0.0])       # arm0 fingers open along Y (hammer rotated so handle points +X)
+Q1_DOWN_Y = np.array([0.0, 0.0, 1.0, 0.0])       # arm1 fingers open along Y (closes across the X-aligned handle)
+
+open_gripper_arm0()
+open_gripper_arm1()
+
+# Park arm1 high and out of the way while arm0 works
+goto_pose_arm1(np.array([1.05, 0.0, 0.35]), Q1_DOWN_Y)
+
+# Locate hammer handle middle; grasp slightly toward the head (-Y) so more handle remains free for arm1
+hpos, _ = get_hammer_pose()
+gx, gy, gz = float(hpos[0]), float(hpos[1]) - 0.04, float(hpos[2])
+
+# Arm0: approach from above, grasp across handle
+goto_pose_arm0(np.array([gx, gy, gz + 0.15]), Q0_DOWN_X)
+goto_pose_arm0(np.array([gx, gy, gz]), Q0_DOWN_X, z_approach=0.08)
+close_gripper_arm0()
+
+# Lift straight up (pure translation)
+lift_z = 0.25
+goto_pose_arm0(np.array([gx, gy, lift_z]), Q0_DOWN_X)
+
+# Rotate -90 deg about Z in place: handle now points toward +X (toward arm1)
+goto_pose_arm0(np.array([gx, gy, lift_z]), Q0_DOWN_Y)
+
+# Translate stepwise toward the handover point near the midpoint (x ~ 0.81), then descend to handover height
+hand_x, hand_y, hand_z = 0.75, 0.0, 0.17
+goto_pose_arm0(np.array([0.60, hand_y, lift_z]), Q0_DOWN_Y)
+goto_pose_arm0(np.array([hand_x, hand_y, lift_z]), Q0_DOWN_Y)
+goto_pose_arm0(np.array([hand_x, hand_y, hand_z]), Q0_DOWN_Y)
+
+# Arm1: grasp the free handle section 9 cm beyond arm0's gripper (>= 8 cm buffer), approaching from above
+grasp1 = np.array([hand_x + 0.09, hand_y, hand_z])
+goto_pose_arm1(np.array([grasp1[0], hand_y, 0.35]), Q1_DOWN_Y)
+goto_pose_arm1(grasp1, Q1_DOWN_Y, z_approach=0.12)
+close_gripper_arm1()
+
+# Release from arm0 and retreat upward then back toward arm0's side
+open_gripper_arm0()
+goto_pose_arm0(np.array([hand_x, hand_y, hand_z + 0.12]), Q0_DOWN_Y)
+goto_pose_arm0(np.array([0.50, hand_y, hand_z + 0.15]), Q0_DOWN_Y)
+
+# Code block 1
+import numpy as np
+# Verify handover state: hammer should be held by arm1 at z between 0.15 and 0.20
+hpos, hquat = get_hammer_pose()
+print("hammer pos:", hpos)
+print("hammer quat:", hquat)
+
+# Code block 2
+import numpy as np
+
+# Reference orientations
+Q0_DOWN_X  = np.array([0.0, 0.707, 0.707, 0.0])  # arm0 fingers open along X (closes across Y-aligned handle)
+Q0_DOWN_Y_A = np.array([0.0, 1.0, 0.0, 0.0])     # arm0 fingers open along Y (rotated -90 deg about Z from Q0_DOWN_X)
+Q0_DOWN_Y_B = np.array([0.0, 0.0, 1.0, 0.0])     # arm0 fingers open along Y (rotated +90 deg about Z from Q0_DOWN_X)
+Q1_DOWN_Y  = np.array([0.0, 0.0, 1.0, 0.0])      # arm1 fingers open along Y (closes across X-aligned handle)
+
+open_gripper_arm0()
+open_gripper_arm1()
+
+# Park arm1 high, off the handover line, while arm0 works
+goto_pose_arm1(np.array([1.10, 0.0, 0.35]), Q1_DOWN_Y)
+
+# Locate hammer handle middle; grasp 5 cm toward the head (-Y) so more handle stays free for arm1
+hpos, _ = get_hammer_pose()
+gx, gy, gz = float(hpos[0]), float(hpos[1]) - 0.05, float(hpos[2])
+
+# Arm0: approach from above, grasp across the handle
+goto_pose_arm0(np.array([gx, gy, gz + 0.15]), Q0_DOWN_X)
+goto_pose_arm0(np.array([gx, gy, gz]), Q0_DOWN_X, z_approach=0.08)
+close_gripper_arm0()
+
+# Lift straight up (pure translation)
+lift_z = 0.25
+goto_pose_arm0(np.array([gx, gy, lift_z]), Q0_DOWN_X)
+
+# Rotate 90 deg about Z in place so the handle lies along X
+Q0_HAND = Q0_DOWN_Y_A
+goto_pose_arm0(np.array([gx, gy, lift_z]), Q0_HAND)
+
+# Verify the handle points toward +X (toward arm1): handle middle must be at larger x than the gripper.
+# If not, rotate 180 deg (other Y-opening orientation) so the handle points +X.
+hp, _ = get_hammer_pose()
+if float(hp[0]) < gx:
+    Q0_HAND = Q0_DOWN_Y_B
+    goto_pose_arm0(np.array([gx, gy, lift_z]), Q0_HAND)
+
+# Translate stepwise toward the handover point near the midpoint (~0.81), then descend to handover height
+hand_x, hand_y, hand_z = 0.74, 0.0, 0.175
+goto_pose_arm0(np.array([0.58, hand_y, lift_z]), Q0_HAND)
+goto_pose_arm0(np.array([hand_x, hand_y, lift_z]), Q0_HAND)
+goto_pose_arm0(np.array([hand_x, hand_y, hand_z]), Q0_HAND)
+
+# Use actual hammer handle middle to place arm1's grasp on the free handle section,
+# keeping >= 9 cm from arm0's gripper (buffer) and staying inside the handle (half-length >= 7.5 cm)
+hp, _ = get_hammer_pose()
+g1x = max(hand_x + 0.09, float(hp[0]) + 0.03)
+g1x = min(g1x, float(hp[0]) + 0.06)
+g1z = float(hp[2])
+grasp1 = np.array([g1x, hand_y, g1z])
+
+# Arm1: come over the grasp point high, then descend straight down and grasp
+goto_pose_arm1(np.array([g1x, hand_y, 0.35]), Q1_DOWN_Y)
+goto_pose_arm1(grasp1, Q1_DOWN_Y, z_approach=0.12)
+close_gripper_arm1()
+
+# Release from arm0 and retreat upward, then back toward arm0's side
+open_gripper_arm0()
+goto_pose_arm0(np.array([hand_x, hand_y, hand_z + 0.12]), Q0_HAND)
+goto_pose_arm0(np.array([0.50, hand_y, hand_z + 0.15]), Q0_HAND)
+
+# Verify: hammer should be held by arm1 with z between 0.15 and 0.20
+hpos, hquat = get_hammer_pose()
+print("hammer pos:", hpos)
+print("hammer quat:", hquat)

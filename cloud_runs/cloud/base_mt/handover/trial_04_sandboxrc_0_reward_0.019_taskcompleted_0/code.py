@@ -1,0 +1,55 @@
+# Code block 0
+import numpy as np
+
+# Reference orientations: both grippers facing down, opening along X so they can
+# grasp the Y-aligned hammer handle from above.
+q0_down_openX = np.array([0.0, 0.707, 0.707, 0.0])   # arm0
+q1_down_openX = np.array([0.0, 0.707, -0.707, 0.0])  # arm1 (arm1 "open along Y" rotated 90deg about Z)
+
+# Handover location: midpoint between the two arms' initial gripper x positions
+x_mid = 0.5 * (0.44 + 1.18)
+z_handover = 0.175   # hammer must be between 0.15 and 0.20 during handover
+
+# --- Arm0: grasp hammer handle (slightly toward the head, leaving +Y handle free for arm1)
+hammer_pos, _ = get_hammer_pose()
+grasp0 = hammer_pos.copy()
+grasp0[1] -= 0.03           # arm0 grasp point on handle, toward head (-Y)
+arm1_dy = 0.05              # arm1 grasps +Y side of the handle (8cm away from arm0 gripper)
+
+open_gripper_arm0()
+goto_pose_arm0(grasp0, q0_down_openX, z_approach=0.12)
+close_gripper_arm0()
+
+# --- Arm0: lift straight up first, then translate over the gap, then descend to handover height
+lift0 = grasp0.copy()
+lift0[2] = max(hammer_pos[2] + 0.20, 0.25)
+goto_pose_arm0(lift0, q0_down_openX)
+
+carry0 = lift0.copy()
+carry0[0] = x_mid
+goto_pose_arm0(carry0, q0_down_openX)
+
+handover0 = carry0.copy()
+handover0[2] = z_handover
+goto_pose_arm0(handover0, q0_down_openX)
+
+# --- Arm1: approach from above, offset +Y along the handle, keeping >=8cm from arm0's gripper
+handover1 = handover0.copy()
+handover1[1] += arm1_dy
+
+pre1 = handover1.copy()
+pre1[2] = handover1[2] + 0.15
+open_gripper_arm1()
+goto_pose_arm1(pre1, q1_down_openX)
+
+# Descend and grasp the handle (z_approach gives a vertical insertion motion)
+goto_pose_arm1(handover1, q1_down_openX, z_approach=0.08)
+close_gripper_arm1()
+
+# --- Arm0 releases and retreats (up, then back toward its own side)
+open_gripper_arm0()
+retreat0 = handover0.copy()
+retreat0[2] += 0.15
+goto_pose_arm0(retreat0, q0_down_openX)
+retreat0[0] = 0.44
+goto_pose_arm0(retreat0, q0_down_openX)

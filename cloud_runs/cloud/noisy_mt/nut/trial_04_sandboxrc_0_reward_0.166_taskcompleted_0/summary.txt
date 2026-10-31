@@ -1,0 +1,140 @@
+----------------------------------------------------------------------------------------------------
+Generated program:
+# Code block 0
+import numpy as np
+
+def avg_pose(name, n=8):
+    ps = []
+    q = None
+    for _ in range(n):
+        p, q = get_object_pose(name)
+        ps.append(p)
+    return np.mean(ps, axis=0), q
+
+def avg_grasp(name, n=8):
+    ps = []
+    q = None
+    for _ in range(n):
+        p, q = sample_grasp_pose(name)
+        ps.append(p)
+    return np.mean(ps, axis=0), q
+
+# Perceive nut center, handle grasp, and block (averaged to reduce ~1cm noise)
+nut_pos, _ = avg_pose("white hollow center of the brown square nut")
+grasp_pos, grasp_quat = avg_grasp("extruded handle of the brown square nut")
+block_pos, _ = avg_pose("brown square block")
+
+# Fixed rigid offset from nut center to handle grasp (world frame; orientation is kept constant during transport)
+offset = grasp_pos - nut_pos
+
+# Grasp the nut by its handle
+goto_home_joint_position()
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.10)
+close_gripper()
+
+# Lift
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.20
+goto_pose(lift_pos, grasp_quat)
+
+# Target gripper pose so nut center aligns with the block (peg) center
+target = block_pos + offset
+target[2] = block_pos[2] + offset[2] + 0.01
+above = target.copy()
+above[2] += 0.20
+goto_pose(above, grasp_quat)
+
+# Insert with vertical approach motion
+goto_pose(target, grasp_quat, z_approach=0.12)
+
+# Release and retreat
+open_gripper()
+retreat = target.copy()
+retreat[2] += 0.15
+goto_pose(retreat, grasp_quat)
+goto_home_joint_position()
+
+# Code block 1
+import numpy as np
+
+# Verify final state without moving the robot: check nut center vs block (peg) position
+def avg_pose(name, n=10):
+    ps = []
+    for _ in range(n):
+        p, _ = get_object_pose(name)
+        ps.append(p)
+    return np.mean(ps, axis=0)
+
+nut_c = avg_pose("white hollow center of the brown square nut")
+blk_c = avg_pose("brown square block")
+print("nut center:", nut_c)
+print("block center:", blk_c)
+print("xy error (m):", np.linalg.norm(nut_c[:2] - blk_c[:2]))
+print("nut z - block z (m):", nut_c[2] - blk_c[2])
+
+# Code block 2
+import numpy as np
+
+def avg_pose(name, n=20):
+    ps = []
+    q = None
+    for _ in range(n):
+        p, q = get_object_pose(name)
+        ps.append(p)
+    return np.mean(ps, axis=0), q
+
+def avg_grasp(name, n=20):
+    ps = []
+    q = None
+    for _ in range(n):
+        p, q = sample_grasp_pose(name)
+        ps.append(p)
+    return np.mean(ps, axis=0), q
+
+# Previous attempt left a ~2cm XY offset between nut center and block; retry with heavier averaging.
+nut_pos, _ = avg_pose("white hollow center of the brown square nut")
+grasp_pos, grasp_quat = avg_grasp("extruded handle of the brown square nut")
+block_pos, _ = avg_pose("brown square block")
+
+offset = grasp_pos - nut_pos
+
+# Re-grasp the nut by its handle
+goto_home_joint_position()
+open_gripper()
+goto_pose(grasp_pos, grasp_quat, z_approach=0.10)
+close_gripper()
+
+# Lift high
+lift_pos = grasp_pos.copy()
+lift_pos[2] += 0.25
+goto_pose(lift_pos, grasp_quat)
+
+# Re-perceive block while nut is out of the way for a cleaner estimate
+block_pos2, _ = avg_pose("brown square block")
+block_pos = 0.5 * (block_pos + block_pos2)
+
+# Target gripper pose so nut center aligns with the block (peg) center
+target = block_pos + offset
+target[2] = block_pos[2] + offset[2] + 0.005
+above = target.copy()
+above[2] += 0.25
+goto_pose(above, grasp_quat)
+
+# Insert with a longer straight vertical approach
+goto_pose(target, grasp_quat, z_approach=0.15)
+
+# Release and retreat
+open_gripper()
+retreat = target.copy()
+retreat[2] += 0.15
+goto_pose(retreat, grasp_quat)
+goto_home_joint_position()
+
+# Verify
+nut_c, _ = avg_pose("white hollow center of the brown square nut", n=20)
+blk_c, _ = avg_pose("brown square block", n=20)
+print("nut center:", nut_c)
+print("block center:", blk_c)
+print("xy error (m):", np.linalg.norm(nut_c[:2] - blk_c[:2]))
+print("nut z - block z (m):", nut_c[2] - blk_c[2])
