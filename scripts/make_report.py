@@ -7,7 +7,7 @@
 - Codex（terra・sol・astra）: results/clean_cells.csv（runs/main の Codex は点検の比較用）
 - Fable: 1回で答える6セルは results/clean_cells.csv、複数ターン4セルは cloud_runs/cloud/summary.csv
 - 正解コード: results/oracle_cells.csv
-- 案A（任意）: results/casea_cells.csv があれば、同じ列（cond,model,task,trials,success,...）で読む
+- 案A（Qwen3.5-9B、Colab）: results/planA_cells.csv と results/planA_trials.csv（無ければ6章は空欄のまま）
 
 書き出すもの:
 - report/tables/*.csv と *.md（成功率と 95% 信頼区間、検定、平均化の集計）
@@ -146,7 +146,7 @@ def read_cells() -> dict[tuple[str, str, str, str], tuple[int, int]]:
     out: dict[tuple[str, str, str, str], tuple[int, int]] = {}
     for tag, path in [("main", RES / "main_cells.csv"), ("clean", RES / "clean_cells.csv"),
                       ("oracle", RES / "oracle_cells.csv"), ("cloud", ROOT / "cloud_runs/cloud/summary.csv"),
-                      ("casea", RES / "casea_cells.csv")]:
+                      ("casea", RES / "planA_cells.csv")]:
         if not path.exists():
             continue
         with path.open() as f:
@@ -324,27 +324,59 @@ def fig_heatmap(plt, grid) -> None:
     plt.close(fig)
 
 
+CASEA_CONDS = [("base", "そのまま"), ("base_mt", "①複数ターン"), ("skill", "②見本"), ("skill_mt", "①＋②")]
+
+
+def casea_errors() -> list[list]:
+    """案A の1回で答える条件（base・skill）で、各試行のコードが最後にどの例外で止まったか（runs/planA の summary.txt）。
+    試行のフォルダは results/planA_trials.csv の行（コードが落ちたか・成功したか）と名前が合うものを使う。
+    複数ターンは1試行に複数のフォルダがあり、Colab から持ち帰ると更新時刻がそろって順番が分からないので数えない。
+    runs/ が無い環境では、前に書き出した report/tables/casea_errors.csv を読み直す。"""
+    cache = TABLES / "casea_errors.csv"
+    base = ROOT / "runs/planA"
+    if not base.exists():
+        if not cache.exists():
+            return []
+        with cache.open() as f:
+            return [r for i, r in enumerate(csv.reader(f)) if i > 0]
+    rows = []
+    with (RES / "planA_trials.csv").open() as f:
+        trials = [r for r in csv.DictReader(f) if r["cond"] in ("base", "skill")]
+    for r in trials:
+        d = base / r["cond"] / "qwen3.5-9b/qwen3.5-9b" / r["task"]
+        hits = sorted(d.glob(f"trial_{int(r['trial']):02d}_sandboxrc_{r['code_failed']}_reward_*"
+                             f"_taskcompleted_{r['success']}"))
+        if len(hits) != 1:
+            sys.exit(f"案A の試行のフォルダが1つに決まらない: {d} trial {r['trial']} → {hits}")
+        text = (hits[0] / "summary.txt").read_text(errors="replace")
+        errs = re.findall(r"^(\w+(?:Error|Exception)): ?(.*)$", text, re.M)
+        name, msg = errs[-1] if errs else ("", "")
+        m = re.search(r"name '(\w+)' is not defined", msg)
+        rows.append([r["cond"], r["task"], r["trial"], name, m.group(1) if m else "", r["success"]])
+    return rows
+
+
 def fig_casea(plt, raw) -> bool:
     rows = [(k, v) for k, v in raw.items() if k[0] == "casea"]
     if not rows:
         return False
-    conds = ["base", "base_mt", "skill", "skill_mt"]
     tasks = ["stack", "nut", "handover"]
     fig, ax = plt.subplots(figsize=(7, 3.6))
     w = 0.2
     colors = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100"]
-    for j, cond in enumerate(conds):
+    for j, (cond, lab) in enumerate(CASEA_CONDS):
         ks, ns, xs = [], [], []
         for i, t in enumerate(tasks):
             hit = [v for k, v in rows if k[1] == cond and k[3] == t]
             if hit:
                 ks.append(hit[0][0]); ns.append(hit[0][1]); xs.append(i - 0.3 + w * j)
         if ks:
-            bar_err(ax, xs, ks, ns, w * 0.92, colors[j], label=cond)
+            bar_err(ax, xs, ks, ns, w * 0.92, colors[j], label=f"{cond}（{lab}）")
     ax.set_xticks(range(len(tasks)), [TASK_JA[t] for t in tasks])
     ax.set_ylim(0, 1.05)
-    ax.legend(loc="upper left", bbox_to_anchor=(1.0, 1.0))
-    ax.set_title("案A: Qwen3.5-9B（base / base_mt / skill / skill_mt）", loc="left")
+    ax.set_ylabel("成功率（誤差棒は 95% 区間）")
+    ax.legend(loc="upper left", bbox_to_anchor=(1.0, 1.0), fontsize=8)
+    ax.set_title("案A: Qwen3.5-9B の成功率（各10回）", loc="left")
     fig.tight_layout()
     fig.savefig(FIGS / "fig5_casea.png", dpi=200)
     plt.close(fig)
@@ -432,6 +464,7 @@ Claude Fable 5.1 の複数ターン4セル（積み替え(複数)・受け渡し
 - **受け渡し**は gpt-6.1-sol・gpt-6-astra が {{sol.base.handover}}・{{astra.base.handover}}、gpt-6.1-terra・Claude Fable 5.1・GPT-OSS 120B が {{terra.base.handover}}・{{fable.base.handover}}・{{oss.base.handover}}（Fisher の正確検定で p≤{{hand.base.maxp}}）。
 - **積み替え**（最初から緑が赤の上に載っている）は、1回で答えると全モデル 0/10。複数ターンにすると Gemini 4 Argon だけが {{argon.base_mt.restack}} になり（p={{p.mt.argon.restack}}、多重比較の補正後は言い切れない）、成功はすべて実行結果を見て書き直した試行だった。書き直さずに「完了」と答えるモデルには、複数ターンが効かない。
 - **位置に 1cm の誤差**を足すと、9モデル合計でナットが {{pool.base.nut}}→{{pool.noisy.nut}}（p={{p.noise.pool.nut}}）に下がった。大きく下がったのは Gemini 3.8 Flash（{{flash.base.nut}}→{{flash.noisy.nut}}）と Claude Haiku 5.5（{{haiku.base.nut}}→{{haiku.noisy.nut}}）。ただし誤差ありのセルは、回し直すと1セルで最大 {{codex.maxdiff}} 回ぶれるので、10回での細かい差は言い切れない。
+- **案A**（小さいオープンモデル Qwen3.5-9B、Colab の A100）: そのままでは積む・ナット・受け渡しが {{qa.base.stack}}・{{qa.base.nut}}・{{qa.base.handover}}。①実行結果を見て書き直す、②大きいモデルの成功コード（ほかのタスクの分）を見本に足す、を入れると積むは {{qa.base_mt.stack}}・{{qa.skill.stack}}・{{qa.skill_mt.stack}}（①・②・①＋②）に上がったが、10回では言い切れず（p≥{{p.qa.stack.skill_mt}}）、ナットと受け渡しはほぼ 0 のまま。①で成功した試行も、{{qa.base_mt.succ_first}} は書き直さずに最初のコードで成功していた。
 
 """
 
@@ -648,7 +681,8 @@ def main() -> None:
 
     # --- 平均化
     av_rows, have_runs = averaging_rows()
-    av_rows += replay_averaging()
+    if not have_runs:  # runs/ があれば Fable の1回の分は runs/clean で数えている（replay は同じ回答で、成功との対応が無い）
+        av_rows += replay_averaging()
     note = ("scripts/scan_averaging.py と同じ判定（np.mean/median/average と range(...) があり、位置を読む関数を呼ぶ）。"
             "正規表現による目安で、取りこぼしがありうる。")
     if not have_runs:
@@ -667,9 +701,59 @@ def main() -> None:
     plt = setup_mpl()
     has_a = fig_casea(plt, raw)
     if has_a:
-        ar = sorted({(k[1], k[3]): v for k, v in raw.items() if k[0] == "casea"}.items())
-        V["table.casea"] = write_table("casea", ["条件", "タスク", "成功", "95% 区間"],
-                                       [[c, TASK_JA.get(t, t), f"{v[0]}/{v[1]}", fmt_ci(*v)] for (c, t), v in ar])
+        tasks_a = ["stack", "nut", "handover"]
+        A = {(k[1], k[3]): v for k, v in raw.items() if k[0] == "casea"}
+        with (RES / "planA_cells.csv").open() as f:
+            failed = {(r["cond"], r["task"]): int(r["code_failed"]) for r in csv.DictReader(f)}
+        with (RES / "planA_trials.csv").open() as f:
+            trials_a = list(csv.DictReader(f))
+        rows = []
+        for c, lab in CASEA_CONDS:
+            rows.append([f"{c}（{lab}）"] + [f"{A[(c, t)][0]}/{A[(c, t)][1]}（{failed[(c, t)]}）" for t in tasks_a]
+                        + [f"{sum(A[(c, t)][0] for t in tasks_a)}/{sum(A[(c, t)][1] for t in tasks_a)}"])
+            for t in tasks_a:
+                V[f"qa.{c}.{t}"] = f"{A[(c, t)][0]}/{A[(c, t)][1]}"
+            V[f"qa.{c}.failed"] = f"{sum(failed[(c, t)] for t in tasks_a)}/{sum(A[(c, t)][1] for t in tasks_a)}"
+        # 参考: 大きいモデル9個の同じ3タスク（1回で答える条件）
+        big = {t: sorted(grid[m[0]][("base", t)][0] for m in MODELS) for t in tasks_a}
+        rows.append(["参考: 大きいモデル9個（そのまま）の中央値［最小–最大］"]
+                    + [f"{big[t][len(big[t]) // 2]}/10［{big[t][0]}–{big[t][-1]}］" for t in tasks_a] + [""])
+        V["table.casea"] = write_table(
+            "casea", ["条件", "積む", "ナット", "受け渡し", "3タスクの合計"], rows,
+            "括弧内は、コードが例外で止まった試行の数（複数ターンは最後のコード）。各セル10回。")
+        for t in tasks_a:
+            V[f"qa.big.{t}.median"] = f"{big[t][len(big[t]) // 2]}/10"
+        # 積むの検定（そのまま と ①・②・①＋②）。10回ずつなので、差が5回ほど無いと言い切れない
+        k0, n0 = A[("base", "stack")]
+        for c, _ in CASEA_CONDS[1:]:
+            V[f"p.qa.stack.{c}"] = fmt_p(fisher(*A[(c, "stack")], k0, n0))
+        # 複数ターンで成功した試行のうち、書き直さずに最初のコードで成功したもの（regenerations=0）。
+        # 書き直した試行が、書き直して初めて成功したのかは記録に残っていない（ターンごとの成否が無い）
+        for c in ["base_mt", "skill_mt"]:
+            ok = [r for r in trials_a if r["cond"] == c and r["success"] == "1"]
+            if any(r["regenerations"] == "" for r in ok):
+                sys.exit(f"planA_trials.csv の {c} に、書き直しの回数が空の成功試行がある（analyze.py を流し直す）")
+            first = [r for r in ok if r["regenerations"] == "0"]
+            V[f"qa.{c}.succ_first"] = f"{len(first)}/{len(ok)}"
+            for t in tasks_a:
+                ts = [r for r in trials_a if r["cond"] == c and r["task"] == t and r["code_blocks"] != ""]
+                V[f"qa.{c}.{t}.blocks"] = f"{sum(int(r['code_blocks']) for r in ts) / len(ts):.1f}"
+        # 例外の内訳（1回で答える条件）
+        er = casea_errors()
+        if er:
+            write_table("casea_errors", ["cond", "task", "trial", "exception", "undefined_name", "success"], er)
+            home = [r for r in er if r[0] == "skill" and r[1] == "stack" and r[4] == "goto_home_joint_position"]
+            V["qa.skill.stack.home"] = str(len(home))
+            V["qa.skill.stack.home.succ"] = str(sum(int(r[5]) for r in home))
+            V["qa.syntax"] = str(sum(1 for r in er if r[3] in ("SyntaxError", "IndentationError")))
+        else:
+            for k in ["qa.skill.stack.home", "qa.skill.stack.home.succ", "qa.syntax"]:
+                V[k] = "（runs/ が無いので未集計）"
+        with (RES / "planA_calls.csv").open() as f:
+            calls = next(csv.DictReader(f))
+        V["qa.calls"] = calls["calls"]
+        V["qa.calls.err"] = calls["errors"]
+        V["qa.calls.latency"] = calls["median_latency_s"]
         V["fig.casea"] = "![案A の結果](figs/fig5_casea.png)"
     else:
         V["table.casea"] = ("| 条件 | 積む | ナット | 受け渡し |\n|---|---|---|---|\n"

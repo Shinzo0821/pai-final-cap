@@ -89,6 +89,21 @@ Qwen3.5-9B を Colab の GPU（vLLM）で、stack・nut・handover × base/skill
 - 試運転（GPU なしのコンテナ、Hugging Face に届かないのでダミーのモデル）: 4条件×3タスク×1試行が通り、
   複数ターン（REGENERATE→FINISH）・見本の注入・集計を確認。oracle は3タスクとも 3/3。
 
+## 案A の結果（2026-11-01、Colab の A100、本番は 12:11 に回収）
+- 120 試行すべて完走（vLLM のエラー 0、見張りの合図 0）。環境と注意点は `runs/planA/ENV_planA.md`、表は `results/planA_summary.md`。
+- そのまま 1/10・0/10・0/10（積む・ナット・受け渡し）。積むは ① 5/10、② 5/10、①＋② 6/10。ナット・受け渡しは ①② でもほぼ 0（60 試行で 1 回）。
+  積むの差は Fisher で p=0.14・0.14・0.057。10回では言い切れない。
+- ①の成功のうち、書き直さずに最初のコードで成功したのは 3/5（①＋② は 4/6）。書き直した試行が書き直して初めて成功したのかは、ターンごとの成否が残っていないので分からない。
+- ①はコードが例外で止まるのを減らした（16/30 → 2/30）が、止まらなくなっても成功しない。小さいモデルは「最後まで動くコード」でまずつまずく。
+- ②の副作用: 積むの見本にあるナット用の関数 `goto_home_joint_position`（積むの API には無い。見本には使える関数の一覧も付けていた）を
+  4 試行が写して NameError（うち 2 は積み終えたあとなので成功）。①＋② で書き直して成功した 2 試行のうち 1 つはこれを直したもの（もう 1 つは SyntaxError）。
+- 例外の内訳は `report/tables/casea_errors.csv`（1回で答える条件のみ。複数ターンは Colab から持ち帰ったフォルダの更新時刻がそろい、順番が分からない）。
+- 集計の直し（2026-11-01 夜、Codex のレビューで発見）: Colab から zip で持ち帰ると試行のフォルダの更新時刻がそろうので、
+  `analyze.py` が複数ターンの2試行（base_mt の積む trial 4・受け渡し trial 9）で途中経過のフォルダを最終として選んでいた。
+  summary.txt に「Num Code Blocks」のある完了フォルダを優先するように直し、`results/planA_*` を集計し直した（成功数は変わらず、例外の数と書き直しの回数が変わった）。
+  runs/main・runs/clean では、この直しで選ぶフォルダは変わらない。
+- 2026-11-01 夜: plana-colab と report-draft（クラウドのレポート下書き）を main にマージし、`make_report.py` を `results/planA_*` に対応させ、レポート6章を書いた。
+
 ## 制約
 - Mac で動くのは特権情報（シミュレータの真の位置）を使う設定だけ。画像認識の設定は SAM3 などの GPU が要る。
 - オープンモデル（Qwen）は Colab の GPU で、CaP-X ごと動かす予定。
@@ -97,7 +112,7 @@ Qwen3.5-9B を Colab の GPU（vLLM）で、stack・nut・handover × base/skill
 1. 動画（1〜3分）: runs/main の video_combined.mp4 から、受け渡しの成功・失敗、積み替えの書き直し、誤差ありのナットを選んでつなぐ。
 2. レポート PDF: 目的（GENIAC の Code-as-Policy）、CaP-X、条件の作り方、結果の表、分かったこと、限界（特権情報・1cm 誤差は画像認識の代わり）。
 3. 公開 GitHub: README、patches/、scripts/、results/。git の作者名はこのリポジトリだけ匿名（pai-final）にしてある。
-4. 余裕があれば: Colab で Qwen を同じ条件で回す（準備済み。`colab/README.md`）。
+4. （済み）案A: Colab で Qwen を回した（上の「案A の結果」）。
 
 ## 動かし方
 ```bash

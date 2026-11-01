@@ -25,7 +25,7 @@ Python のプログラムを書き、それを実行してロボットを動か�
 2. 実行結果を見て書き直せる「複数ターン」にすると、成功率は上がるか。
 3. 物体の位置に誤差（画像認識の誤差の代わり）を入れると、どれくらい下がるか。誤差に備えたコードを書くモデルはあるか。
 
-さらに、小さいオープンモデル（Qwen3.5-9B）に工夫を足す「案A」を別に進めている（6章、結果は未）。
+さらに「案A」として、小さいオープンモデル（Qwen3.5-9B）に、①実行結果を見て書き直させる仕組みと、②大きいモデルの成功コードを見本として渡すスキルライブラリを足すと、どこまで上がるかを調べた（6章）。
 
 ## 2. CaP-X と使ったタスク
 
@@ -304,20 +304,53 @@ LLM のコードが平均化をしているかを、`scripts/scan_averaging.py`�
 
 | モデル | 条件 | タスク | 平均化した試行 | 成功（平均化あり） | 成功（平均化なし） | 出どころ |
 |---|---|---|---|---|---|---|
+| Claude Haiku 5.5 | 誤差あり・1回 | 積む | 0/10 | 0/0 | 7/10 | runs/main/noisy/claude-cli__claude-haiku-5-5@medium/claude-cli_claude-haiku-5-5@medium/stack |
+| Claude Haiku 5.5 | 誤差あり・1回 | ナット | 0/10 | 0/0 | 0/10 | runs/main/noisy/claude-cli__claude-haiku-5-5@medium/claude-cli_claude-haiku-5-5@medium/nut |
+| Claude Haiku 5.5 | 誤差あり・複数ターン | 積む | 0/10 | 0/0 | 5/10 | runs/main/noisy_mt/claude-cli__claude-haiku-5-5@medium/claude-cli_claude-haiku-5-5@medium/stack |
+| Claude Haiku 5.5 | 誤差あり・複数ターン | ナット | 0/10 | 0/0 | 2/10 | runs/main/noisy_mt/claude-cli__claude-haiku-5-5@medium/claude-cli_claude-haiku-5-5@medium/nut |
+| Claude Opus 5.5 | 誤差あり・1回 | 積む | 10/10 | 9/10 | 0/0 | runs/main/noisy/claude-cli__claude-opus-5-5@medium/claude-cli_claude-opus-5-5@medium/stack |
+| Claude Opus 5.5 | 誤差あり・1回 | ナット | 2/10 | 0/2 | 5/8 | runs/main/noisy/claude-cli__claude-opus-5-5@medium/claude-cli_claude-opus-5-5@medium/nut |
+| Claude Opus 5.5 | 誤差あり・複数ターン | 積む | 10/10 | 9/10 | 0/0 | runs/main/noisy_mt/claude-cli__claude-opus-5-5@medium/claude-cli_claude-opus-5-5@medium/stack |
+| Claude Opus 5.5 | 誤差あり・複数ターン | ナット | 7/10 | 1/7 | 0/3 | runs/main/noisy_mt/claude-cli__claude-opus-5-5@medium/claude-cli_claude-opus-5-5@medium/nut |
+| Gemini 3.8 Flash | 誤差あり・1回 | 積む | 0/10 | 0/0 | 7/10 | runs/main/noisy/agy-cli__gemini-3.8-flash-medium/agy-cli_gemini-3.8-flash-medium/stack |
+| Gemini 3.8 Flash | 誤差あり・1回 | ナット | 6/10 | 0/6 | 1/4 | runs/main/noisy/agy-cli__gemini-3.8-flash-medium/agy-cli_gemini-3.8-flash-medium/nut |
+| Gemini 3.8 Flash | 誤差あり・複数ターン | 積む | 0/10 | 0/0 | 9/10 | runs/main/noisy_mt/agy-cli__gemini-3.8-flash-medium/agy-cli_gemini-3.8-flash-medium/stack |
+| Gemini 3.8 Flash | 誤差あり・複数ターン | ナット | 5/10 | 1/5 | 1/5 | runs/main/noisy_mt/agy-cli__gemini-3.8-flash-medium/agy-cli_gemini-3.8-flash-medium/nut |
+| Gemini 4 Argon | 誤差あり・1回 | 積む | 10/10 | 10/10 | 0/0 | runs/main/noisy/agy-cli__gemini-4-argon-medium/agy-cli_gemini-4-argon-medium/stack |
+| Gemini 4 Argon | 誤差あり・1回 | ナット | 10/10 | 3/10 | 0/0 | runs/main/noisy/agy-cli__gemini-4-argon-medium/agy-cli_gemini-4-argon-medium/nut |
+| Gemini 4 Argon | 誤差あり・複数ターン | 積む | 10/10 | 10/10 | 0/0 | runs/main/noisy_mt/agy-cli__gemini-4-argon-medium/agy-cli_gemini-4-argon-medium/stack |
+| Gemini 4 Argon | 誤差あり・複数ターン | ナット | 10/10 | 6/10 | 0/0 | runs/main/noisy_mt/agy-cli__gemini-4-argon-medium/agy-cli_gemini-4-argon-medium/nut |
+| GPT-OSS 120B | 誤差あり・1回 | 積む | 0/10 | 0/0 | 8/10 | runs/main/noisy/agy-cli__gpt-oss-120b-medium/agy-cli_gpt-oss-120b-medium/stack |
+| GPT-OSS 120B | 誤差あり・1回 | ナット | 0/10 | 0/0 | 1/10 | runs/main/noisy/agy-cli__gpt-oss-120b-medium/agy-cli_gpt-oss-120b-medium/nut |
+| GPT-OSS 120B | 誤差あり・複数ターン | 積む | 0/10 | 0/0 | 6/10 | runs/main/noisy_mt/agy-cli__gpt-oss-120b-medium/agy-cli_gpt-oss-120b-medium/stack |
+| GPT-OSS 120B | 誤差あり・複数ターン | ナット | 0/10 | 0/0 | 1/10 | runs/main/noisy_mt/agy-cli__gpt-oss-120b-medium/agy-cli_gpt-oss-120b-medium/nut |
+| gpt-6.1-terra | 誤差あり・1回 | 積む | 0/10 | 0/0 | 4/10 | runs/clean/noisy/codex-cli__gpt-6.1-terra@medium/codex-cli_gpt-6.1-terra@medium/stack |
+| gpt-6.1-terra | 誤差あり・1回 | ナット | 7/10 | 6/7 | 2/3 | runs/clean/noisy/codex-cli__gpt-6.1-terra@medium/codex-cli_gpt-6.1-terra@medium/nut |
+| gpt-6.1-terra | 誤差あり・複数ターン | 積む | 0/10 | 0/0 | 3/10 | runs/clean/noisy_mt/codex-cli__gpt-6.1-terra@medium/codex-cli_gpt-6.1-terra@medium/stack |
+| gpt-6.1-terra | 誤差あり・複数ターン | ナット | 8/10 | 3/8 | 0/2 | runs/clean/noisy_mt/codex-cli__gpt-6.1-terra@medium/codex-cli_gpt-6.1-terra@medium/nut |
+| gpt-6.1-sol | 誤差あり・1回 | 積む | 2/10 | 2/2 | 6/8 | runs/clean/noisy/codex-cli__gpt-6.1-sol@medium/codex-cli_gpt-6.1-sol@medium/stack |
+| gpt-6.1-sol | 誤差あり・1回 | ナット | 6/10 | 5/6 | 3/4 | runs/clean/noisy/codex-cli__gpt-6.1-sol@medium/codex-cli_gpt-6.1-sol@medium/nut |
+| gpt-6.1-sol | 誤差あり・複数ターン | 積む | 2/10 | 1/2 | 5/8 | runs/clean/noisy_mt/codex-cli__gpt-6.1-sol@medium/codex-cli_gpt-6.1-sol@medium/stack |
+| gpt-6.1-sol | 誤差あり・複数ターン | ナット | 7/10 | 6/7 | 3/3 | runs/clean/noisy_mt/codex-cli__gpt-6.1-sol@medium/codex-cli_gpt-6.1-sol@medium/nut |
+| gpt-6-astra | 誤差あり・1回 | 積む | 0/10 | 0/0 | 4/10 | runs/clean/noisy/codex-cli__gpt-6-astra@medium/codex-cli_gpt-6-astra@medium/stack |
+| gpt-6-astra | 誤差あり・1回 | ナット | 4/10 | 2/4 | 6/6 | runs/clean/noisy/codex-cli__gpt-6-astra@medium/codex-cli_gpt-6-astra@medium/nut |
+| gpt-6-astra | 誤差あり・複数ターン | 積む | 2/10 | 2/2 | 7/8 | runs/clean/noisy_mt/codex-cli__gpt-6-astra@medium/codex-cli_gpt-6-astra@medium/stack |
+| gpt-6-astra | 誤差あり・複数ターン | ナット | 6/10 | 4/6 | 4/4 | runs/clean/noisy_mt/codex-cli__gpt-6-astra@medium/codex-cli_gpt-6-astra@medium/nut |
+| Claude Fable 5.1 | 誤差あり・1回 | 積む | 0/10 | 0/0 | 7/10 | runs/clean/noisy/replay-cli__claude-fable-5-1@medium/replay-cli_claude-fable-5-1@medium/stack |
+| Claude Fable 5.1 | 誤差あり・1回 | ナット | 3/10 | 1/3 | 2/7 | runs/clean/noisy/replay-cli__claude-fable-5-1@medium/replay-cli_claude-fable-5-1@medium/nut |
 | Claude Fable 5.1 | 誤差あり・複数ターン | 積む | 0/10 | 0/0 | 7/10 | cloud_runs/cloud/noisy_mt/stack |
 | Claude Fable 5.1 | 誤差あり・複数ターン | ナット | 6/10 | 0/6 | 1/4 | cloud_runs/cloud/noisy_mt/nut |
-| Claude Fable 5.1 | 誤差あり・1回 | 積む | 0/10 | （対応なし） | （対応なし） | replay/claude-fable-5-1@medium/9239b5ad50ecd964 |
-| Claude Fable 5.1 | 誤差あり・1回 | ナット | 3/10 | （対応なし） | （対応なし） | replay/claude-fable-5-1@medium/0a305999e24273c1 |
 
-scripts/scan_averaging.py と同じ判定（np.mean/median/average と range(...) があり、位置を読む関数を呼ぶ）。正規表現による目安で、取りこぼしがありうる。 このリポジトリには runs/ が無いので、Fable（cloud_runs/ と replay/）だけを数えた。ほかの8モデルは runs/ のある手元で `python3 scripts/make_report.py` を流し直すと埋まる。
+scripts/scan_averaging.py と同じ判定（np.mean/median/average と range(...) があり、位置を読む関数を呼ぶ）。正規表現による目安で、取りこぼしがありうる。
 
 
-<!-- TODO: runs/ のある手元の Mac で `python3 scripts/make_report.py` を流すと、表6 に8モデル分が入る。
-     そのあと、ここに「どのモデルが平均化をするか」「平均化した試行の成功率」を1〜2文で書く。 -->
+平均化するかどうかは、モデルごとにはっきり分かれた（表6）。
 
-このリポジトリにある分（Fable）では、誤差あり・複数ターンのナットで 6/10 の試行が平均化していたが、そのうちの成功は 0/6 だった。
-ナットは向きも合わせる必要があり、位置を平均するだけでは足りないとみられる。
-ほかのモデルの集計は、実験の生データ（runs/、このリポジトリには含めていない）のある環境で埋める。
+- Claude Opus 5.5 と Gemini 4 Argon は、誤差ありの積むで 10 回とも平均化し、成功もほぼすべて（Opus 9/10、Argon 10/10）。
+- Claude Haiku 5.5 と GPT-OSS 120B は、どの条件でも一度も平均化しなかった。
+- Codex の3モデルは、積むではあまり平均化しないが、ナットでは平均化することが多い。
+- ナットは、平均化しても成功するとは限らない。たとえば Fable の誤差あり・複数ターンのナットでは 6/10 の試行が平均化していたが、成功は 0/6 だった。
+  ナットは向きも合わせる必要があり、位置を平均するだけでは足りないとみられる。
 
 ### 5.5 そのほか
 
@@ -326,33 +359,60 @@ scripts/scan_averaging.py と同じ判定（np.mean/median/average と range(...
   **失敗のほとんどは文法や API の使い方ではなく、作業の段取りや幾何（向き・位置）の間違い**である。
 - LLM の呼び出しエラーは runs/main で 1,089 回中 8 回。いずれも CaP-X の再試行で回復した。
 
-## 6. 案A: 小さいモデル＋①②（結果は未）
-
-<!-- 別のセッションで準備中。結果が出たら results/casea_cells.csv を置いて make_report.py を流す。 -->
+## 6. 案A: 小さいモデル＋①②
 
 **ねらい。** 本コンテストでは、大きいモデルを API で呼べない場面も考えられる。
-小さいオープンモデル（Qwen3.5-9B、Colab の GPU で CaP-X ごと動かす）に、次の2つを足すとどこまで上がるかを調べる。
+小さいオープンモデル（Qwen3.5-9B）に、次の2つを足すとどこまで上がるかを調べた。
 
 - ① **複数ターン**: 実行結果（標準出力・エラー）を見せて書き直させる（3章の base_mt と同じ）。
-- ② **スキルライブラリ**: 大きいモデルが誤差なしの条件で成功したコード（`skill_src/`、成功コード 243 個）を、手本としてプロンプトに入れる。
+- ② **スキルライブラリ**: 大きいモデルが誤差なしの条件で成功したコード（`skill_src/`、成功コード 243 個）から選んだものを、手本としてプロンプトに足す。
+  **同じタスクの成功コードは見せない**（答えを渡すのと同じになるため）。ほかのタスクの成功コードを、見本のタスクごとに1件ずつ入れた（選び方は `skill_lib/README.md`）。
+  見本を除いたプロンプトは、そのままの条件と1文字も違わないことを確かめた。
 
-**条件。** 積む・ナット・受け渡し × base / base_mt / skill / skill_mt × 各10回。
+**やり方。** Qwen3.5-9B（bf16）を Google Colab の A100（40GB）で vLLM 0.31.0 を使って動かし、CaP-X も同じ VM で動かした（描画は EGL）。
+送る値は CaP-X の既定どおり temperature 1.0・max_tokens 20480 で、Qwen の thinking は切った。
+積む・ナット・受け渡し × 4条件 × 各10回 = 120 試行。LLM の呼び出しは 289 回でエラーは 0 回、応答時間の中央値は 21.9 秒。
+先に同じ VM で正解コードを流し、積む・ナットは 3/3、受け渡しは 2/3（回し直して 3/3）になることを確かめた（`runs/planA/ENV_planA.md`）。
 
 表7 案A の成功数/10
 
-| 条件 | 積む | ナット | 受け渡し |
-|---|---|---|---|
-| base（そのまま・1回） | （未） | （未） | （未） |
-| base_mt（①あり・複数ターン） | （未） | （未） | （未） |
-| skill（②あり・1回） | （未） | （未） | （未） |
-| skill_mt（①②あり・複数ターン） | （未） | （未） | （未） |
+| 条件 | 積む | ナット | 受け渡し | 3タスクの合計 |
+|---|---|---|---|---|
+| base（そのまま） | 1/10（2） | 0/10（7） | 0/10（7） | 1/30 |
+| base_mt（①複数ターン） | 5/10（1） | 0/10（1） | 0/10（0） | 5/30 |
+| skill（②見本） | 5/10（5） | 1/10（4） | 0/10（4） | 6/30 |
+| skill_mt（①＋②） | 6/10（0） | 0/10（2） | 0/10（4） | 6/30 |
+| 参考: 大きいモデル9個（そのまま）の中央値［最小–最大］ | 10/10［9–10］ | 6/10［3–9］ | 5/10［0–10］ |  |
 
-<!-- results/casea_cells.csv（cond,model,task,trials,success）を置いて make_report.py を流すと、ここに表、下に図（figs/fig5_casea.png）が入る -->
+括弧内は、コードが例外で止まった試行の数（複数ターンは最後のコード）。各セル10回。
 
 
-<!-- 図: figs/fig5_casea.png（案A の結果が入ると作られる） -->
+![案A の結果](figs/fig5_casea.png)
 
-**分かったこと。**（結果が出てから書く）
+**分かったこと。**
+
+- **大きいモデルとの差は大きい。** そのままでは、積む・ナット・受け渡しが 1/10・0/10・0/10。
+  大きいモデル9個の中央値は 10/10・6/10・5/10 である。
+  ①②を足しても、ナットと受け渡しはほぼ 0 のまま（3条件 × 2タスク × 10回 = 60 試行で成功 1 回）。
+- **積むは上がったが、10回では言い切れない。** 積むは 1/10 から、① 5/10、② 5/10、①＋② 6/10 になった。
+  Fisher の正確検定では p=0.141・0.141・0.057 で、どれも 5% に届かない。
+- **①の成功の多くは、書き直す前の最初のコードでの成功だった。** 複数ターンで成功した試行のうち、書き直さずに最初のコードで成功し、
+  そのまま完了と答えたものが ① で 3/5、①＋② で 4/6 あった
+  （残りは書き直しているが、書き直して初めて成功したのかは記録から分からない。ターンごとの成否が残っていない）。
+  積むの上がり分は、書き直しの効果より、複数ターン用の指示文の違いや回ごとのばらつきが大きいとみられる。ただし、どちらも10回では言い切れない
+  （5.2 節の Argon の積み替えでは、成功がすべて書き直した試行だった）。
+- **①は、コードが例外で止まるのを減らした。** 例外で止まった試行は、そのままの 16/30 から、① で 2/30 になった（複数ターンは最後のコードで数えた）。
+  ナットと受け渡しでは、1試行あたり平均 2.9・3.9 個のコードを書いた。
+  ところが、止まらなくなっても成功には届かない。
+  大きいモデルの失敗は、ほとんどが段取りや幾何の間違いだった（5.5 節）。小さいモデルは、その手前の「最後まで動くコードを書く」ところでまずつまずく。①で直せたのはそこまでだった。
+- **②の見本には副作用もあった。** 積むに②を入れると、4 試行が、ナットの見本にだけある関数 `goto_home_joint_position`
+  （積むで使える関数には無い）をそのまま写し、NameError で止まった（うち 2 試行は、積み終えたあとに止まったので成功）。
+  ①＋②で書き直して成功した試行のうち1つは、この関数で止まったあとに書き直したものだった（もう1つは括弧の閉じ忘れの SyntaxError からの書き直し）。
+  見本には「そのタスクで使える関数」の一覧を付けていたが、それでも写した。
+  小さいモデルに見本を渡すときは、一覧を付けるだけでは足りず、今のタスクで使えない関数を見本から消しておくなどの手当てが要る。
+- **本コンテストへの示唆。** 9B 程度のモデルをそのまま使うのは難しい。①②は「動くコードを書く」ところは助けるが、
+  受け渡しの腕の向きやナットの向きのような段取り・幾何は直らなかった。学習（ファインチューニング）で底上げするか、
+  高いレベルの関数を増やして LLM が書く部分を減らす方向が要る。
 
 ## 7. 限界
 
@@ -364,12 +424,13 @@ scripts/scan_averaging.py と同じ判定（np.mean/median/average と range(...
 - **実行環境が一部違う。** Fable の複数ターンはクラウドの Linux（CPU 描画）、ほかは手元の Mac。正解コードはどちらでも同じ結果だった。
 - **Fable の受け渡しの原因は未確認。**
 - **掴み方の補助を外した条件（nograsp）は未実施。** `sample_grasp_pose` を外し、掴む位置と向きを LLM 自身に決めさせる条件は、設定だけ作って回していない。
-- **平均化の集計は一部のみ。** 生データ（runs/）がこのリポジトリに無いので、表6 は Fable の分だけ。
+- **平均化の判定は目安。** 表6 は正規表現による判定で、取りこぼしがありうる。生データ（runs/）はリポジトリに含めていない。
+- **案A は1モデル・1つの設定だけ。** Qwen3.5-9B の bf16、temperature 1.0 だけで、ほかの大きさのモデルや温度は試していない。実行環境も Colab の Linux（EGL 描画）で、大きいモデル（手元の Mac）と違う。正解コードはどちらでも成功した。
 - モデルの版・CLI の版は 2026年10月末時点のもの。
 
 ## 8. 今後
 
-1. **案A を仕上げる**（6章）。小さいモデルで①②がどれくらい効くか。本コンテストで使うモデルの判断材料にする。
+1. **小さいモデルの底上げ**（6章）。大きいモデルの成功コードで Qwen を学習させる、使える関数を絞った見本の選び方にする、回数を増やして積むの差を確かめ直す。
 2. **画像認識ありの設定**で回す（GPU が要る）。1cm の誤差で代わりにした部分を本物にする。
 3. **「確かめて直す」を促す**。積み替えで分かったとおり、複数ターンは、モデルが自分で確かめないと効かない。
    「完了と答える前に、物体の位置を調べて確かめる」ことをプロンプトで求めると変わるかを試す。

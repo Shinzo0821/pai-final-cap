@@ -16,7 +16,7 @@
      - `GITHUB_TOKEN`: GitHub の Fine-grained トークン。対象はこのリポジトリだけ、権限は Contents: Read-only。
      - `GITHUB_REPO`: `<アカウント名>/pai-final-cap`
      - （任意）`HF_TOKEN`: Hugging Face のトークン。無くてよい（Qwen3.5-9B は公開モデル）。あるとダウンロードの制限が緩む。
-   - **zip**: GitHub の「Code → Download ZIP」（ブランチ `plana-colab`）で落とし、セル2でアップロードする。
+   - **zip**: GitHub の「Code → Download ZIP」（ブランチ `main`）で落とし、セル2でアップロードする。
    トークンは表示も保存もしない（clone のときだけ環境変数で渡し、URL や `.git/config` に残さない）。
 3. ノートブックを Colab で開く: GitHub から開くか、`colab/pai_planA.ipynb` をアップロードする。
 

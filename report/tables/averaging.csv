@@ -1,5 +1,37 @@
 モデル,条件,タスク,平均化した試行,成功（平均化あり）,成功（平均化なし）,出どころ
+Claude Haiku 5.5,誤差あり・1回,積む,0/10,0/0,7/10,runs/main/noisy/claude-cli__claude-haiku-5-5@medium/claude-cli_claude-haiku-5-5@medium/stack
+Claude Haiku 5.5,誤差あり・1回,ナット,0/10,0/0,0/10,runs/main/noisy/claude-cli__claude-haiku-5-5@medium/claude-cli_claude-haiku-5-5@medium/nut
+Claude Haiku 5.5,誤差あり・複数ターン,積む,0/10,0/0,5/10,runs/main/noisy_mt/claude-cli__claude-haiku-5-5@medium/claude-cli_claude-haiku-5-5@medium/stack
+Claude Haiku 5.5,誤差あり・複数ターン,ナット,0/10,0/0,2/10,runs/main/noisy_mt/claude-cli__claude-haiku-5-5@medium/claude-cli_claude-haiku-5-5@medium/nut
+Claude Opus 5.5,誤差あり・1回,積む,10/10,9/10,0/0,runs/main/noisy/claude-cli__claude-opus-5-5@medium/claude-cli_claude-opus-5-5@medium/stack
+Claude Opus 5.5,誤差あり・1回,ナット,2/10,0/2,5/8,runs/main/noisy/claude-cli__claude-opus-5-5@medium/claude-cli_claude-opus-5-5@medium/nut
+Claude Opus 5.5,誤差あり・複数ターン,積む,10/10,9/10,0/0,runs/main/noisy_mt/claude-cli__claude-opus-5-5@medium/claude-cli_claude-opus-5-5@medium/stack
+Claude Opus 5.5,誤差あり・複数ターン,ナット,7/10,1/7,0/3,runs/main/noisy_mt/claude-cli__claude-opus-5-5@medium/claude-cli_claude-opus-5-5@medium/nut
+Gemini 3.8 Flash,誤差あり・1回,積む,0/10,0/0,7/10,runs/main/noisy/agy-cli__gemini-3.8-flash-medium/agy-cli_gemini-3.8-flash-medium/stack
+Gemini 3.8 Flash,誤差あり・1回,ナット,6/10,0/6,1/4,runs/main/noisy/agy-cli__gemini-3.8-flash-medium/agy-cli_gemini-3.8-flash-medium/nut
+Gemini 3.8 Flash,誤差あり・複数ターン,積む,0/10,0/0,9/10,runs/main/noisy_mt/agy-cli__gemini-3.8-flash-medium/agy-cli_gemini-3.8-flash-medium/stack
+Gemini 3.8 Flash,誤差あり・複数ターン,ナット,5/10,1/5,1/5,runs/main/noisy_mt/agy-cli__gemini-3.8-flash-medium/agy-cli_gemini-3.8-flash-medium/nut
+Gemini 4 Argon,誤差あり・1回,積む,10/10,10/10,0/0,runs/main/noisy/agy-cli__gemini-4-argon-medium/agy-cli_gemini-4-argon-medium/stack
+Gemini 4 Argon,誤差あり・1回,ナット,10/10,3/10,0/0,runs/main/noisy/agy-cli__gemini-4-argon-medium/agy-cli_gemini-4-argon-medium/nut
+Gemini 4 Argon,誤差あり・複数ターン,積む,10/10,10/10,0/0,runs/main/noisy_mt/agy-cli__gemini-4-argon-medium/agy-cli_gemini-4-argon-medium/stack
+Gemini 4 Argon,誤差あり・複数ターン,ナット,10/10,6/10,0/0,runs/main/noisy_mt/agy-cli__gemini-4-argon-medium/agy-cli_gemini-4-argon-medium/nut
+GPT-OSS 120B,誤差あり・1回,積む,0/10,0/0,8/10,runs/main/noisy/agy-cli__gpt-oss-120b-medium/agy-cli_gpt-oss-120b-medium/stack
+GPT-OSS 120B,誤差あり・1回,ナット,0/10,0/0,1/10,runs/main/noisy/agy-cli__gpt-oss-120b-medium/agy-cli_gpt-oss-120b-medium/nut
+GPT-OSS 120B,誤差あり・複数ターン,積む,0/10,0/0,6/10,runs/main/noisy_mt/agy-cli__gpt-oss-120b-medium/agy-cli_gpt-oss-120b-medium/stack
+GPT-OSS 120B,誤差あり・複数ターン,ナット,0/10,0/0,1/10,runs/main/noisy_mt/agy-cli__gpt-oss-120b-medium/agy-cli_gpt-oss-120b-medium/nut
+gpt-6.1-terra,誤差あり・1回,積む,0/10,0/0,4/10,runs/clean/noisy/codex-cli__gpt-6.1-terra@medium/codex-cli_gpt-6.1-terra@medium/stack
+gpt-6.1-terra,誤差あり・1回,ナット,7/10,6/7,2/3,runs/clean/noisy/codex-cli__gpt-6.1-terra@medium/codex-cli_gpt-6.1-terra@medium/nut
+gpt-6.1-terra,誤差あり・複数ターン,積む,0/10,0/0,3/10,runs/clean/noisy_mt/codex-cli__gpt-6.1-terra@medium/codex-cli_gpt-6.1-terra@medium/stack
+gpt-6.1-terra,誤差あり・複数ターン,ナット,8/10,3/8,0/2,runs/clean/noisy_mt/codex-cli__gpt-6.1-terra@medium/codex-cli_gpt-6.1-terra@medium/nut
+gpt-6.1-sol,誤差あり・1回,積む,2/10,2/2,6/8,runs/clean/noisy/codex-cli__gpt-6.1-sol@medium/codex-cli_gpt-6.1-sol@medium/stack
+gpt-6.1-sol,誤差あり・1回,ナット,6/10,5/6,3/4,runs/clean/noisy/codex-cli__gpt-6.1-sol@medium/codex-cli_gpt-6.1-sol@medium/nut
+gpt-6.1-sol,誤差あり・複数ターン,積む,2/10,1/2,5/8,runs/clean/noisy_mt/codex-cli__gpt-6.1-sol@medium/codex-cli_gpt-6.1-sol@medium/stack
+gpt-6.1-sol,誤差あり・複数ターン,ナット,7/10,6/7,3/3,runs/clean/noisy_mt/codex-cli__gpt-6.1-sol@medium/codex-cli_gpt-6.1-sol@medium/nut
+gpt-6-astra,誤差あり・1回,積む,0/10,0/0,4/10,runs/clean/noisy/codex-cli__gpt-6-astra@medium/codex-cli_gpt-6-astra@medium/stack
+gpt-6-astra,誤差あり・1回,ナット,4/10,2/4,6/6,runs/clean/noisy/codex-cli__gpt-6-astra@medium/codex-cli_gpt-6-astra@medium/nut
+gpt-6-astra,誤差あり・複数ターン,積む,2/10,2/2,7/8,runs/clean/noisy_mt/codex-cli__gpt-6-astra@medium/codex-cli_gpt-6-astra@medium/stack
+gpt-6-astra,誤差あり・複数ターン,ナット,6/10,4/6,4/4,runs/clean/noisy_mt/codex-cli__gpt-6-astra@medium/codex-cli_gpt-6-astra@medium/nut
+Claude Fable 5.1,誤差あり・1回,積む,0/10,0/0,7/10,runs/clean/noisy/replay-cli__claude-fable-5-1@medium/replay-cli_claude-fable-5-1@medium/stack
+Claude Fable 5.1,誤差あり・1回,ナット,3/10,1/3,2/7,runs/clean/noisy/replay-cli__claude-fable-5-1@medium/replay-cli_claude-fable-5-1@medium/nut
 Claude Fable 5.1,誤差あり・複数ターン,積む,0/10,0/0,7/10,cloud_runs/cloud/noisy_mt/stack
 Claude Fable 5.1,誤差あり・複数ターン,ナット,6/10,0/6,1/4,cloud_runs/cloud/noisy_mt/nut
-Claude Fable 5.1,誤差あり・1回,積む,0/10,（対応なし）,（対応なし）,replay/claude-fable-5-1@medium/9239b5ad50ecd964
-Claude Fable 5.1,誤差あり・1回,ナット,3/10,（対応なし）,（対応なし）,replay/claude-fable-5-1@medium/0a305999e24273c1

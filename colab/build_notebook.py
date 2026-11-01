@@ -53,7 +53,7 @@ DRY_RUN = os.environ.get("PLANA_DRY_RUN") == "1"
 
 GITHUB_REPO = ""          # @param {type:"string"}
 # ↑ "<アカウント名>/pai-final-cap"。Colab のシークレット GITHUB_REPO があればそちらを使う（ここは空のままでよい）
-BRANCH = "plana-colab"    # @param {type:"string"}
+BRANCH = "main"    # @param {type:"string"}
 VIDEO_TRIALS = 2          # @param {type:"integer"}
 # ↑ 動画を残すのは各セルの最初の N 試行だけ（CPU 描画だと動画の分だけ遅くなるため）
 GL_BACKEND = "auto"       # @param ["auto", "egl", "osmesa"]
@@ -202,7 +202,7 @@ md("""
 非公開リポジトリなので、次のどちらか。
 - **おすすめ**: Colab の左の鍵マーク（シークレット）に `GITHUB_TOKEN`（読み取りだけの Fine-grained トークン）と
   `GITHUB_REPO`（`<アカウント名>/pai-final-cap`）を登録し、「ノートブックからのアクセス」をオンにする。
-- 無ければ、GitHub の「Code → Download ZIP」（ブランチ `plana-colab`）で落とした zip をアップロードする。
+- 無ければ、GitHub の「Code → Download ZIP」（ブランチ `main`）で落とした zip をアップロードする。
 
 トークンは表示も保存もしない（git の設定ファイルにも残らない）。
 """)
