@@ -291,10 +291,11 @@ def build(out_mp4: Path, work: Path) -> None:
 
     # 6. 全体の表
     c = Card()
-    c.header("実験1 の結果（成功数 / 10）",
-             "左 4 列: シングルターン、中 2 列: 複数ターン、右 4 列: 位置ノイズあり（シングル・複数ターン）")
-    c.image(ROOT / "report/figs/fig0_heatmap.png", (MARGIN, 230, W - 2 * MARGIN, 800))
-    segs.append(still(c.save(seg("heatmap.png")), 8, seg("heatmap.mp4")))
+    y = c.header("実験1 の結果（成功数 / 10 と、10 セルの合計 / 100）",
+                 "左 4 列: シングルターン、中 2 列: 複数ターン、右 4 列: 位置ノイズあり（シングル・複数ターン）。"
+                 "合計は難しさの違うセルの和なので、近い値どうし（例: Argon 56 と Flash 55）の順位には意味がない")
+    c.image(ROOT / "report/figs/fig0_heatmap.png", (MARGIN, y, W - 2 * MARGIN, H - y - 30))
+    segs.append(still(c.save(seg("heatmap.png")), 10, seg("heatmap.mp4")))
 
     # 7. 受け渡し
     c = Card()
@@ -365,18 +366,20 @@ def build(out_mp4: Path, work: Path) -> None:
 
     # 12. 実験2 の結果（表）
     c = Card()
-    c.header("実験2 の結果（成功数 / 10）")
+    y = c.header("実験2 の結果（成功数 / 10 と、3 タスクの合計 / 30）",
+                 "参考の行は、大規模 9 モデルのシングルターンの中央値。合計の 19 は、各モデルの 3 タスク合計の中央値（範囲 12〜29）")
     rows = [
-        ["条件", "積む", "ナット", "受け渡し"],
-        ["そのまま", "1", "0", "0"],
-        ["① 複数ターン", "5", "0", "0"],
-        ["② スキルライブラリ", "5", "1", "0"],
-        ["①＋②", "6", "0", "0"],
-        ["参考: 大規模 9 モデル（シングルターン）の中央値", "10", "6", "5"],
+        ["条件", "積む", "ナット", "受け渡し", "合計 / 30"],
+        ["そのまま", "1", "0", "0", "1"],
+        ["① 複数ターン", "5", "0", "0", "5"],
+        ["② スキルライブラリ", "5", "1", "0", "6"],
+        ["①＋②", "6", "0", "0", "6"],
+        ["参考: 大規模 9 モデルの中央値", "10", "6", "5", "19"],
     ]
     colors = {(r, 1): OK for r in (2, 3, 4)}
-    colors.update({(5, c_): SUB for c_ in range(4)})
-    y = c.table(MARGIN, 200, [880, 260, 260, 260], rows, size=38, rowh=78, colors=colors)
+    colors.update({(5, c_): SUB for c_ in range(5)})
+    colors.update({(r, 4): ACCENT for r in range(1, 5)})
+    y = c.table(MARGIN, y + 20, [700, 240, 240, 260, 280], rows, size=38, rowh=78, colors=colors)
     c.bullets(MARGIN, y + 40, [
         "積むは 1/10 から 5〜6/10 に上がった。3 条件まとめると 16/30 対 1/10 で Fisher の p = 0.026"
         "（ただし、まとめ方は結果を見てから決めた。①と②のどちらが効いたかは区別できない）",

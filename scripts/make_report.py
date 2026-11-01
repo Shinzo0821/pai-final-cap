@@ -301,6 +301,7 @@ def fig_total(plt, grid) -> None:
 
 
 def fig_heatmap(plt, grid) -> None:
+    import matplotlib.patches as mpatches
     from matplotlib.colors import LinearSegmentedColormap
 
     cmap = LinearSegmentedColormap.from_list("blue", ["#f4f8fd", "#cde2fb", "#86b6ef", "#2a78d6", "#184f95", "#0d366b"])
@@ -311,14 +312,21 @@ def fig_heatmap(plt, grid) -> None:
     for i, row in enumerate(data):
         for j, v in enumerate(row):
             ax.text(j, i, str(v), ha="center", va="center", fontsize=9, color=SURFACE if v >= 6 else INK)
-    ax.set_xticks(range(len(CELLS)), [c[2] for c in CELLS], rotation=35, ha="right", fontsize=8)
+    # 右端に合計（10セルの和、/100）。色は付けず、灰色の帯の上に数字だけ書く
+    n = len(CELLS)
+    tx = n + 0.25
+    ax.add_patch(mpatches.Rectangle((n - 0.3, -0.5), 1.1, len(labels), color="#eef1f5", zorder=0))
+    for i, row in enumerate(data):
+        ax.text(tx, i, str(sum(row)), ha="center", va="center", fontsize=9, color=INK, fontweight="bold")
+    ax.set_xlim(-0.5, n + 0.8)
+    ax.set_xticks(list(range(n)) + [tx], [c[2] for c in CELLS] + ["合計/100"], rotation=35, ha="right", fontsize=8)
     ax.set_yticks(range(len(labels)), labels, fontsize=8)
     ax.grid(False)
     for s in ax.spines.values():
         s.set_visible(False)
     ax.axvline(5.5, color=SURFACE, linewidth=3)
     ax.axvline(3.5, color=SURFACE, linewidth=3)
-    ax.set_title("成功数/10（左4列: 1回、中2列: 複数ターン、右4列: 位置に 1cm の誤差）", loc="left", fontsize=9, color=INK)
+    ax.set_title("成功数/10（左4列: 1回、中2列: 複数ターン、右4列: 位置に 1cm の誤差）と合計/100", loc="left", fontsize=9, color=INK)
     fig.tight_layout()
     fig.savefig(FIGS / "fig0_heatmap.png", dpi=200)
     plt.close(fig)
