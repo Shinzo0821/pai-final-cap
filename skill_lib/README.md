@@ -1,4 +1,4 @@
-# スキルライブラリ（案A の skill・skill_mt 条件）
+# スキルライブラリ（実験2 の skill・skill_mt 条件。作業中の呼び名は案A）
 
 小さいモデル（Qwen3.5-9B）に、大きいモデルが**別のタスク**で成功したコードを見本として見せる。
 見本は `skill_src/`（`scripts/export_skill_src.py` が書き出した成功コード 243 個）から

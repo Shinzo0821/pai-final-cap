@@ -499,5 +499,5 @@
  "qa.calls": "289",
  "qa.calls.err": "0",
  "qa.calls.latency": "21.9",
- "fig.casea": "![案A の結果](figs/fig5_casea.png)"
+ "fig.casea": "![実験2 の結果](figs/fig5_casea.png)"
 }

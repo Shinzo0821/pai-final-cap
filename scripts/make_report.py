@@ -7,7 +7,7 @@
 - Codex（terra・sol・astra）: results/clean_cells.csv（runs/main の Codex は点検の比較用）
 - Fable: 1回で答える6セルは results/clean_cells.csv、複数ターン4セルは cloud_runs/cloud/summary.csv
 - 正解コード: results/oracle_cells.csv
-- 案A（Qwen3.5-9B、Colab）: results/planA_cells.csv と results/planA_trials.csv（無ければ6章は空欄のまま）
+- 実験2（Qwen3.5-9B、Colab。作業中は「案A」と呼んでいたので、ファイル名は planA_*）: results/planA_cells.csv と results/planA_trials.csv（無ければ6章は空欄のまま）
 
 書き出すもの:
 - report/tables/*.csv と *.md（成功率と 95% 信頼区間、検定、平均化の集計）
@@ -328,7 +328,7 @@ CASEA_CONDS = [("base", "そのまま"), ("base_mt", "①複数ターン"), ("sk
 
 
 def casea_errors() -> list[list]:
-    """案A の1回で答える条件（base・skill）で、各試行のコードが最後にどの例外で止まったか（runs/planA の summary.txt）。
+    """実験2 の1回で答える条件（base・skill）で、各試行のコードが最後にどの例外で止まったか（runs/planA の summary.txt）。
     試行のフォルダは results/planA_trials.csv の行（コードが落ちたか・成功したか）と名前が合うものを使う。
     複数ターンは1試行に複数のフォルダがあり、Colab から持ち帰ると更新時刻がそろって順番が分からないので数えない。
     runs/ が無い環境では、前に書き出した report/tables/casea_errors.csv を読み直す。"""
@@ -347,7 +347,7 @@ def casea_errors() -> list[list]:
         hits = sorted(d.glob(f"trial_{int(r['trial']):02d}_sandboxrc_{r['code_failed']}_reward_*"
                              f"_taskcompleted_{r['success']}"))
         if len(hits) != 1:
-            sys.exit(f"案A の試行のフォルダが1つに決まらない: {d} trial {r['trial']} → {hits}")
+            sys.exit(f"実験2 の試行のフォルダが1つに決まらない: {d} trial {r['trial']} → {hits}")
         text = (hits[0] / "summary.txt").read_text(errors="replace")
         errs = re.findall(r"^(\w+(?:Error|Exception)): ?(.*)$", text, re.M)
         name, msg = errs[-1] if errs else ("", "")
@@ -376,7 +376,7 @@ def fig_casea(plt, raw) -> bool:
     ax.set_ylim(0, 1.05)
     ax.set_ylabel("成功率（誤差棒は 95% 区間）")
     ax.legend(loc="upper left", bbox_to_anchor=(1.0, 1.0), fontsize=8)
-    ax.set_title("案A: Qwen3.5-9B の成功率（各10回）", loc="left")
+    ax.set_title("実験2: Qwen3.5-9B の成功率（各10回）", loc="left")
     fig.tight_layout()
     fig.savefig(FIGS / "fig5_casea.png", dpi=200)
     plt.close(fig)
@@ -464,7 +464,7 @@ Claude Fable 5.1 の複数ターン4セル（積み替え(複数)・受け渡し
 - **受け渡し**は gpt-6.1-sol・gpt-6-astra が {{sol.base.handover}}・{{astra.base.handover}}、gpt-6.1-terra・Claude Fable 5.1・GPT-OSS 120B が {{terra.base.handover}}・{{fable.base.handover}}・{{oss.base.handover}}（Fisher の正確検定で p≤{{hand.base.maxp}}）。
 - **積み替え**（最初から緑が赤の上に載っている）は、1回で答えると全モデル 0/10。複数ターンにすると Gemini 4 Argon だけが {{argon.base_mt.restack}} になり（p={{p.mt.argon.restack}}、多重比較の補正後は言い切れない）、成功はすべて実行結果を見て書き直した試行だった。書き直さずに「完了」と答えるモデルには、複数ターンが効かない。
 - **位置に 1cm の誤差**を足すと、9モデル合計でナットが {{pool.base.nut}}→{{pool.noisy.nut}}（p={{p.noise.pool.nut}}）に下がった。大きく下がったのは Gemini 3.8 Flash（{{flash.base.nut}}→{{flash.noisy.nut}}）と Claude Haiku 5.5（{{haiku.base.nut}}→{{haiku.noisy.nut}}）。ただし誤差ありのセルは、回し直すと1セルで最大 {{codex.maxdiff}} 回ぶれるので、10回での細かい差は言い切れない。
-- **案A**（小さいオープンモデル Qwen3.5-9B、Colab の A100）: そのままでは積む・ナット・受け渡しが {{qa.base.stack}}・{{qa.base.nut}}・{{qa.base.handover}}。①実行結果を見て書き直す、②大きいモデルの成功コード（ほかのタスクの分）を見本に足す、を入れると積むは {{qa.base_mt.stack}}・{{qa.skill.stack}}・{{qa.skill_mt.stack}}（①・②・①＋②）に上がった。1つずつでは 10回では言い切れない（p≥{{p.qa.stack.skill_mt}}）が、3条件まとめると {{qa.stack.pooled}} 対 {{qa.base.stack}}（p={{p.qa.stack.pooled}}）で、何かを足すと上がることはほぼ言える。①と②のどちらが効いたかは区別できない。ナットと受け渡しはほぼ 0 のまま。①で成功した試行も、{{qa.base_mt.succ_first}} は書き直さずに最初のコードで成功していた。
+- **実験2: 小型オープンモデルの底上げ**（Qwen3.5-9B、Colab の A100）: そのままでは積む・ナット・受け渡しが {{qa.base.stack}}・{{qa.base.nut}}・{{qa.base.handover}}。①実行結果を見て書き直す、②大きいモデルの成功コード（ほかのタスクの分）を見本に足す、を入れると積むは {{qa.base_mt.stack}}・{{qa.skill.stack}}・{{qa.skill_mt.stack}}（①・②・①＋②）に上がった。1つずつでは 10回では言い切れない（p≥{{p.qa.stack.skill_mt}}）が、3条件まとめると {{qa.stack.pooled}} 対 {{qa.base.stack}}（p={{p.qa.stack.pooled}}）で、何かを足すと上がることはほぼ言える。①と②のどちらが効いたかは区別できない。ナットと受け渡しはほぼ 0 のまま。①で成功した試行も、{{qa.base_mt.succ_first}} は書き直さずに最初のコードで成功していた。
 
 """
 
@@ -697,7 +697,7 @@ def main() -> None:
     V["skill_src.n"] = str(sum(1 for _ in csv.DictReader((ROOT / "skill_src/index.csv").open())))
     V["averaging.have_runs"] = "あり" if have_runs else "なし"
 
-    # --- 案A
+    # --- 実験2（案A）
     plt = setup_mpl()
     has_a = fig_casea(plt, raw)
     if has_a:
@@ -759,14 +759,14 @@ def main() -> None:
         V["qa.calls"] = calls["calls"]
         V["qa.calls.err"] = calls["errors"]
         V["qa.calls.latency"] = calls["median_latency_s"]
-        V["fig.casea"] = "![案A の結果](figs/fig5_casea.png)"
+        V["fig.casea"] = "![実験2 の結果](figs/fig5_casea.png)"
     else:
         V["table.casea"] = ("| 条件 | 積む | ナット | 受け渡し |\n|---|---|---|---|\n"
                             "| base（そのまま・1回） | （未） | （未） | （未） |\n| base_mt（①あり・複数ターン） | （未） | （未） | （未） |\n"
                             "| skill（②あり・1回） | （未） | （未） | （未） |\n| skill_mt（①②あり・複数ターン） | （未） | （未） | （未） |\n\n"
                             "<!-- results/casea_cells.csv（cond,model,task,trials,success）を置いて make_report.py を流すと、"
                             "ここに表、下に図（figs/fig5_casea.png）が入る -->\n")
-        V["fig.casea"] = "<!-- 図: figs/fig5_casea.png（案A の結果が入ると作られる） -->"
+        V["fig.casea"] = "<!-- 図: figs/fig5_casea.png（実験2 の結果が入ると作られる） -->"
 
     # --- 図
     fig_heatmap(plt, grid)

@@ -65,7 +65,7 @@ def main() -> None:
     md = drop_source_column(md)
     body = markdown.markdown(md, extensions=["tables", "sane_lists"])
     html = (f'<!doctype html><html lang="ja"><head><meta charset="utf-8">'
-            f'<title>LLM にロボット制御コードを書かせて比べる</title>'
+            f'<title>LLM にロボット制御コードを書かせる</title>'
             f'<base href="{HERE.as_uri()}/"><style>{CSS}</style></head><body>{body}</body></html>')
     with tempfile.TemporaryDirectory() as tmp:
         page = Path(tmp) / "report.html"
