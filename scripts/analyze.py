@@ -7,6 +7,8 @@
 - cells.csv:  条件×モデル×タスクごとの成功数、コードが落ちた数、平均コードブロック数。
 - calls.csv:  モデルごとの呼び出し回数、エラー数、所要時間の中央値、出力の長さ。
 --since / --until（UNIX 時刻）の外の呼び出しは数えない（別の実験の分を除くため）。
+呼び出しの記録は既定で logs/proxy_calls.jsonl（proxy/cli_proxy.py）。Colab の案A は
+--calls logs/llm_calls.jsonl（proxy/log_proxy.py、同じ項目名で書く）。
 """
 
 from __future__ import annotations
@@ -88,6 +90,8 @@ def cell_table(trials: list[dict]) -> list[dict]:
 
 def call_table(log_path: Path, since: float, until: float, models: set[str]) -> list[dict]:
     groups: dict[str, list[dict]] = defaultdict(list)
+    if not log_path.exists():
+        return []
     for line in log_path.read_text().splitlines():
         rec = json.loads(line)
         if not since <= rec["time"] < until or rec["model"] not in models:
@@ -118,7 +122,7 @@ def write_csv(path: Path, rows: list[dict]) -> None:
         w.writerows(rows)
 
 
-COND_ORDER = ["base", "base_mt", "noisy", "noisy_mt"]
+COND_ORDER = ["base", "base_mt", "skill", "skill_mt", "noisy", "noisy_mt"]
 
 
 def markdown(tag: str, cells: list[dict], calls: list[dict]) -> str:
@@ -151,6 +155,7 @@ def main() -> None:
     ap.add_argument("--tag", required=True)
     ap.add_argument("--since", type=float, default=0.0, help="これより前の呼び出しは数えない（UNIX 時刻）")
     ap.add_argument("--until", type=float, default=float("inf"), help="これ以降の呼び出しは数えない（UNIX 時刻）")
+    ap.add_argument("--calls", default="logs/proxy_calls.jsonl", help="LLM 呼び出しの記録（リポジトリのルートから）")
     args = ap.parse_args()
     run_root = ROOT / "runs" / args.tag
     out_dir = ROOT / "results"
@@ -158,7 +163,7 @@ def main() -> None:
 
     trials = read_trials(run_root)
     cells = cell_table(trials)
-    calls = call_table(ROOT / "logs" / "proxy_calls.jsonl", args.since, args.until, {c["model"] for c in cells})
+    calls = call_table(ROOT / args.calls, args.since, args.until, {c["model"] for c in cells})
     write_csv(out_dir / f"{args.tag}_trials.csv", trials)
     write_csv(out_dir / f"{args.tag}_cells.csv", cells)
     write_csv(out_dir / f"{args.tag}_calls.csv", calls)

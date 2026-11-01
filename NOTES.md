@@ -74,6 +74,21 @@ CaP-X（Code-as-Policy のベンチマーク）で、LLM ごとにロボット�
   受け渡しは手元（1回）でもクラウド（複数）でも低いので、クラウドの環境のせいではなく Fable の書き方の問題と見られる。
   1回で答える受け渡しの失敗はすべて「コードは最後まで動いたが、持ち替えられなかった」もの。原因（腕1の向きの指定など）はまだ確かめていない。
 
+## 案A の準備（2026-10-31 夕、ブランチ plana-colab）
+Qwen3.5-9B を Colab の GPU（vLLM）で、stack・nut・handover × base/skill/base_mt/skill_mt × 各10回。GPU の要らない部分を作って試運転した。
+- スキルライブラリ: `scripts/select_skills.py` → `skill_lib/<task>.md`。他タスクの成功コードを見本タスクごとに1件
+  （sol → astra → Opus の順、base 優先、最短）。stack の見本に restack は入れない。理由は `skill_lib/README.md`。
+- 注入: `scripts/make_configs.py` の skill・skill_mt が `env.cfg.prompt` を「既定のタスク文 + 見本」にする（CaP-X 本体は変えない）。
+  `scripts/check_skill_prompts.py` で、見本を除くと base と1文字も違わないことを設定と実際の送信の両方で確認。
+- CaP-X の変更を1つ追加（`patches/capx.patch`）: 環境変数 `CAPX_VIDEO_TRIALS` で動画を最初の N 試行だけにする。
+  `run_grid.py --video-trials N`・`--server-url`、Linux では描画の既定を osmesa に。
+- Colab: `colab/pai_planA.ipynb`（`colab/build_notebook.py` から生成）と `colab/README.md`。記録用の中継 `proxy/log_proxy.py`、
+  試運転用のダミー `proxy/dummy_llm.py`、描画の確認 `colab/check_gl.py`、CaP-X の導入 `colab/setup_capx.sh`。
+- vLLM: 0.31.0（CUDA 13）と 0.19.1（CUDA 12.8）の両方で、Qwen3.5 対応・`--language-model-only`・
+  `--default-chat-template-kwargs '{"enable_thinking": false}'` を確認。ドライバーに合わせて選ぶ。
+- 試運転（GPU なしのコンテナ、Hugging Face に届かないのでダミーのモデル）: 4条件×3タスク×1試行が通り、
+  複数ターン（REGENERATE→FINISH）・見本の注入・集計を確認。oracle は3タスクとも 3/3。
+
 ## 制約
 - Mac で動くのは特権情報（シミュレータの真の位置）を使う設定だけ。画像認識の設定は SAM3 などの GPU が要る。
 - オープンモデル（Qwen）は Colab の GPU で、CaP-X ごと動かす予定。
@@ -82,7 +97,7 @@ CaP-X（Code-as-Policy のベンチマーク）で、LLM ごとにロボット�
 1. 動画（1〜3分）: runs/main の video_combined.mp4 から、受け渡しの成功・失敗、積み替えの書き直し、誤差ありのナットを選んでつなぐ。
 2. レポート PDF: 目的（GENIAC の Code-as-Policy）、CaP-X、条件の作り方、結果の表、分かったこと、限界（特権情報・1cm 誤差は画像認識の代わり）。
 3. 公開 GitHub: README、patches/、scripts/、results/。git の作者名はこのリポジトリだけ匿名（pai-final）にしてある。
-4. 余裕があれば: Colab で Qwen を同じ条件で回す。
+4. 余裕があれば: Colab で Qwen を同じ条件で回す（準備済み。`colab/README.md`）。
 
 ## 動かし方
 ```bash

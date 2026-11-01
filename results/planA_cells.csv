@@ -1,0 +1,13 @@
+cond,model,task,trials,success,code_failed,mean_code_blocks
+base,qwen3.5-9b,handover,10,0,7,1
+base,qwen3.5-9b,nut,10,0,7,1
+base,qwen3.5-9b,stack,10,1,2,1
+base_mt,qwen3.5-9b,handover,10,0,1,3.89
+base_mt,qwen3.5-9b,nut,10,0,1,2.9
+base_mt,qwen3.5-9b,stack,10,5,2,1.33
+skill,qwen3.5-9b,handover,10,0,4,1
+skill,qwen3.5-9b,nut,10,1,4,1
+skill,qwen3.5-9b,stack,10,5,5,1
+skill_mt,qwen3.5-9b,handover,10,0,4,3.8
+skill_mt,qwen3.5-9b,nut,10,0,2,1.6
+skill_mt,qwen3.5-9b,stack,10,6,0,1.5

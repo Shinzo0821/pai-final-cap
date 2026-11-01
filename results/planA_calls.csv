@@ -1,0 +1,2 @@
+model,calls,errors,median_latency_s,mean_response_chars,mean_output_tokens
+qwen3.5-9b,289,0,21.9,5811,1792
