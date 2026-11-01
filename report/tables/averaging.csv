@@ -1,0 +1,5 @@
+モデル,条件,タスク,平均化した試行,成功（平均化あり）,成功（平均化なし）,出どころ
+Claude Fable 5.1,誤差あり・複数ターン,積む,0/10,0/0,7/10,cloud_runs/cloud/noisy_mt/stack
+Claude Fable 5.1,誤差あり・複数ターン,ナット,6/10,0/6,1/4,cloud_runs/cloud/noisy_mt/nut
+Claude Fable 5.1,誤差あり・1回,積む,0/10,（対応なし）,（対応なし）,replay/claude-fable-5-1@medium/9239b5ad50ecd964
+Claude Fable 5.1,誤差あり・1回,ナット,3/10,（対応なし）,（対応なし）,replay/claude-fable-5-1@medium/0a305999e24273c1
