@@ -22,6 +22,13 @@ def code(text: str) -> None:
     CELLS.append(("code", text.strip("\n")))
 
 
+def code_in_repo(text: str) -> None:
+    """リポジトリの中で動かすセル。@title の次の行で REPO_DIR に移る
+    （Colab CLI の `colab exec` は実行のたびに作業ディレクトリを /content に戻すため）。"""
+    title, _, body = text.strip("\n").partition("\n")
+    code(f"{title}\nos.chdir(REPO_DIR)\n{body}")
+
+
 md("""
 # 案A: Qwen3.5-9B を Colab の GPU で CaP-X にかける
 
@@ -31,7 +38,7 @@ md("""
 - 各10回、合計120試行
 
 **押す順番**: 上から順に1つずつ実行する。詳しくは `colab/README.md`。
-- ランタイムは「ランタイムのタイプを変更」で **L4**（メモリが足りなければ G4 か A100）。
+- ランタイムは「ランタイムのタイプを変更」で **A100**（実際に回したのは A100。L4 は文脈の長さが足りない恐れがある。README）。
 - 途中でランタイムが切れたら、もう一度上から実行する。Google Drive に逃がした途中経過を戻し、終わったセルは飛ばして続きから回る。
 """)
 
@@ -52,8 +59,15 @@ VIDEO_TRIALS = 2          # @param {type:"integer"}
 GL_BACKEND = "auto"       # @param ["auto", "egl", "osmesa"]
 VLLM_VERSION = "auto"     # @param ["auto", "0.31.0", "0.19.1"]
 # ↑ auto: ドライバーが CUDA 13 以上なら 0.31.0（PyPI の既定、CUDA 13 版）、それ未満なら 0.19.1（CUDA 12.8 版）
-MAX_MODEL_LEN = 32768     # @param {type:"integer"}
-# ↑ 立ち上がらなければ自動で 16384 に下げて試す
+MAX_MODEL_LEN = 65536     # @param {type:"integer"}
+# ↑ 立ち上がらなければ自動で 32768 に下げて試す（下げると長い複数ターンの試行が落ちる。セル6の説明）
+
+# CaP-X が LLM に送る値（CaP-X の既定、capx/envs/launch.py。run_grid.py は変えない）
+CAPX_TEMPERATURE = 1.0
+CAPX_MAX_TOKENS = 20480
+# プロンプト（入力）＋ CAPX_MAX_TOKENS が max-model-len を超えると vLLM は 400 を返し、CaP-X はその試行を記録から落とす。
+# 案A の本番（A100、65536）でのプロンプトの最大は 23029 トークン。これを下回る上限では試行が抜ける恐れがある
+SAFE_MODEL_LEN = CAPX_MAX_TOKENS + 24000
 
 MODEL_ID = "Qwen/Qwen3.5-9B"
 SERVED_NAME = "dummy" if DRY_RUN else "qwen3.5-9b"   # CaP-X の --model = vLLM の served-model-name
@@ -172,7 +186,7 @@ if shutil.which("nvidia-smi"):
                 cuda_driver=cuda.group(1) if cuda else None)
 else:
     info.update(gpu_name=None)
-    print("GPU が見つからない。" + ("「ランタイム」→「ランタイムのタイプを変更」で L4 を選ぶ。" if IN_COLAB else "（試運転なので問題ない）"))
+    print("GPU が見つからない。" + ("「ランタイム」→「ランタイムのタイプを変更」で A100 を選ぶ。" if IN_COLAB else "（試運転なので問題ない）"))
 # CaP-X の並列数: IK サーバーと vLLM と描画に CPU を残し、最大 5（10試行を2巡）
 WORKERS = max(1, min(5, (os.cpu_count() or 2) - 2))
 info["workers"] = WORKERS
@@ -248,7 +262,7 @@ md("""
 Colab の Python とは別に uv で Python 3.12 の venv を作る（`third_party/cap-x/.venv`）。初回は数分かかる。
 """)
 
-code(r'''
+code_in_repo(r'''
 # @title 3. CaP-X の導入（apt の描画ライブラリ・CaP-X・パッチ・venv）
 t0 = time.time()
 run(["bash", str(REPO_DIR / "colab" / "setup_capx.sh")], env=dict(os.environ, CAPX_DIR=str(CAPX_DIR)))
@@ -265,7 +279,7 @@ md("""
 設定の `GL_BACKEND` で固定もできる。
 """)
 
-code(r'''
+code_in_repo(r'''
 # @title 4. 描画の確認（結果は環境メモに残す）
 if IN_COLAB and shutil.which("nvidia-smi"):
     # Colab では NVIDIA の EGL が登録されていないことがあるので、MuJoCo の公式 Colab と同じく登録する
@@ -298,7 +312,7 @@ md("""
 ソースと引数の解釈で確かめてある（`colab/README.md`）。
 """)
 
-code(r'''
+code_in_repo(r'''
 # @title 5. vLLM の導入
 def _vllm_check():
     r = subprocess.run([str(VLLM_VENV / "bin" / "python"), "-c",
@@ -335,12 +349,17 @@ md("""
 - thinking を切る: CaP-X は `chat_template_kwargs` を送らないので、vLLM 側の既定を
   `--default-chat-template-kwargs '{"enable_thinking": false}'` にする。
 - `--language-model-only`: 画像の部分（ビジョンエンコーダ）を読み込まず、文字だけで使う（メモリの節約）。
-- `--max-model-len`: 既定 32768。立ち上がらなければ 16384、さらに `--enforce-eager` を自動で試す。
+- `--max-model-len`: 既定 65536。CaP-X は毎回 `max_tokens` 20480 を送るので、プロンプト＋20480 が上限を超えると
+  vLLM が 400 を返し、CaP-X はその試行を記録から落とす（複数ターンではプロンプトが 2 万トークンを超える）。
+  立ち上がらなければ `--enforce-eager`、次に 32768 を自動で試す（32768 で立ち上がったら警告を出す）。
+  20480 より小さい上限では全部の呼び出しが断られるので、それより下げない。
+- vLLM の venv の `bin` を PATH に足して起動する。FlashInfer のサンプラーが初回に JIT でコンパイルするとき `ninja` を探すため
+  （無いと CUDA グラフのウォームアップで落ちる）。初回の JIT で数分余計にかかる。
 - 前に立てた CaP-X との間に記録用の中継（`proxy/log_proxy.py`、ポート 8120）を置き、全呼び出しを `logs/llm_calls.jsonl` に残す。
-初回はモデルのダウンロード（約19GB）があるので 5〜15 分。
+初回はモデルのダウンロード（約19GB）があるので 5〜15 分（A100 では 6.5 分）。
 """)
 
-code(r'''
+code_in_repo(r'''
 # @title 6. vLLM と記録用の中継を起動
 VLLM_LOG = REPO_DIR / "logs" / "vllm.log"
 FORCE_NO_THINK = load_env().get("force_no_think", False)
@@ -377,11 +396,13 @@ elif DRY_RUN:
     save_env(vllm_server={"cmd": "proxy/dummy_llm.py (dry run)"})
 else:
     env = dict(os.environ)
+    # FlashInfer の JIT が ninja（vLLM の venv に入っている）を PATH から探すので、venv を有効にしたのと同じにする
+    env["PATH"] = f"{VLLM_VENV / 'bin'}:{env.get('PATH', '')}"
     hf = _secret("HF_TOKEN")   # 無くてよい（Qwen3.5-9B は公開モデル）。あればダウンロードの制限が緩む
     if hf:
         env["HF_TOKEN"] = hf
     tries = []
-    for t in [(MAX_MODEL_LEN, False), (16384, False), (16384, True)]:
+    for t in [(MAX_MODEL_LEN, False), (MAX_MODEL_LEN, True), (32768, False), (32768, True)]:
         if t not in tries:
             tries.append(t)
     started = None
@@ -413,18 +434,24 @@ else:
         raise RuntimeError("vLLM が立ち上がらない。メモリ不足なら G4 か A100 に替える（README）")
     max_len, eager, secs = started
     save_env(vllm_server={"cmd": " ".join(vllm_cmd(max_len, eager)), "max_model_len": max_len,
-                          "enforce_eager": eager, "startup_s": secs})
+                          "enforce_eager": eager, "startup_s": secs, "path_has_venv_bin": True})
     print(f"\n立ち上がった（max-model-len {max_len}、enforce-eager {eager}、{secs} 秒）")
+    if max_len < SAFE_MODEL_LEN:
+        print(f"\n警告: max-model-len {max_len} は {SAFE_MODEL_LEN} 未満。CaP-X は max_tokens {CAPX_MAX_TOKENS} を送るので、"
+              f"プロンプトが {max_len - CAPX_MAX_TOKENS} トークンを超えた呼び出しは 400 で断られ、その試行が記録から落ちる。"
+              "複数ターンの条件で起きやすい。メモリの大きい GPU（A100・G4）に替えることをすすめる")
 start_proxy()
 print("記録用の中継: http://127.0.0.1:8120 → :8000（logs/llm_calls.jsonl）")
 ''')
 
-code(r'''
+code_in_repo(r'''
 # @title 6b. 1回試す（短い返事と、CaP-X と同じ stack のプロンプト）
 import urllib.request
 
-def chat(messages, max_tokens=4096):
-    body = json.dumps({"model": SERVED_NAME, "messages": messages, "temperature": 0.2, "max_tokens": max_tokens}).encode()
+def chat(messages, max_tokens=CAPX_MAX_TOKENS):
+    # 温度と上限は CaP-X が本番で送る値と同じにする（上限の不足もここで分かる）
+    body = json.dumps({"model": SERVED_NAME, "messages": messages, "temperature": CAPX_TEMPERATURE,
+                       "max_tokens": max_tokens}).encode()
     t0 = time.time()
     r = urllib.request.urlopen(urllib.request.Request(LLM_URL, data=body, headers={"Content-Type": "application/json"}), timeout=900)
     resp = json.loads(r.read())
@@ -448,6 +475,7 @@ if (has_think(c1) or has_think(c2)) and not FORCE_NO_THINK:
     print("切り替え後の <think>:", has_think(c2))
 tok_s = (u2.get("completion_tokens") or 0) / s2 if s2 else 0
 save_env(test_call={"seconds": round(s2, 1), "usage": u2, "tokens_per_s": round(tok_s, 1),
+                    "temperature": CAPX_TEMPERATURE, "max_tokens": CAPX_MAX_TOKENS,
                     "think_tag": has_think(c2), "force_no_think": FORCE_NO_THINK})
 print(f"\n出力の速さ: 約 {tok_s:.1f} トークン/秒、<think>: {has_think(c2)}")
 ''')
@@ -458,7 +486,7 @@ Drive をマウントし、`runs/`・`logs/`・`results/` を5分ごとに `マ�
 ランタイムが切れて最初からやり直すときは、このセルが Drive の途中経過を手元に戻すので、続きから回る。
 """)
 
-code(r'''
+code_in_repo(r'''
 # @title 7. Drive のマウント・途中経過の復元・定期コピーの開始
 if IN_COLAB:
     from google.colab import drive
@@ -503,7 +531,7 @@ md("""
 人が書いた正解コード（oracle）を流す。Mac とクラウドでは3タスクとも 3/3。ここが 3/3 でなければ描画や環境を疑う。
 """)
 
-code(r'''
+code_in_repo(r'''
 # @title 8. oracle を3タスク×3回
 run([sys.executable, "scripts/run_grid.py", "--tag", f"{TAG}_oracle", "--models", "oracle", "--conds", "base",
      "--tasks", *TASKS, "--trials", "3", "--workers", str(min(3, WORKERS)), "--video-trials", "1"], env=capx_env())
@@ -517,7 +545,7 @@ print("\noracle:", res, "→", "Mac と同じ 3/3" if ok else
 
 md("## 9. Qwen で1試行だけ通す（skill_mt・stack）")
 
-code(r'''
+code_in_repo(r'''
 # @title 9. 1試行だけ（見本つき・複数ターン）
 run([sys.executable, "scripts/run_grid.py", "--tag", f"{TAG}_try", "--models", SERVED_NAME, "--conds", "skill_mt",
      "--tasks", "stack", "--trials", "1", "--workers", "1", "--video-trials", "1"], env=capx_env())
@@ -531,9 +559,13 @@ md("""
 ## 10. 本番（4条件×3タスク×各10回）
 裏で動かすので、このセルはすぐ終わる。進み具合は次のセルで見る。
 **止まったり切れたりしたら、同じセルをもう一度実行するだけでよい**（`DONE` のあるセルは飛ばし、途中のセルはやり直す）。
+
+止まった試行の見張り（`colab/watchdog.py`）も一緒に起動する。CaP-X の 1000 秒の時間切れが生成コードの
+`except` に捕まって効かず、試行が終わらないことがあるため。作業プロセスが 20 分続けて CPU を使い切っていたら
+時間切れの合図を送り直す（記録は `logs/watchdog.log`。合図が 0 回なら結果に手は入っていない）。
 """)
 
-code(r'''
+code_in_repo(r'''
 # @title 10. 本番を裏で開始（再開も同じセル）
 RUN_PID = WORK / f"run_{TAG}.pid"
 RUN_LOG = REPO_DIR / "logs" / f"run_{TAG}.log"
@@ -552,18 +584,30 @@ else:
     RUN_PID.write_text(str(p.pid))
     save_env(main_run={"cmd": " ".join(cmd), "started_at": open(start_file).read().strip()})
     print("開始した:", " ".join(cmd))
+WD_PID = WORK / "watchdog.pid"
+if pid_alive(WD_PID):
+    print("見張りはもう動いている")
+else:
+    wd = subprocess.Popen([sys.executable, "-u", "colab/watchdog.py"], stdout=open("logs/watchdog.log", "a"),
+                          stderr=subprocess.STDOUT, cwd=REPO_DIR, start_new_session=True)
+    WD_PID.write_text(str(wd.pid))
+    save_env(watchdog={"script": "colab/watchdog.py", "limit_s": 1200, "log": "logs/watchdog.log"})
+    print("見張りを開始した（logs/watchdog.log）")
 ''')
 
-code(r'''
+code_in_repo(r'''
 # @title 11. 進み具合（止めても本番は続く）
 N_CELLS = len(CONDS) * len(TASKS)
 try:
     while True:
         summ = REPO_DIR / "runs" / TAG / "summary.csv"
         rows = summ.read_text().splitlines()[1:] if summ.exists() else []
+        rows = list({tuple(l.split(",")[:3]): l for l in rows}.values())   # 回し直したセルは後の行だけ
         alive = pid_alive(WORK / f"run_{TAG}.pid")
+        wlog = REPO_DIR / "logs" / "watchdog.log"
+        fired = sum("SIGALRM" in l for l in wlog.read_text().splitlines()) if wlog.exists() else 0
         print(f"[{time.strftime('%H:%M:%S')}] 終わったセル {len(rows)}/{N_CELLS}  {'実行中' if alive else '停止'}  "
-              f"最後: {rows[-1] if rows else '-'}", flush=True)
+              f"見張りの合図 {fired} 回  最後: {rows[-1] if rows else '-'}", flush=True)
         if not alive:
             print(tail(REPO_DIR / "logs" / f"run_{TAG}.log", 8))
             break
@@ -574,21 +618,51 @@ except KeyboardInterrupt:
 
 md("## 12. 集計と確認")
 
-code(r'''
+code_in_repo(r'''
 # @title 12. 集計（results/planA_*）と、見本が入っていたかの確認
 since = (REPO_DIR / "logs" / f"{TAG}_start.txt").read_text().strip()
 run([sys.executable, "scripts/analyze.py", "--tag", TAG, "--calls", "logs/llm_calls.jsonl", "--since", since], env=capx_env())
 run([sys.executable, "scripts/check_skill_prompts.py", "--run", f"runs/{TAG}", "--calls", "logs/llm_calls.jsonl",
      "--since", since], env=capx_env(), check=False)
+# 試行の数が足りないセル（CaP-X は呼び出しが失敗した試行を数に入れない）と、断られた呼び出し
+rows = [l.split(",") for l in (REPO_DIR / "runs" / TAG / "summary.csv").read_text().splitlines()[1:]]
+last = {(r[0], r[1], r[2]): r for r in rows}   # 回し直したセルは後の行が有効
+short = [f"{c}/{t}: " + (f"{last[(c, SERVED_NAME, t)][4]} 試行" if (c, SERVED_NAME, t) in last else "行が無い（IK の失敗などで飛ばされた）")
+         for c in CONDS for t in TASKS
+         if (c, SERVED_NAME, t) not in last or int(last[(c, SERVED_NAME, t)][4]) < TRIALS]
+calls = [json.loads(l) for l in open(REPO_DIR / "logs" / "llm_calls.jsonl")] if (REPO_DIR / "logs" / "llm_calls.jsonl").exists() else []
+bad = [c for c in calls if c["time"] >= float(since) and c.get("http_status") != 200]
+save_env(check={"short_cells": short, "failed_calls": len(bad)})
+print(f"\n{TRIALS} 試行に足りないセル: {short or 'なし'}、断られた呼び出し: {len(bad)} 回")
+for c in bad[:5]:
+    print("  ", c.get("http_status"), str(c.get("error"))[:300])
+if short:
+    print("足りないセルは runs/<tag>/<cond>/<model>/<task>/DONE を消してセル10をもう一度実行すれば、そのセルだけ最初から回る"
+          "（run_grid が前の試行のフォルダを消し、summary.csv に新しい行を足す）。"
+          "400 で文脈の長さが原因なら、先に max-model-len を上げて vLLM を立て直す")
 ''')
 
-code(r'''
+code_in_repo(r'''
 # @title 13. 環境メモ（runs/planA/ENV_planA.md）
 e = load_env()
 pk = subprocess.run(["uv", "pip", "list", "--python", str(CAPX_PY)], capture_output=True, text=True).stdout
 keep = ("mujoco", "numpy", "scipy", "robosuite", "pyroki", "jax", "jaxlib", "PyOpenGL", "pyrender", "open3d", "openai", "gymnasium")
 pk = "\n".join(l for l in pk.splitlines() if l.split(" ")[0] in keep)
 summ = REPO_DIR / "runs" / TAG / "summary.csv"
+# CaP-X が実際に送った temperature・max_tokens を、本番の呼び出しの記録から数える
+from collections import Counter
+since = float((REPO_DIR / "logs" / f"{TAG}_start.txt").read_text()) if (REPO_DIR / "logs" / f"{TAG}_start.txt").exists() else 0
+sent, max_in = Counter(), 0
+if (REPO_DIR / "logs" / "llm_calls.jsonl").exists():
+    for l in open(REPO_DIR / "logs" / "llm_calls.jsonl"):
+        c = json.loads(l)
+        if c["time"] < since:
+            continue
+        q = json.loads(c["request"]) if isinstance(c.get("request"), str) else (c.get("request") or {})
+        sent[f"temperature {q.get('temperature')}・max_tokens {q.get('max_tokens')}"] += 1
+        max_in = max(max_in, c.get("input_tokens") or 0)
+wlog = REPO_DIR / "logs" / "watchdog.log"
+fired = [l for l in wlog.read_text().splitlines() if "SIGALRM" in l] if wlog.exists() else []
 lines = [f"# 案A の実行環境（{TAG}）", "",
          "Colab で自動生成（colab/pai_planA.ipynb の 13）。", "",
          "## マシン", *[f"- {k}: {v}" for k, v in e.get("machine", {}).items()], "",
@@ -601,13 +675,20 @@ lines = [f"# 案A の実行環境（{TAG}）", "",
          f"- 立ち上がりまで: {e.get('vllm_server', {}).get('startup_s')} 秒",
          f"- 試しの呼び出し: {json.dumps(e.get('test_call', {}), ensure_ascii=False)}",
          f"- 中継で enable_thinking=false を足したか: {e.get('force_no_think', False)}",
-         "- CaP-X が送るのは model・messages・temperature(0.2)・max_tokens(4096) だけ。全呼び出しは logs/llm_calls.jsonl", "",
+         f"- CaP-X が送るのは model・messages・temperature・max_tokens だけ（CaP-X の既定 {CAPX_TEMPERATURE}・{CAPX_MAX_TOKENS}）。"
+         f"本番の開始以降の全呼び出しで送られた値: {dict(sent) or '記録なし'}、プロンプトの最大 {max_in} トークン"
+         "（本番の後にセル6bを回した分も入る）",
+         f"- 試行の数が足りないセル・断られた呼び出し: {e.get('check', {})}",
+         "- 全呼び出しは logs/llm_calls.jsonl", "",
          "## CaP-X", f"- {json.dumps(e.get('capx', {}), ensure_ascii=False)}", f"- リポジトリ: {e.get('repo')}",
          "```", pk, "```", "",
          "## 実行", f"- oracle（3回ずつ）: {e.get('oracle')}", f"- 本番: `{e.get('main_run', {}).get('cmd')}`",
-         f"- 並列数: {e.get('machine', {}).get('workers')}、動画は各セルの最初の {VIDEO_TRIALS} 試行", "",
+         f"- 並列数: {e.get('machine', {}).get('workers')}、動画は各セルの最初の {VIDEO_TRIALS} 試行",
+         f"- 止まった試行の見張り（colab/watchdog.py）の合図: {len(fired)} 回" + (f"（{'; '.join(fired)}）" if fired else ""), "",
          "| cond | model | task | success | trials | elapsed_s |", "|---|---|---|---|---|---|",
-         *[("| " + " | ".join(l.split(",")) + " |") for l in (summ.read_text().splitlines()[1:] if summ.exists() else [])]]
+         *[("| " + " | ".join(l.split(",")) + " |") for l in
+           {tuple(l.split(",")[:3]): l for l in (summ.read_text().splitlines()[1:] if summ.exists() else [])}.values()]]
+# ↑ 回し直したセルは後の行だけ（run_grid.py は回し直すと summary.csv に行を足す）
 out = REPO_DIR / "runs" / TAG / f"ENV_{TAG}.md"
 out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text("\n".join(lines) + "\n")
@@ -621,7 +702,7 @@ md("""
 描画の確認、環境メモ、集計（results/planA_*）。zip は Drive にも置く。
 """)
 
-code(r'''
+code_in_repo(r'''
 # @title 14. zip を作る（Drive にも置き、ダウンロードする）
 import zipfile
 stamp = time.strftime("%Y%m%d_%H%M%S")
@@ -634,7 +715,8 @@ with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted((REPO_DIR / "runs" / tag).rglob("*")) if (REPO_DIR / "runs" / tag).exists() else []:
             if f.is_file() and f.name in CELL_FILES:
                 z.write(f, f.relative_to(REPO_DIR)); n += 1
-    for name in ["llm_calls.jsonl", f"run_{TAG}.log", "gl_check.json", "log_proxy.log", "pyroki_server.log", f"{TAG}_start.txt"]:
+    for name in ["llm_calls.jsonl", f"run_{TAG}.log", "gl_check.json", "log_proxy.log", "pyroki_server.log", f"{TAG}_start.txt",
+                 "watchdog.log"]:
         f = REPO_DIR / "logs" / name
         if f.exists():
             z.write(f, f.relative_to(REPO_DIR)); n += 1
@@ -652,8 +734,12 @@ try:
 except Exception as ex:
     print("Drive へのコピーに失敗:", ex)
 if IN_COLAB:
-    from google.colab import files
-    files.download(str(zpath))
+    try:   # Colab CLI（colab exec）から実行したときは効かないので、手元の colab download で取ってくる
+        from google.colab import files
+        files.download(str(zpath))
+    except Exception as ex:
+        print("ブラウザへのダウンロードに失敗:", ex)
+print("CLI なら: colab download -s <名前>", zpath, "<手元の置き場所>")
 ''')
 
 md("""
@@ -675,7 +761,7 @@ def build() -> dict:
         "cells": cells,
         "metadata": {
             "accelerator": "GPU",
-            "colab": {"provenance": [], "gpuType": "L4", "machine_shape": "hm"},
+            "colab": {"provenance": [], "gpuType": "A100", "machine_shape": "hm"},
             "kernelspec": {"display_name": "Python 3", "name": "python3"},
             "language_info": {"name": "python"},
         },

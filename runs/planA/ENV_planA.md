@@ -82,10 +82,11 @@ scipy                     1.14.1
 - **PATH に `/content/vllm-venv/bin` を追加**: venv を有効にせず `vllm serve` を起動すると、FlashInfer のサンプラーの
   JIT が `ninja` を見つけられず、CUDA グラフのウォームアップで落ちる（`--enforce-eager` なら起動はするが、ウォームアップを
   飛ばすだけで直らない）。PATH を足すと初回の JIT（数分）のあと 390 秒で立ち上がった。
-- **止まった試行の見張り**（`logs/watchdog.py`、リポジトリには入れていない）: CaP-X の 1000 秒の時間切れ（SIGALRM、1 回だけ）は、
-  生成コードを実行する `_exec_user_code` の `except BaseException` に捕まることがあり、生成コードが終わらないループに入ると
-  試行が永久に終わらない（前の VM の base・handover で 1 回、手で SIGALRM を送り直した）。この実行では、CaP-X の作業プロセスが
-  1200 秒続けて CPU 80% 超なら SIGALRM を送る見張りを本番の間だけ動かした。**合図は 0 回**（結果に手は入っていない）。
+- **止まった試行の見張り**（この実行では `logs/watchdog.py`。のちに `colab/watchdog.py` としてリポジトリに入れた）:
+  CaP-X の 1000 秒の時間切れ（SIGALRM、1 回だけ）で投げられる TimeoutError が生成コード自身の `except Exception` に
+  捕まると消え、生成コードが終わらないループに入ると試行が永久に終わらない（前の VM の base・handover で 1 回。
+  手で SIGALRM を送り直すと、生成コードの外で TimeoutError になり、その試行は失敗として終わった）。この実行では、
+  CaP-X の作業プロセスが 1200 秒続けて CPU 80% 超なら SIGALRM を送る見張りを本番の間だけ動かした。**合図は 0 回**（結果に手は入っていない）。
 - **oracle**: 1 回目（`runs/planA_oracle`）は handover 2/3（trial 3 はコードが最後まで動いたが受け渡しに失敗、reward 0.026。
   直前に IK サーバーの立て直しがあった）。同じ VM で handover だけ回し直すと 3/3（`runs/planA_oracle2`）。前の VM でも 3/3。
 - **thinking**: `<think>` で始まる返事は 0 回。ただし 289 回中 2 回、返事の途中に `</think>` が1つ紛れ込んだ
