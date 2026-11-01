@@ -483,6 +483,8 @@
  "p.qa.stack.base_mt": "0.141",
  "p.qa.stack.skill": "0.141",
  "p.qa.stack.skill_mt": "0.057",
+ "qa.stack.pooled": "16/30",
+ "p.qa.stack.pooled": "0.026",
  "qa.base_mt.succ_first": "3/5",
  "qa.base_mt.stack.blocks": "1.8",
  "qa.base_mt.nut.blocks": "2.9",

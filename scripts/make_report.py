@@ -464,7 +464,7 @@ Claude Fable 5.1 の複数ターン4セル（積み替え(複数)・受け渡し
 - **受け渡し**は gpt-6.1-sol・gpt-6-astra が {{sol.base.handover}}・{{astra.base.handover}}、gpt-6.1-terra・Claude Fable 5.1・GPT-OSS 120B が {{terra.base.handover}}・{{fable.base.handover}}・{{oss.base.handover}}（Fisher の正確検定で p≤{{hand.base.maxp}}）。
 - **積み替え**（最初から緑が赤の上に載っている）は、1回で答えると全モデル 0/10。複数ターンにすると Gemini 4 Argon だけが {{argon.base_mt.restack}} になり（p={{p.mt.argon.restack}}、多重比較の補正後は言い切れない）、成功はすべて実行結果を見て書き直した試行だった。書き直さずに「完了」と答えるモデルには、複数ターンが効かない。
 - **位置に 1cm の誤差**を足すと、9モデル合計でナットが {{pool.base.nut}}→{{pool.noisy.nut}}（p={{p.noise.pool.nut}}）に下がった。大きく下がったのは Gemini 3.8 Flash（{{flash.base.nut}}→{{flash.noisy.nut}}）と Claude Haiku 5.5（{{haiku.base.nut}}→{{haiku.noisy.nut}}）。ただし誤差ありのセルは、回し直すと1セルで最大 {{codex.maxdiff}} 回ぶれるので、10回での細かい差は言い切れない。
-- **案A**（小さいオープンモデル Qwen3.5-9B、Colab の A100）: そのままでは積む・ナット・受け渡しが {{qa.base.stack}}・{{qa.base.nut}}・{{qa.base.handover}}。①実行結果を見て書き直す、②大きいモデルの成功コード（ほかのタスクの分）を見本に足す、を入れると積むは {{qa.base_mt.stack}}・{{qa.skill.stack}}・{{qa.skill_mt.stack}}（①・②・①＋②）に上がったが、10回では言い切れず（p≥{{p.qa.stack.skill_mt}}）、ナットと受け渡しはほぼ 0 のまま。①で成功した試行も、{{qa.base_mt.succ_first}} は書き直さずに最初のコードで成功していた。
+- **案A**（小さいオープンモデル Qwen3.5-9B、Colab の A100）: そのままでは積む・ナット・受け渡しが {{qa.base.stack}}・{{qa.base.nut}}・{{qa.base.handover}}。①実行結果を見て書き直す、②大きいモデルの成功コード（ほかのタスクの分）を見本に足す、を入れると積むは {{qa.base_mt.stack}}・{{qa.skill.stack}}・{{qa.skill_mt.stack}}（①・②・①＋②）に上がった。1つずつでは 10回では言い切れない（p≥{{p.qa.stack.skill_mt}}）が、3条件まとめると {{qa.stack.pooled}} 対 {{qa.base.stack}}（p={{p.qa.stack.pooled}}）で、何かを足すと上がることはほぼ言える。①と②のどちらが効いたかは区別できない。ナットと受け渡しはほぼ 0 のまま。①で成功した試行も、{{qa.base_mt.succ_first}} は書き直さずに最初のコードで成功していた。
 
 """
 
@@ -727,6 +727,11 @@ def main() -> None:
         k0, n0 = A[("base", "stack")]
         for c, _ in CASEA_CONDS[1:]:
             V[f"p.qa.stack.{c}"] = fmt_p(fisher(*A[(c, "stack")], k0, n0))
+        # 3条件（①・②・①＋②）をまとめて、そのままと比べる（結果を見てから決めた比べ方なので、本文でそう断る）
+        kp = sum(A[(c, "stack")][0] for c, _ in CASEA_CONDS[1:])
+        np_ = sum(A[(c, "stack")][1] for c, _ in CASEA_CONDS[1:])
+        V["qa.stack.pooled"] = f"{kp}/{np_}"
+        V["p.qa.stack.pooled"] = fmt_p(fisher(kp, np_, k0, n0))
         # 複数ターンで成功した試行のうち、書き直さずに最初のコードで成功したもの（regenerations=0）。
         # 書き直した試行が、書き直して初めて成功したのかは記録に残っていない（ターンごとの成否が無い）
         for c in ["base_mt", "skill_mt"]:
