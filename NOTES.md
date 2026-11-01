@@ -109,11 +109,17 @@ Qwen3.5-9B を Colab の GPU（vLLM）で、stack・nut・handover × base/skill
 - Mac で動くのは特権情報（シミュレータの真の位置）を使う設定だけ。画像認識の設定は SAM3 などの GPU が要る。
 - オープンモデル（Qwen）は Colab の GPU で、CaP-X ごと動かす予定。
 
+## 提出物（2026-11-01 夜）
+- レポート PDF: `report/report_template.md` に要旨と GitHub の URL を足し、`report/build_pdf.py`（Chrome のヘッドレス印刷）で A4・13 ページにした。
+- 動画（1分39秒、字幕のみ、1920×1080）: `scripts/make_video.py`。タイトル → やったこと → 全体の表 → 受け渡し（sol 成功・terra 失敗）
+  → 積み替え（1回で失敗・Argon が書き直して成功）→ 位置の誤差（Haiku の積む。ナットは最後のコマで腕が柱を隠して成否が見えないので、数字だけ字幕に出す）
+  → 平均化のコード（Opus）→ 案A（Qwen の積む）→ まとめ。
+- PDF と動画は提出用の名前（アカウント名入り）なので、リポジトリの外に置いた。
+- LICENSE（MIT）を追加。公開前に全ブランチの履歴を点検（作者はすべて pai-final、個人のパス・メール・キーは無し）。
+
 ## 次にやること
-1. 動画（1〜3分）: runs/main の video_combined.mp4 から、受け渡しの成功・失敗、積み替えの書き直し、誤差ありのナットを選んでつなぐ。
-2. レポート PDF: 目的（GENIAC の Code-as-Policy）、CaP-X、条件の作り方、結果の表、分かったこと、限界（特権情報・1cm 誤差は画像認識の代わり）。
-3. 公開 GitHub: README、patches/、scripts/、results/。git の作者名はこのリポジトリだけ匿名（pai-final）にしてある。
-4. （済み）案A: Colab で Qwen を回した（上の「案A の結果」）。
+1. 動画を YouTube に上げる（限定公開以上）。
+2. リポジトリを公開し、Omnicampus に提出する。
 
 ## 動かし方
 ```bash

@@ -75,6 +75,7 @@ Claude Fable 5.1 の複数ターン4セル（積み替え(複数)・受け渡し
 | `select_skills.py` | `skill_src/` から案A の見本を選び、`skill_lib/` に書き出す |
 | `check_skill_prompts.py` | 見本を除くと、見本ありのプロンプトが見本なしと1文字も違わないことを確かめる |
 | `make_report.py` | レポートの表・検定・図を作り、下書きに数字を差し込む |
+| `make_video.py` | 提出用の短い動画（字幕のみ）を `runs/` の試行動画からつなぐ（ffmpeg と Pillow が要る） |
 
 実験の生データ（`runs/`、試行ごとのコードと動画）は大きいのでリポジトリに入れていない（案A の環境メモ `runs/planA/ENV_planA.md` だけは入れている）。集計は `results/` にある。
 
@@ -140,6 +141,7 @@ python3 scripts/analyze.py --tag main --since <開始の UNIX 時刻>
 pip install matplotlib && python3 scripts/make_report.py
 ```
 `make_report.py` は `results/` と `cloud_runs/cloud/summary.csv` だけを読む（`runs/` があれば、平均化の集計も全モデル分になる）。
+PDF は `uv run --with markdown python report/build_pdf.py <出力先.pdf>`（Google Chrome のヘッドレス印刷）。
 
 ## CaP-X への変更（`patches/capx.patch`）
 
@@ -167,7 +169,7 @@ pip install matplotlib && python3 scripts/make_report.py
 
 ## ライセンスと出典
 
-- このリポジトリのコード（`scripts/`・`proxy/`・`pai_ext/` など）のライセンス: **（未定。公開前に決める）**
+- このリポジトリのコード（`scripts/`・`proxy/`・`pai_ext/` など）: MIT ライセンス（`LICENSE`）
 - `patches/capx.patch` は CaP-X への差分で、CaP-X のライセンスに従う。
 - CaP-X: https://github.com/capgym/cap-x （使い方と引用は CaP-X のリポジトリに従う）
 - robosuite（ARISE Initiative）、MuJoCo（Google DeepMind）、PyRoKi
