@@ -37,7 +37,7 @@ base_mt,qwen3.5-9b,handover,5,0,0.02,0,5,4
 base_mt,qwen3.5-9b,handover,6,0,0.098,0,1,0
 base_mt,qwen3.5-9b,handover,7,0,0.026,0,9,8
 base_mt,qwen3.5-9b,handover,8,0,0.053,0,5,4
-base_mt,qwen3.5-9b,handover,9,1,0.099,0,,
+base_mt,qwen3.5-9b,handover,9,0,0.099,0,4,3
 base_mt,qwen3.5-9b,handover,10,0,0.063,0,2,1
 base_mt,qwen3.5-9b,nut,1,1,0.0,0,3,2
 base_mt,qwen3.5-9b,nut,2,0,0.0,0,3,2
@@ -52,7 +52,7 @@ base_mt,qwen3.5-9b,nut,10,0,0.057,0,3,2
 base_mt,qwen3.5-9b,stack,1,0,0.001,0,1,0
 base_mt,qwen3.5-9b,stack,2,0,0.749,0,2,1
 base_mt,qwen3.5-9b,stack,3,0,0.053,0,1,0
-base_mt,qwen3.5-9b,stack,4,1,1.0,1,,
+base_mt,qwen3.5-9b,stack,4,0,1.0,1,6,5
 base_mt,qwen3.5-9b,stack,5,0,1.0,1,1,0
 base_mt,qwen3.5-9b,stack,6,0,0.062,0,2,1
 base_mt,qwen3.5-9b,stack,7,1,0.002,0,1,0

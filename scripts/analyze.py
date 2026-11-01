@@ -30,14 +30,21 @@ SUMMARY_RE = {
 
 
 def final_trial_dirs(run_root: Path) -> list[Path]:
-    """複数ターンでは同じ試行番号の途中経過フォルダも残るので、最後に書かれたものだけを返す。"""
+    """複数ターンでは同じ試行番号の途中経過フォルダも残るので、最終のものだけを返す。
+    最終のフォルダの summary.txt だけに「Num Code Blocks」がある。それを優先し、同じなら更新時刻の新しい方。
+    （Colab から zip で持ち帰ると更新時刻がそろうので、更新時刻だけでは途中経過を選んでしまう）"""
+    def rank(d: Path) -> tuple[bool, float]:
+        s = d / "summary.txt"
+        done = s.exists() and "Num Code Blocks" in s.read_text(errors="replace")
+        return (done, d.stat().st_mtime)
+
     latest: dict[tuple, Path] = {}
     for d in run_root.glob("*/*/*/*/trial_*"):
         m = TRIAL_RE.fullmatch(d.name)
         if not m:
             continue
         key = (d.parent, int(m.group(1)))
-        if key not in latest or d.stat().st_mtime > latest[key].stat().st_mtime:
+        if key not in latest or rank(d) > rank(latest[key]):
             latest[key] = d
     return sorted(latest.values())
 
